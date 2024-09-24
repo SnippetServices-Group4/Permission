@@ -1,4 +1,4 @@
-package com.services.group4.permission;
+package com.services.group4.permission.communication;
 
 import com.services.group4.permission.model.CommunicationMessage;
 import org.junit.jupiter.api.Test;

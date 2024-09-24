@@ -1,4 +1,4 @@
-package com.services.group4.permission.utils;
+package com.services.group4.permission.communication.utils;
 
 import org.springframework.web.client.RestTemplate;
 
