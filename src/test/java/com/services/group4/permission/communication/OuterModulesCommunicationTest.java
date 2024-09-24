@@ -27,8 +27,10 @@ public class OuterModulesCommunicationTest {
   @Autowired
   private RestTemplate restTemplate;
 
+  private static final String MODULE_CHECKER_PATH = "com.services.group4.permission.communication.utils.ModuleChecker";
+
   @Test
-  @EnabledIf("com.services.group4.permission.utils.ModuleChecker#isSnippetModuleRunning")
+  @EnabledIf(MODULE_CHECKER_PATH + "#isSnippetModuleRunning")
   void fromPermissionToSnippetCommunicationTest() {
     System.out.println("ATTENTION: SNIPPET MODULE MUST BE RUNNING FOR THIS TEST TO PASS!");
     String url = "http://localhost:8080/test/permission/communication";
@@ -39,7 +41,7 @@ public class OuterModulesCommunicationTest {
   }
 
   @Test
-  @EnabledIf("com.services.group4.permission.utils.ModuleChecker#isParserModuleRunning")
+  @EnabledIf(MODULE_CHECKER_PATH + "#isParserModuleRunning")
   void fromPermissionToParserCommunicationTest() {
     System.out.println("ATTENTION: PARSER MODULE MUST BE RUNNING FOR THIS TEST TO PASS!");
     String url = "http://localhost:8082/test/permission/communication";
