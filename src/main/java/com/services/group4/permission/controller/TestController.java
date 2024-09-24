@@ -14,11 +14,11 @@ public class TestController {
 
     @GetMapping("/parser/communication")
     public CommunicationMessage testParserCommunication() {
-        return new CommunicationMessage("Permission", "Communication between Permission and Parser works!");
+        return new CommunicationMessage("Permission", "Communication from Parser to Permission works!");
     }
 
     @GetMapping("/snippet/communication")
     public CommunicationMessage testSnippetCommunication() {
-        return new CommunicationMessage("Permission", "Communication between Permission and Snippet works!");
+        return new CommunicationMessage("Permission", "Communication from Snippet to Permission works!");
     }
 }
