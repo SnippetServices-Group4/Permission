@@ -23,6 +23,12 @@ public class SnippetUser {
         this.password = password;
         this.email = email;
     }
+  public SnippetUser(Long userID, String username, String password, String email) {
+    this.userID = userID;
+    this.username = username;
+    this.password = password;
+    this.email = email;
+  }
 
     public Long getUserID() {
         return userID;

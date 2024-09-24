@@ -53,7 +53,7 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody SnippetUser updatedUser) {
         Optional<SnippetUser> user = userRepository.findById(id);
         if (user.isPresent()) {
@@ -68,7 +68,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         try {
             userRepository.deleteById(id);

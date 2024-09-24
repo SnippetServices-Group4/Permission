@@ -28,12 +28,20 @@ public class SnippetUserTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    private UserRepository userRepository;
+  @Autowired
+  private UserRepository userRepository;
+
+  @BeforeEach
+  public void setUp() {
+    userRepository.deleteAll(); // Clear the repository to avoid conflicts
+    SnippetUser snippetUser = new SnippetUser(1L,"testUser", "testPassword", "test@example.com");
+    userRepository.save(snippetUser);
+    System.out.println("User saved: " + userRepository.findById(1L).orElse(null));
+  }
 
     @Test
     public void testAddUserSuccess() throws Exception {
-      SnippetUser snippetUser = new SnippetUser("testUser", "testPassword", "test@example.com");
+      SnippetUser snippetUser = new SnippetUser(2L,"testUser2", "testPassword2", "test2@example.com");
 
       mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -44,7 +52,7 @@ public class SnippetUserTest {
 
     @Test
     public void testLoginUserSuccess() throws Exception {
-      SnippetUser snippetUser = new SnippetUser("testUser", "testPassword", "test@example.com");
+      SnippetUser snippetUser = new SnippetUser(1L,"testUser", "testPassword", "test@example.com");
 
       mockMvc.perform(post("/user/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -68,7 +76,7 @@ public class SnippetUserTest {
 
     @Test
     public void testUpdateUserSuccess() throws Exception {
-      SnippetUser snippetUser = new SnippetUser("testUser", "testPassword", "test@example.com");
+      SnippetUser snippetUser = new SnippetUser(1L,"testUser", "testPassword", "test@example.com");
 
       snippetUser.setUsername("updatedUser");
         mockMvc.perform(put("/user/update/{id}", 1L)
