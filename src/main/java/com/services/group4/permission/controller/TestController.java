@@ -1,5 +1,6 @@
 package com.services.group4.permission.controller;
 
+import com.services.group4.permission.model.CommunicationMessage;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -9,5 +10,15 @@ public class TestController {
     @GetMapping("/ping")
     public String index() {
         return "pong";
+    }
+
+    @GetMapping("/parser/communication")
+    public CommunicationMessage testParserCommunication() {
+        return new CommunicationMessage("Permission", "Communication between Permission and Parser works!");
+    }
+
+    @GetMapping("/snippet/communication")
+    public CommunicationMessage testSnippetCommunication() {
+        return new CommunicationMessage("Permission", "Communication between Permission and Snippet works!");
     }
 }
