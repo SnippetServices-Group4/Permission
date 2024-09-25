@@ -1,17 +1,32 @@
-version: '3.8'
+version: '3'
 
 services:
-  postgres:
-    image: postgres:13
-    container_name: postgres_permission
-    environment:
-      POSTGRES_USER: user_dev
-      POSTGRES_PASSWORD: pass_dev
-      POSTGRES_DB: permission
+  api:
+    container_name: "permission-api"
+    build:
+      context: .
+      dockerfile: Dockerfile.multi
     ports:
-      - "5433:5432"
+      - 8085:8085
+    environment:
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: permission-db
+      DB_HOST: postgres_db
+      DB_PORT: 5432
+
+  db:
+    container_name: postgres_db
+    image: postgres:12
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: compose-db
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
 
 volumes:
-  postgres_data:
+  pgdata:
+    external: true
