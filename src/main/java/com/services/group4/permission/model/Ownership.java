@@ -1,5 +1,7 @@
 package com.services.group4.permission.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.permission.dto.SnippetDTO;
 import jakarta.persistence.*;
 
@@ -7,7 +9,7 @@ import jakarta.persistence.*;
 public class Ownership {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long OwnerShipID;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -16,12 +18,20 @@ public class Ownership {
     @Transient
     private SnippetDTO snippet;
 
-    public Long getId() {
-        return id;
+    public Ownership() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Ownership(SnippetUser user, SnippetDTO snippet) {
+        this.user = user;
+        this.snippet = snippet;
+    }
+
+    public Long getOwnerShipID() {
+        return OwnerShipID;
+    }
+
+    public void setOwnerShipID(Long id) {
+        this.OwnerShipID = id;
     }
 
     public SnippetUser getUser() {
@@ -39,4 +49,14 @@ public class Ownership {
     public void setSnippet(SnippetDTO snippet) {
         this.snippet = snippet;
     }
+
+  public String toJson() {
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+      return objectMapper.writeValueAsString(this);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+      return "{}";
+    }
+  }
 }

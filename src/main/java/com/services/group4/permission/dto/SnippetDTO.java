@@ -3,6 +3,7 @@ package com.services.group4.permission.dto;
 
 public class SnippetDTO {
     private Long id;
+    private String title;
     private String content;
 
     // Getters and setters
@@ -12,6 +13,14 @@ public class SnippetDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getContent() {

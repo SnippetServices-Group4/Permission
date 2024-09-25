@@ -19,14 +19,26 @@ public class OwnershipController {
     @Autowired
     private SnippetService snippetService;
 
-    @PostMapping
-    public ResponseEntity<Ownership> createOwnership(@RequestBody Ownership ownership) {
+    @PostMapping("")
+    public ResponseEntity<String> createOwnership2(@RequestBody Ownership ownership) {
+      try {
         SnippetDTO snippet = snippetService.getSnippetById(ownership.getSnippet().getId());
         if (snippet == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+          return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Ownership savedOwnership = ownershipRepository.save(ownership);
-        return new ResponseEntity<>(savedOwnership, HttpStatus.CREATED);
+        ownershipRepository.save(ownership);
+        return new ResponseEntity<>("OwnerShip relation created", HttpStatus.CREATED);
+      } catch (Exception e) {
+        System.out.println(e.getMessage());
+        return new ResponseEntity<>("Something went wrong creating the Snippet",
+            HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<String> createOwnership(@RequestBody Ownership ownership) {
+      ownershipRepository.save(ownership);
+      return new ResponseEntity<>("OwnerShip relation created", HttpStatus.CREATED);
     }
 
     // Otros métodos CRUD según sea necesario
