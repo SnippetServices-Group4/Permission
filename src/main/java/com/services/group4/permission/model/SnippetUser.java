@@ -59,4 +59,8 @@ public class SnippetUser {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public void setId(long l) {
+      this.userID = l;
+    }
 }
