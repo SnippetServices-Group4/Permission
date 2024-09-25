@@ -79,11 +79,11 @@ public class SnippetUserTest {
       SnippetUser snippetUser = new SnippetUser(1L,"testUser", "testPassword", "test@example.com");
 
       snippetUser.setUsername("updatedUser");
-        mockMvc.perform(put("/user/update/{id}", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(snippetUser)))
-                .andExpect(status().isOk())
-                .andExpect(content().string("User updated"));
+      mockMvc.perform(put("/user/update/{id}", 1L)
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(objectMapper.writeValueAsString(snippetUser)))
+              .andExpect(status().isOk())
+              .andExpect(content().string("User updated"));
     }
 
     @Test
