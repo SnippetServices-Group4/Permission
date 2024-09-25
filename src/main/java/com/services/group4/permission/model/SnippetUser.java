@@ -1,5 +1,7 @@
 package com.services.group4.permission.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 
 @Entity
@@ -24,13 +26,6 @@ public class SnippetUser {
         this.email = email;
     }
 
-    // Added for testing purposes
-  public SnippetUser(Long userID, String username, String password, String email) {
-    this.userID = userID;
-    this.username = username;
-    this.password = password;
-    this.email = email;
-  }
 
     public Long getUserID() {
         return userID;
@@ -63,4 +58,14 @@ public class SnippetUser {
     public void setId(long l) {
       this.userID = l;
     }
+
+  public String toJson() {
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+      return objectMapper.writeValueAsString(this);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+      return "{}";
+    }
+  }
 }

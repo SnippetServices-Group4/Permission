@@ -22,6 +22,7 @@ public class UserController {
     public ResponseEntity<String> addUser(@RequestBody SnippetUser snippetUser) {
         try {
             userRepository.save(snippetUser);
+          System.out.println("User controller: " + userRepository);
             return new ResponseEntity<>("User added", HttpStatus.CREATED);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -34,6 +35,7 @@ public class UserController {
     public ResponseEntity<String> loginUser(@RequestBody SnippetUser loginUser) {
       Optional<SnippetUser> user = userRepository.findByUsername(loginUser.getUsername());
       if (user.isPresent() && user.get().getPassword().equals(loginUser.getPassword())) {
+        System.out.println("User controller: " + user.get());
         return new ResponseEntity<>("Login successful", HttpStatus.OK);
       } else {
         return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
@@ -43,14 +45,18 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<SnippetUser> getUserById(@PathVariable Long id) {
         Optional<SnippetUser> user = userRepository.findById(id);
-        return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+      System.out.println("User controller: " + user.get());
+
+      return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping
     public ResponseEntity<List<SnippetUser>> getAllUsers() {
         List<SnippetUser> users = userRepository.findAll();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+      System.out.println("User controller: " + users);
+
+      return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
@@ -62,7 +68,9 @@ public class UserController {
             existingUser.setPassword(updatedUser.getPassword());
             existingUser.setEmail(updatedUser.getEmail());
             userRepository.save(existingUser);
-            return new ResponseEntity<>("User updated", HttpStatus.OK);
+          System.out.println("User controller: " + userRepository);
+
+          return new ResponseEntity<>("User updated", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         }
@@ -72,7 +80,9 @@ public class UserController {
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         try {
             userRepository.deleteById(id);
-            return new ResponseEntity<>("User deleted", HttpStatus.OK);
+          System.out.println("User controller: " + userRepository);
+
+          return new ResponseEntity<>("User deleted", HttpStatus.OK);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return new ResponseEntity<>("Something went wrong deleting the user",
