@@ -35,7 +35,7 @@ public class SnippetUserTest {
   public void setUp() {
     userRepository.deleteAll(); // Clear the repository to avoid conflicts
     SnippetUser snippetUser = new SnippetUser(1L,"testUser", "testPassword", "test@example.com");
-    userRepository.save(snippetUser);
+    System.out.println(userRepository.save(snippetUser));
     System.out.println("User saved: " + userRepository.findById(1L).orElse(null));
   }
 

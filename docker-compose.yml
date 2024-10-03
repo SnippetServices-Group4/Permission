@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 services:
   api:
@@ -15,18 +15,18 @@ services:
       DB_HOST: postgres_db
       DB_PORT: 5432
 
-  db:
-    container_name: postgres_db
-    image: postgres:12
-    ports:
-      - "5432:5432"
+  postgres:
+    container_name: "postgres_permission"
+    image: postgres:13
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: compose-db
+    ports:
+      - "5433:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
-  pgdata:
-    external: true
+  postgres_data:
+    external: false
