@@ -24,7 +24,7 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
-          username: SnippetServices-Group4
+          username: snippetservices-group4
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push to GitHub Packages
@@ -33,4 +33,4 @@ jobs:
         with:
           push: true
           tags: |
-            ghcr.io/SnippetServices-Group4/permissions:latest
+            ghcr.io/snippetservices-group4/permissions:latest
