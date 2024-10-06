@@ -6,7 +6,6 @@ on:
   pull_request:
     branches:
       - main
-
 jobs:
   push_to_registry:
     name: Push Docker image to GitHub Packages
@@ -25,7 +24,7 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
-          username: ingsis-group-4
+          username: SnippetServices-Group4
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push to GitHub Packages
@@ -34,4 +33,4 @@ jobs:
         with:
           push: true
           tags: |
-            ghcr.io/ingsis-group-4/permissions:latest
+            ghcr.io/SnippetServices-Group4/permissions:latest
