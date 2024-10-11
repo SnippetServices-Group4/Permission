@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class Ownership {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long OwnershipID;
+  private Long ownershipID;
 
   @Column(nullable = false)
   private Long userId;
@@ -14,16 +14,13 @@ public class Ownership {
   @Column(nullable = false, unique = true)
   private Long snippetId;
 
-  public Ownership(Long userId, Long snippetId) {
-      this.userId = userId;
-      this.snippetId = snippetId;
+  // Added for testing purposes
+  public Ownership(Long ownershipID, Long userId, Long snippetId) {
+    this.userId = userId;
+    this.snippetId = snippetId;
   }
 
   public Ownership() {
-  }
-
-  public Long getId() {
-    return OwnershipID;
   }
 
   public Long getUserId() {
@@ -32,5 +29,9 @@ public class Ownership {
 
   public Long getSnippetId() {
     return snippetId;
+  }
+
+  public Long getOwnershipID() {
+    return ownershipID;
   }
 }

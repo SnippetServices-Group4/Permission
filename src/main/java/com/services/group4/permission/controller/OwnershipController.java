@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/ownership")
 public class OwnershipController {
@@ -31,11 +33,25 @@ public class OwnershipController {
     }
   }
 
+  @GetMapping("/user/{id}")
+  public ResponseEntity<Ownership> getOwnershipByUserId(@PathVariable Long id) {
+    Optional<Ownership> ownership = ownershipRepository.findOwnershipByUserId(id);
+    return ownership.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  }
+
+  @GetMapping("/snippet/{id}")
+  public ResponseEntity<Ownership> getOwnershipBySnippetId(@PathVariable Long id) {
+    Optional<Ownership> ownership = ownershipRepository.findOwnershipBySnippetId(id);
+    return ownership.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  }
+
   @GetMapping("/{id}")
   public ResponseEntity<Ownership> getOwnershipById(@PathVariable Long id) {
-    return ownershipRepository.findById(id)
-            .map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    Optional<Ownership> ownership = ownershipRepository.findById(id);
+    return ownership.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
   @GetMapping
