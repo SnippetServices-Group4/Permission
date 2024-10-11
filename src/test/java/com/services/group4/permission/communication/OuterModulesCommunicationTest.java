@@ -1,6 +1,6 @@
 package com.services.group4.permission.communication;
 
-import com.services.group4.permission.model.CommunicationMessage;
+import com.services.group4.permission.model.communication.CommunicationMessage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
 import org.springframework.beans.factory.annotation.Autowired;
