@@ -25,7 +25,7 @@ public class SnippetUser {
     }
 
     // Added for testing purposes
-  public SnippetUser(Long userID, String username, String password, String email) {
+    public SnippetUser(Long userID, String username, String password, String email) {
     this.userID = userID;
     this.username = username;
     this.password = password;

@@ -1,6 +1,6 @@
-package com.services.group4.permission.controller;
+package com.services.group4.permission.controller.test;
 
-import com.services.group4.permission.model.CommunicationMessage;
+import com.services.group4.permission.model.communication.CommunicationMessage;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
