@@ -1,8 +1,8 @@
 package com.services.group4.permission.user;
 
-import com.services.group4.permission.mock.OwnershipFixtures;
-import com.services.group4.permission.model.Ownership;
-import com.services.group4.permission.repository.OwnershipRepository;
+import com.services.group4.permission.mock.ReaderFixtures;
+import com.services.group4.permission.model.Reader;
+import com.services.group4.permission.repository.ReaderRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,80 +16,81 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles(value = "test")
 @AutoConfigureWebTestClient
-public class OwnershipRequestE2ETests {
+public class ReaderRequestE2ETests {
 
   @Autowired
   private WebTestClient client;
 
   @Autowired
-  private OwnershipRepository ownershipRepository;
+  private ReaderRepository readerRepository;
 
-  private final String BASE = "/ownership";
+  private final String BASE = "/reader";
 
   @BeforeEach
   public void setup() {
-    ownershipRepository.saveAll(OwnershipFixtures.all());
+    readerRepository.saveAll(ReaderFixtures.all());
   }
 
   @Test
-  public void canGetAllOwnership() {
+  public void canGetAllReader() {
     client.get().uri(BASE)
         .exchange()
         .expectStatus().isOk()
-        .expectBodyList(Ownership.class)
+        .expectBodyList(Reader.class)
         .hasSize(3);
   }
 
   @Test
-  public void canGetOwnershipByUserId() {
+  public void canGetReaderByUserId() {
     client.get().uri(BASE + "/user/1")
         .exchange()
         .expectStatus().isOk()
-        .expectBody(Ownership.class)
-        .value(ownership -> assertEquals(1L, ownership.getUserId()))
+        .expectBody(Reader.class)
+        .value(reader -> assertEquals(1L, reader.getUserId()))
         ;
   }
 
   @Test
-  public void canGetOwnershipBySnippetId() {
+  public void canGetReaderBySnippetId() {
     client.get().uri(BASE + "/snippet/1")
         .exchange()
         .expectStatus().isOk()
-        .expectBody(Ownership.class)
-        .value(ownership -> assertEquals(1L, ownership.getSnippetId()))
+        .expectBody(Reader.class)
+        .value(reader -> assertEquals(1L, reader.getSnippetId()))
     ;
   }
 
   @Test
-  public void canCreateOwnership() {
-    Ownership newOwnerships = new Ownership(4L,4L);
+  public void canCreateReader() {
+    Reader reader = new Reader(4L,4L);
     client.post().uri(BASE + "/create")
-        .bodyValue(newOwnerships)
+        .bodyValue(reader)
         .exchange()
         .expectStatus().isCreated();
 
-    List<Ownership> ownerships = ownershipRepository.findAll();
-    assertEquals(4, ownerships.size());
+    List<Reader> readers = readerRepository.findAll();
+    assertEquals(4, readers.size());
   }
 
   @Test
-  public void canDeleteOwnership() {
+  public void canDeleteReader() {
     client.delete().uri(BASE + "/delete/1")
         .exchange()
         .expectStatus().isOk();
 
-    Ownership ownerships = ownershipRepository.findById(1L).orElse(null);
-    assertNull(ownerships);
+    Reader reader = readerRepository.findById(1L).orElse(null);
+    assertNull(reader);
   }
 
   @AfterEach
   public void tearDown() {
-    ownershipRepository.deleteAll();
+    readerRepository.deleteAll();
   }
 }
