@@ -3,10 +3,10 @@ package com.services.group4.permission.model;
 import jakarta.persistence.*;
 
 @Entity
-public class Ownership {
+public class Reader {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long ownershipID;
+  private Long readerID;
 
   @Column(nullable = false)
   private Long userId;
@@ -15,12 +15,12 @@ public class Ownership {
   private Long snippetId;
 
   // Added for testing purposes
-  public Ownership(Long userId, Long snippetId) {
+  public Reader(Long userId, Long snippetId) {
     this.userId = userId;
     this.snippetId = snippetId;
   }
 
-  public Ownership() {
+  public Reader() {
   }
 
   public Long getUserId() {
@@ -31,7 +31,7 @@ public class Ownership {
     return snippetId;
   }
 
-  public Long getOwnershipID() {
-    return ownershipID;
+  public Long getReaderID() {
+    return readerID;
   }
 }

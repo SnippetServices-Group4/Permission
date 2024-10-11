@@ -21,8 +21,9 @@ ext {
 	set('springCloudVersion', "2023.0.3")
 }
 
+// For testing purposes with a MockList
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
 }
 
 dependencies {

@@ -48,7 +48,9 @@ public class UserRequestE2ETests {
 
   @Test
   public void canGetUserById() {
-    client.get().uri(BASE + "/1")
+    Long userId = userRepository.findByUsername("John Doe").orElseThrow().getUserID();
+    System.out.println(userId);
+    client.get().uri(BASE + "/{userId}", userId)
         .exchange()
         .expectStatus().isOk()
         .expectBody(SnippetUser.class)
