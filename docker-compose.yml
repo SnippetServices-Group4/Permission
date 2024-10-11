@@ -2,28 +2,29 @@ version: '3.8'
 
 services:
   api:
-    container_name: "permission-api"
+    container_name: ${SPRING_APPLICATION_NAME}
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8081:8080"
+      - ${SPRING_PORT}:${SPRING_PORT}
     environment:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: permission-db
-      DB_HOST: postgres_db
-      DB_PORT: 5432
+      DB_NAME: ${DB_NAME}
+      DB_HOST: ${DB_HOST}
+      SPRING_PORT: ${SPRING_PORT}
+      SPRING_APPLICATION_NAME: ${SPRING_APPLICATION_NAME}
 
   postgres:
-    container_name: "postgres_permission"
+    container_name: ${DB_HOST}
     image: postgres:13
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: compose-db
+      POSTGRES_DB: ${DB_NAME}
     ports:
-      - "5433:5432"
+      - ${DB_PORT}:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
 

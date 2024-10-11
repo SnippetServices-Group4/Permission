@@ -1,42 +1,36 @@
 package com.services.group4.permission.model;
 
-import com.services.group4.permission.dto.SnippetDTO;
 import jakarta.persistence.*;
 
 @Entity
 public class Ownership {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long OwnershipID;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private SnippetUser user;
+  @Column(nullable = false)
+  private Long userId;
 
-    @Transient
-    private SnippetDTO snippet;
+  @Column(nullable = false, unique = true)
+  private Long snippetId;
 
-    public Long getId() {
-        return id;
-    }
+  public Ownership(Long userId, Long snippetId) {
+      this.userId = userId;
+      this.snippetId = snippetId;
+  }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public Ownership() {
+  }
 
-    public SnippetUser getUser() {
-        return user;
-    }
+  public Long getId() {
+    return OwnershipID;
+  }
 
-    public void setUser(SnippetUser user) {
-        this.user = user;
-    }
+  public Long getUserId() {
+    return userId;
+  }
 
-    public SnippetDTO getSnippet() {
-        return snippet;
-    }
-
-    public void setSnippet(SnippetDTO snippet) {
-        this.snippet = snippet;
-    }
+  public Long getSnippetId() {
+    return snippetId;
+  }
 }
