@@ -20,8 +20,7 @@ public class Ownership {
     this.snippetId = snippetId;
   }
 
-  public Ownership() {
-  }
+  public Ownership() {}
 
   public Long getUserId() {
     return userId;

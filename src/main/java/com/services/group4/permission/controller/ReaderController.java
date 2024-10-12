@@ -2,11 +2,10 @@ package com.services.group4.permission.controller;
 
 import com.services.group4.permission.model.Reader;
 import com.services.group4.permission.repository.ReaderRepository;
+import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/reader")
@@ -18,7 +17,6 @@ public class ReaderController {
     this.readerRepository = readerRepository;
   }
 
-
   @PostMapping("/create")
   public ResponseEntity<String> addReader(@RequestBody Reader reader) {
     try {
@@ -26,29 +24,32 @@ public class ReaderController {
       return new ResponseEntity<>("Reader created", HttpStatus.CREATED);
     } catch (Exception e) {
       System.out.println(e.getMessage());
-      return new ResponseEntity<>("Something went wrong creating the Reader",
-              HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(
+          "Something went wrong creating the Reader", HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   @GetMapping("/user/{id}")
   public ResponseEntity<Reader> getReaderByUserId(@PathVariable Long id) {
     Optional<Reader> reader = readerRepository.findReaderByUserId(id);
-    return reader.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    return reader
+        .map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
   @GetMapping("/snippet/{id}")
   public ResponseEntity<Reader> getReaderBySnippetId(@PathVariable Long id) {
     Optional<Reader> reader = readerRepository.findReaderBySnippetId(id);
-    return reader.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+    return reader
+        .map(value -> new ResponseEntity<>(value, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
   @GetMapping("/{id}")
   public ResponseEntity<Reader> getReaderById(@PathVariable Long id) {
     Optional<Reader> reader = readerRepository.findById(id);
-    return reader.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+    return reader
+        .map(value -> new ResponseEntity<>(value, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
@@ -57,7 +58,7 @@ public class ReaderController {
     return new ResponseEntity<>(readerRepository.findAll(), HttpStatus.OK);
   }
 
-  //delete
+  // delete
   @DeleteMapping("/delete/{id}")
   public ResponseEntity<String> deleteReader(@PathVariable Long id) {
     try {
@@ -65,8 +66,8 @@ public class ReaderController {
       return new ResponseEntity<>("Reader deleted", HttpStatus.OK);
     } catch (Exception e) {
       System.out.println(e.getMessage());
-      return new ResponseEntity<>("Something went wrong deleting the Reader",
-              HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(
+          "Something went wrong deleting the Reader", HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

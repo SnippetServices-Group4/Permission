@@ -2,12 +2,10 @@ package com.services.group4.permission.controller;
 
 import com.services.group4.permission.model.Ownership;
 import com.services.group4.permission.repository.OwnershipRepository;
-
+import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/ownership")
@@ -19,7 +17,6 @@ public class OwnershipController {
     this.ownershipRepository = ownershipRepository;
   }
 
-
   @PostMapping("/create")
   public ResponseEntity<String> addOwnership(@RequestBody Ownership ownership) {
     try {
@@ -27,29 +24,32 @@ public class OwnershipController {
       return new ResponseEntity<>("Ownership created", HttpStatus.CREATED);
     } catch (Exception e) {
       System.out.println(e.getMessage());
-      return new ResponseEntity<>("Something went wrong creating the ownership",
-              HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(
+          "Something went wrong creating the ownership", HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   @GetMapping("/user/{id}")
   public ResponseEntity<Ownership> getOwnershipByUserId(@PathVariable Long id) {
     Optional<Ownership> ownership = ownershipRepository.findOwnershipByUserId(id);
-    return ownership.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    return ownership
+        .map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
   @GetMapping("/snippet/{id}")
   public ResponseEntity<Ownership> getOwnershipBySnippetId(@PathVariable Long id) {
     Optional<Ownership> ownership = ownershipRepository.findOwnershipBySnippetId(id);
-    return ownership.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+    return ownership
+        .map(value -> new ResponseEntity<>(value, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
   @GetMapping("/{id}")
   public ResponseEntity<Ownership> getOwnershipById(@PathVariable Long id) {
     Optional<Ownership> ownership = ownershipRepository.findById(id);
-    return ownership.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+    return ownership
+        .map(value -> new ResponseEntity<>(value, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
@@ -58,7 +58,7 @@ public class OwnershipController {
     return new ResponseEntity<>(ownershipRepository.findAll(), HttpStatus.OK);
   }
 
-  //delete
+  // delete
   @DeleteMapping("/delete/{id}")
   public ResponseEntity<String> deleteOwnership(@PathVariable Long id) {
     try {
@@ -66,8 +66,8 @@ public class OwnershipController {
       return new ResponseEntity<>("Ownership deleted", HttpStatus.OK);
     } catch (Exception e) {
       System.out.println(e.getMessage());
-      return new ResponseEntity<>("Something went wrong deleting the ownership",
-              HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(
+          "Something went wrong deleting the ownership", HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

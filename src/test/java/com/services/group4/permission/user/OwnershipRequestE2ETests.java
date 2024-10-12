@@ -1,8 +1,11 @@
 package com.services.group4.permission.user;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.services.group4.permission.mock.OwnershipFixtures;
 import com.services.group4.permission.model.Ownership;
 import com.services.group4.permission.repository.OwnershipRepository;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,21 +17,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles(value = "test")
 @AutoConfigureWebTestClient
 public class OwnershipRequestE2ETests {
 
-  @Autowired
-  private WebTestClient client;
+  @Autowired private WebTestClient client;
 
-  @Autowired
-  private OwnershipRepository ownershipRepository;
+  @Autowired private OwnershipRepository ownershipRepository;
 
   private final String BASE = "/ownership";
 
@@ -39,40 +36,50 @@ public class OwnershipRequestE2ETests {
 
   @Test
   public void canGetAllOwnership() {
-    client.get().uri(BASE)
+    client
+        .get()
+        .uri(BASE)
         .exchange()
-        .expectStatus().isOk()
+        .expectStatus()
+        .isOk()
         .expectBodyList(Ownership.class)
         .hasSize(3);
   }
 
   @Test
   public void canGetOwnershipByUserId() {
-    client.get().uri(BASE + "/user/1")
+    client
+        .get()
+        .uri(BASE + "/user/1")
         .exchange()
-        .expectStatus().isOk()
+        .expectStatus()
+        .isOk()
         .expectBody(Ownership.class)
-        .value(ownership -> assertEquals(1L, ownership.getUserId()))
-        ;
+        .value(ownership -> assertEquals(1L, ownership.getUserId()));
   }
 
   @Test
   public void canGetOwnershipBySnippetId() {
-    client.get().uri(BASE + "/snippet/1")
+    client
+        .get()
+        .uri(BASE + "/snippet/1")
         .exchange()
-        .expectStatus().isOk()
+        .expectStatus()
+        .isOk()
         .expectBody(Ownership.class)
-        .value(ownership -> assertEquals(1L, ownership.getSnippetId()))
-    ;
+        .value(ownership -> assertEquals(1L, ownership.getSnippetId()));
   }
 
   @Test
   public void canCreateOwnership() {
-    Ownership newOwnerships = new Ownership(4L,4L);
-    client.post().uri(BASE + "/create")
+    Ownership newOwnerships = new Ownership(4L, 4L);
+    client
+        .post()
+        .uri(BASE + "/create")
         .bodyValue(newOwnerships)
         .exchange()
-        .expectStatus().isCreated();
+        .expectStatus()
+        .isCreated();
 
     List<Ownership> ownerships = ownershipRepository.findAll();
     assertEquals(4, ownerships.size());
@@ -80,9 +87,7 @@ public class OwnershipRequestE2ETests {
 
   @Test
   public void canDeleteOwnership() {
-    client.delete().uri(BASE + "/delete/1")
-        .exchange()
-        .expectStatus().isOk();
+    client.delete().uri(BASE + "/delete/1").exchange().expectStatus().isOk();
 
     Ownership ownerships = ownershipRepository.findById(1L).orElse(null);
     assertNull(ownerships);
