@@ -1,4 +1,4 @@
-name: "Continuous Deployment"
+name: "Continuous Deployment - dev"
 on:
   pull_request:
     types: [closed]
@@ -34,3 +34,6 @@ jobs:
           push: true
           tags: |
             ghcr.io/snippetservices-group4/permissions-dev:latest
+          build-args: |
+            GRAD_USER=${{ secrets.GRAD_USER }}
+            GRAD_PASS=${{ secrets.GRAD_PASS }}
