@@ -23,6 +23,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @AutoConfigureWebTestClient
 public class UserRequestE2ETests {
 
+
   @Autowired private WebTestClient client;
 
   @Autowired private UserRepository userRepository;
