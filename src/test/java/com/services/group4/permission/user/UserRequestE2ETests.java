@@ -1,9 +1,14 @@
 package com.services.group4.permission.user;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.services.group4.permission.DotenvConfig;
 import com.services.group4.permission.mock.UserFixtures;
 import com.services.group4.permission.model.SnippetUser;
 import com.services.group4.permission.repository.UserRepository;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,21 +19,19 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles(value = "test")
 @AutoConfigureWebTestClient
 public class UserRequestE2ETests {
+  @BeforeAll
+  public static void setupEnv() {
+    DotenvConfig.loadEnv();
+  }
 
-  @Autowired
-  private WebTestClient client;
+  @Autowired private WebTestClient client;
 
-  @Autowired
-  private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
   private final String BASE = "/user";
 
@@ -39,9 +42,12 @@ public class UserRequestE2ETests {
 
   @Test
   public void canGetAllUsers() {
-    client.get().uri(BASE)
+    client
+        .get()
+        .uri(BASE)
         .exchange()
-        .expectStatus().isOk()
+        .expectStatus()
+        .isOk()
         .expectBodyList(SnippetUser.class)
         .hasSize(3);
   }
@@ -50,9 +56,12 @@ public class UserRequestE2ETests {
   public void canGetUserById() {
     Long userId = userRepository.findByUsername("John Doe").orElseThrow().getUserID();
     System.out.println(userId);
-    client.get().uri(BASE + "/{userId}", userId)
+    client
+        .get()
+        .uri(BASE + "/{userId}", userId)
         .exchange()
-        .expectStatus().isOk()
+        .expectStatus()
+        .isOk()
         .expectBody(SnippetUser.class)
         .value(user -> assertEquals("John Doe", user.getUsername()));
   }
@@ -60,10 +69,7 @@ public class UserRequestE2ETests {
   @Test
   public void canCreateUser() {
     SnippetUser newUser = new SnippetUser("new_user", "new_password", "new.user@example.com");
-    client.post().uri(BASE + "/register")
-        .bodyValue(newUser)
-        .exchange()
-        .expectStatus().isCreated();
+    client.post().uri(BASE + "/register").bodyValue(newUser).exchange().expectStatus().isCreated();
 
     List<SnippetUser> users = userRepository.findAll();
     assertEquals(4, users.size());
@@ -71,11 +77,9 @@ public class UserRequestE2ETests {
 
   @Test
   public void canUpdateUser() {
-    SnippetUser updatedUser = new SnippetUser("updated_user", "updated_password", "updated.user@example.com");
-    client.put().uri(BASE + "/update/1")
-        .bodyValue(updatedUser)
-        .exchange()
-        .expectStatus().isOk();
+    SnippetUser updatedUser =
+        new SnippetUser("updated_user", "updated_password", "updated.user@example.com");
+    client.put().uri(BASE + "/update/1").bodyValue(updatedUser).exchange().expectStatus().isOk();
 
     SnippetUser user = userRepository.findById(1L).orElse(null);
     assertNotNull(user);
@@ -84,9 +88,7 @@ public class UserRequestE2ETests {
 
   @Test
   public void canDeleteUser() {
-    client.delete().uri(BASE + "/delete/1")
-        .exchange()
-        .expectStatus().isOk();
+    client.delete().uri(BASE + "/delete/1").exchange().expectStatus().isOk();
 
     SnippetUser user = userRepository.findById(1L).orElse(null);
     assertNull(user);

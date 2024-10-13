@@ -20,8 +20,7 @@ public class Reader {
     this.snippetId = snippetId;
   }
 
-  public Reader() {
-  }
+  public Reader() {}
 
   public Long getUserId() {
     return userId;
