@@ -3,11 +3,13 @@ package com.services.group4.permission.user;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import com.services.group4.permission.DotenvConfig;
 import com.services.group4.permission.mock.ReaderFixtures;
 import com.services.group4.permission.model.Reader;
 import com.services.group4.permission.repository.ReaderRepository;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +25,10 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @ActiveProfiles(value = "test")
 @AutoConfigureWebTestClient
 public class ReaderRequestE2ETests {
+  @BeforeAll
+  public static void setupEnv() {
+    DotenvConfig.loadEnv();
+  }
 
   @Autowired private WebTestClient client;
 

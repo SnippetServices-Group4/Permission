@@ -2,11 +2,13 @@ package com.services.group4.permission.user;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.services.group4.permission.DotenvConfig;
 import com.services.group4.permission.mock.UserFixtures;
 import com.services.group4.permission.model.SnippetUser;
 import com.services.group4.permission.repository.UserRepository;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +24,10 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @ActiveProfiles(value = "test")
 @AutoConfigureWebTestClient
 public class UserRequestE2ETests {
-
+  @BeforeAll
+  public static void setupEnv() {
+    DotenvConfig.loadEnv();
+  }
 
   @Autowired private WebTestClient client;
 
