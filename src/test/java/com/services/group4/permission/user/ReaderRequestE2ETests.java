@@ -87,6 +87,17 @@ public class ReaderRequestE2ETests {
     assertNull(reader);
   }
 
+  // Add this test to test the case when the reader is not found
+  @Test
+  public void testGetReaderByUserId_NotFound() {
+    client.get().uri(BASE + "/user/999").exchange().expectStatus().isNotFound();
+  }
+
+  @Test
+  public void testGetReaderBySnippetId_NotFound() {
+    client.get().uri(BASE + "/snippet/999").exchange().expectStatus().isNotFound();
+  }
+
   @AfterEach
   public void tearDown() {
     readerRepository.deleteAll();
