@@ -45,14 +45,6 @@ public class OwnershipController {
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<Ownership> getOwnershipById(@PathVariable Long id) {
-    Optional<Ownership> ownership = ownershipRepository.findById(id);
-    return ownership
-        .map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-  }
-
   @GetMapping
   public ResponseEntity<Iterable<Ownership>> getAllOwnerships() {
     return new ResponseEntity<>(ownershipRepository.findAll(), HttpStatus.OK);

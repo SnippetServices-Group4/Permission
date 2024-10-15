@@ -99,6 +99,18 @@ public class OwnershipRequestE2ETests {
     assertNull(ownerships);
   }
 
+  // Add a test for the case where the ownership does not exist
+
+  @Test
+  public void testGetOwnershipByUserId_NotFound() {
+    client.get().uri(BASE + "/user/999").exchange().expectStatus().isNotFound();
+  }
+
+  @Test
+  public void testGetOwnershipBySnippetId_NotFound() {
+    client.get().uri(BASE + "/snippet/999").exchange().expectStatus().isNotFound();
+  }
+
   @AfterEach
   public void tearDown() {
     ownershipRepository.deleteAll();

@@ -45,14 +45,6 @@ public class ReaderController {
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<Reader> getReaderById(@PathVariable Long id) {
-    Optional<Reader> reader = readerRepository.findById(id);
-    return reader
-        .map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-  }
-
   @GetMapping
   public ResponseEntity<Iterable<Reader>> getAllReaders() {
     return new ResponseEntity<>(readerRepository.findAll(), HttpStatus.OK);

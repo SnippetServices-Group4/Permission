@@ -76,12 +76,37 @@ public class UserRequestE2ETests {
   }
 
   @Test
+  public void canLoginUser_Success() {
+    SnippetUser loginUser = new SnippetUser(1L, "John Doe", "user1", "john.doe@example.com");
+
+    client
+        .post()
+        .uri(BASE + "/login")
+        .bodyValue(loginUser)
+        .exchange()
+        .expectStatus()
+        .isOk()
+        .expectBody(String.class)
+        .isEqualTo("Login successful");
+  }
+
+  @Test
   public void canUpdateUser() {
+    Long userId = userRepository.findByUsername("John Doe").orElseThrow().getUserID();
+    System.out.println(userId);
+
     SnippetUser updatedUser =
         new SnippetUser("updated_user", "updated_password", "updated.user@example.com");
-    client.put().uri(BASE + "/update/1").bodyValue(updatedUser).exchange().expectStatus().isOk();
+    client
+        .put()
+        .uri(BASE + "/update/{userId}", userId)
+        .bodyValue(updatedUser)
+        .exchange()
+        .expectStatus()
+        .isOk();
 
-    SnippetUser user = userRepository.findById(1L).orElse(null);
+    SnippetUser user = userRepository.findById(userId).orElse(null);
+    System.out.println("user updated: " + user);
     assertNotNull(user);
     assertEquals("updated_user", user.getUsername());
   }
@@ -92,6 +117,26 @@ public class UserRequestE2ETests {
 
     SnippetUser user = userRepository.findById(1L).orElse(null);
     assertNull(user);
+  }
+
+  // Add this test to test the case when the user is not found
+  @Test
+  public void testGetReaderByUserId_NotFound() {
+    client.get().uri(BASE + "/user/999").exchange().expectStatus().isNotFound();
+  }
+
+  @Test
+  public void canLoginUser_Failure() {
+    SnippetUser loginUser = new SnippetUser("John Doe", "wrong_password", null);
+    client
+        .post()
+        .uri(BASE + "/login")
+        .bodyValue(loginUser)
+        .exchange()
+        .expectStatus()
+        .isUnauthorized()
+        .expectBody(String.class)
+        .isEqualTo("Invalid username or password");
   }
 
   @AfterEach
