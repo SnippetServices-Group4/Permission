@@ -15,7 +15,7 @@ public class OwnershipService {
   @Autowired private RestTemplate restTemplate;
 
   @Autowired private OwnershipRepository ownershipRepository;
-
+/*
   public ResponseEntity<Ownership> createSnippetAndOwnership(
       Long userId, Map<String, Object> snippetData) {
     try {
@@ -40,5 +40,5 @@ public class OwnershipService {
       System.out.println(e.getMessage());
       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-  }
+  }*/
 }
