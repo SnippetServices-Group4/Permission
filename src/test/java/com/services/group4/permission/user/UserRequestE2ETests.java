@@ -82,7 +82,13 @@ public class UserRequestE2ETests {
 
     SnippetUser updatedUser =
         new SnippetUser("updated_user", "updated_password", "updated.user@example.com");
-    client.put().uri(BASE + "/update/{userId}", userId).bodyValue(updatedUser).exchange().expectStatus().isOk();
+    client
+        .put()
+        .uri(BASE + "/update/{userId}", userId)
+        .bodyValue(updatedUser)
+        .exchange()
+        .expectStatus()
+        .isOk();
 
     SnippetUser user = userRepository.findById(userId).orElse(null);
     System.out.println("user updated: " + user);

@@ -1,11 +1,7 @@
 package com.services.group4.permission.service;
 
-import com.services.group4.permission.model.Ownership;
 import com.services.group4.permission.repository.OwnershipRepository;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,7 +11,7 @@ public class OwnershipService {
   @Autowired private RestTemplate restTemplate;
 
   @Autowired private OwnershipRepository ownershipRepository;
-/*
+  /*
   public ResponseEntity<Ownership> createSnippetAndOwnership(
       Long userId, Map<String, Object> snippetData) {
     try {
