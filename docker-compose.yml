@@ -13,6 +13,9 @@ services:
       DB_NAME: "${DB_NAME}"
       DB_USER: "${DB_USER}"
       DB_PASSWORD: "${DB_PASSWORD}"
+      SECRET_KEY: "${SECRET_KEY}"
+      AUTH_ISSUER: "${AUTH_ISSUER}"
+      AUTH_AUDIENCE: "${AUTH_AUDIENCE}"
     ports:
       - ${SPRING_PORT}:${SPRING_PORT}
 

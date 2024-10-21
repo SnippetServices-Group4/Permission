@@ -12,6 +12,11 @@ public class TestController {
     return "pong";
   }
 
+  @GetMapping("/pong")
+  public String pang() {
+    return "ping";
+  }
+
   @GetMapping("/parser/communication")
   public CommunicationMessage testParserCommunication() {
     return new CommunicationMessage("Permission", "Communication from Parser to Permission works!");
