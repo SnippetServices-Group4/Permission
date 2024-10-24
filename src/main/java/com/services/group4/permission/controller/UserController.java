@@ -79,4 +79,10 @@ public class UserController {
           "Something went wrong deleting the user", HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  @GetMapping("/search")
+  public ResponseEntity<List<SnippetUser>> searchUsers(@RequestParam String username) {
+    List<SnippetUser> users = userRepository.findByUsernameContaining(username);
+    return new ResponseEntity<>(users, HttpStatus.OK);
+  }
 }

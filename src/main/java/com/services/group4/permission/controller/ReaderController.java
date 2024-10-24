@@ -3,6 +3,8 @@ package com.services.group4.permission.controller;
 import com.services.group4.permission.model.Reader;
 import com.services.group4.permission.repository.ReaderRepository;
 import java.util.Optional;
+
+import com.services.group4.permission.service.ReaderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class ReaderController {
 
   private final ReaderRepository readerRepository;
+  private ReaderService readerService;
 
   public ReaderController(ReaderRepository readerRepository) {
     this.readerRepository = readerRepository;
@@ -61,5 +64,10 @@ public class ReaderController {
       return new ResponseEntity<>(
           "Something went wrong deleting the Reader", HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  @PostMapping("/share")
+  public ResponseEntity<String> shareSnippet(@RequestParam Long ownerId, @RequestParam Long snippetId, @RequestParam Long targetUserId) {
+    return readerService.shareSnippet(ownerId, snippetId, targetUserId);
   }
 }

@@ -8,4 +8,6 @@ public interface OwnershipRepository extends JpaRepository<Ownership, Long> {
   Optional<Ownership> findOwnershipByUserId(Long userId);
 
   Optional<Ownership> findOwnershipBySnippetId(Long snippetId);
+
+  Optional<Ownership> findOwnershipByUserIdAndSnippetId(Long userId, Long snippetId);
 }
