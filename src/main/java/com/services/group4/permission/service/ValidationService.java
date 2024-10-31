@@ -7,8 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ValidationService {
 
-  @Autowired
-  private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
   public boolean isUserIdValid(Long userId) {
     return userRepository.existsById(userId);

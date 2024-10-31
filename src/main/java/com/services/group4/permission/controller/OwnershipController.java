@@ -2,7 +2,6 @@ package com.services.group4.permission.controller;
 
 import com.services.group4.permission.model.Ownership;
 import com.services.group4.permission.repository.OwnershipRepository;
-
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;

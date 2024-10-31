@@ -2,9 +2,8 @@ package com.services.group4.permission.controller;
 
 import com.services.group4.permission.model.Reader;
 import com.services.group4.permission.repository.ReaderRepository;
-import java.util.Optional;
-
 import com.services.group4.permission.service.ReaderService;
+import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -67,7 +66,8 @@ public class ReaderController {
   }
 
   @PostMapping("/share")
-  public ResponseEntity<String> shareSnippet(@RequestParam Long ownerId, @RequestParam Long snippetId, @RequestParam Long targetUserId) {
+  public ResponseEntity<String> shareSnippet(
+      @RequestParam Long ownerId, @RequestParam Long snippetId, @RequestParam Long targetUserId) {
     return readerService.shareSnippet(ownerId, snippetId, targetUserId);
   }
 }
