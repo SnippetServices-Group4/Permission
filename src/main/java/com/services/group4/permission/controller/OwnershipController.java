@@ -2,6 +2,8 @@ package com.services.group4.permission.controller;
 
 import com.services.group4.permission.model.Ownership;
 import com.services.group4.permission.repository.OwnershipRepository;
+
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,6 +62,22 @@ public class OwnershipController {
       System.out.println(e.getMessage());
       return new ResponseEntity<>(
           "Something went wrong deleting the ownership", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @PostMapping("/created")
+  public ResponseEntity<String> createOwnership(@RequestBody Map<String, Object> requestData) {
+    try {
+      Long userId = ((Integer) requestData.get("userId")).longValue();
+      Long snippetId = ((Integer) requestData.get("snippetId")).longValue();
+      Ownership ownership = new Ownership(userId, snippetId);
+
+      ownershipRepository.save(ownership);
+      return new ResponseEntity<>("Ownership created", HttpStatus.CREATED);
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return new ResponseEntity<>(
+          "Something went wrong creating the ownership", HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }
