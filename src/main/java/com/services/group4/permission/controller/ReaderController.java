@@ -3,6 +3,8 @@ package com.services.group4.permission.controller;
 import com.services.group4.permission.model.Reader;
 import com.services.group4.permission.repository.ReaderRepository;
 import com.services.group4.permission.service.ReaderService;
+
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -70,4 +72,23 @@ public class ReaderController {
       @RequestParam Long ownerId, @RequestParam Long snippetId, @RequestParam Long targetUserId) {
     return readerService.shareSnippet(ownerId, snippetId, targetUserId);
   }
+
+
+  @GetMapping("/getPermission")
+  public ResponseEntity<Boolean> getReaderPermission(@RequestBody Map<String, Object> requestData) {
+    Long userId = ((Integer) requestData.get("userId")).longValue();
+    Long snippetId = ((Integer) requestData.get("snippetId")).longValue();
+    ResponseEntity<String> response = readerService.getReaderPermission(userId, snippetId);
+    try {
+      if (response.getStatusCode() == HttpStatus.OK) {
+        return new ResponseEntity<>(true, HttpStatus.OK);
+      }
+      return new ResponseEntity<>(false, response.getStatusCode());
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+
 }

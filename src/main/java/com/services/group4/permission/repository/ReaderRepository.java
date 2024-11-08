@@ -8,4 +8,6 @@ public interface ReaderRepository extends JpaRepository<Reader, Long> {
   Optional<Reader> findReaderByUserId(Long userId);
 
   Optional<Reader> findReaderBySnippetId(Long snippetId);
+
+  Optional<Object> findReaderByUserIdAndSnippetId(Long userId, Long snippetId);
 }

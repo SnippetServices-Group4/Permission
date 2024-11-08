@@ -4,6 +4,8 @@ import com.services.group4.permission.model.Ownership;
 import com.services.group4.permission.repository.OwnershipRepository;
 import java.util.Map;
 import java.util.Optional;
+
+import com.services.group4.permission.service.OwnershipService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +14,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/ownership")
 public class OwnershipController {
 
+  private final OwnershipService ownershipService;
   private final OwnershipRepository ownershipRepository;
 
-  public OwnershipController(OwnershipRepository ownershipRepository) {
+  public OwnershipController(OwnershipService ownershipService, OwnershipRepository ownershipRepository) {
+    this.ownershipService = ownershipService;
     this.ownershipRepository = ownershipRepository;
   }
 
@@ -51,7 +55,6 @@ public class OwnershipController {
     return new ResponseEntity<>(ownershipRepository.findAll(), HttpStatus.OK);
   }
 
-  // delete
   @DeleteMapping("/delete/{id}")
   public ResponseEntity<String> deleteOwnership(@PathVariable Long id) {
     try {
@@ -64,19 +67,38 @@ public class OwnershipController {
     }
   }
 
+
+  // new routes
   @PostMapping("/created")
   public ResponseEntity<String> createOwnership(@RequestBody Map<String, Object> requestData) {
     try {
       Long userId = ((Integer) requestData.get("userId")).longValue();
       Long snippetId = ((Integer) requestData.get("snippetId")).longValue();
-      Ownership ownership = new Ownership(userId, snippetId);
-
-      ownershipRepository.save(ownership);
-      return new ResponseEntity<>("Ownership created", HttpStatus.CREATED);
+      return ownershipService.createOwnership(userId, snippetId);
     } catch (Exception e) {
       System.out.println(e.getMessage());
       return new ResponseEntity<>(
           "Something went wrong creating the ownership", HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  @GetMapping("/getPermission")
+  public ResponseEntity<Boolean> getOwnershipPermission(@RequestBody Map<String, Object> requestData) {
+      Long userId = ((Integer) requestData.get("userId")).longValue();
+      Long snippetId = ((Integer) requestData.get("snippetId")).longValue();
+      ResponseEntity<String> response = ownershipService.getOwnershipPermission(userId, snippetId);
+      try {
+        if (response.getStatusCode() == HttpStatus.OK) {
+          return new ResponseEntity<>(true, HttpStatus.OK);
+        } else {
+          return new ResponseEntity<>(false, response.getStatusCode());
+        }
+      } catch (Exception e) {
+        System.out.println(e.getMessage());
+        return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+
+  }
+
+
 }
