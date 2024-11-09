@@ -1,40 +1,48 @@
 package com.services.group4.permission.service;
 
+import com.services.group4.permission.model.Ownership;
 import com.services.group4.permission.repository.OwnershipRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 @Service
 public class OwnershipService {
 
-  @Autowired private RestTemplate restTemplate;
+  private final OwnershipRepository ownershipRepository;
+  private final ValidationService validationService;
 
-  @Autowired private OwnershipRepository ownershipRepository;
-  /*
-  public ResponseEntity<Ownership> createSnippetAndOwnership(
-      Long userId, Map<String, Object> snippetData) {
-    try {
-      // Enviar solicitud al microservicio de Snippets
-      String snippetServiceUrl = "http://snippet-service/snippets/create";
-      ResponseEntity<Map> response =
-          restTemplate.postForEntity(snippetServiceUrl, snippetData, Map.class);
+  public OwnershipService(OwnershipRepository ownershipRepository, ValidationService validationService) {
+    this.ownershipRepository = ownershipRepository;
+    this.validationService = validationService;
+  }
 
-      // Verificar si la creación del snippet fue exitosa
-      if (response.getStatusCode() == HttpStatus.CREATED) {
-        Map<String, Object> createdSnippet = response.getBody();
-        if (createdSnippet != null && createdSnippet.containsKey("snippetID")) {
-          // Crear y guardar el ownership
-          Long snippetId = ((Number) createdSnippet.get("snippetID")).longValue();
-          Ownership ownership = new Ownership(userId, snippetId);
-          ownershipRepository.save(ownership);
-          return new ResponseEntity<>(ownership, HttpStatus.CREATED);
-        }
-      }
-      return new ResponseEntity<>(null, response.getStatusCode());
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+  public ResponseEntity<String> createOwnership(Long userId, Long snippetId) {
+    if (!validationService.isUserIdValid(userId)) {
+      return new ResponseEntity<>("User isn't valid, it doesn't exists", HttpStatus.BAD_REQUEST);
     }
-  }*/
+    Ownership ownership = new Ownership(userId, snippetId);
+    ownershipRepository.save(ownership);
+    return new ResponseEntity<>("Ownership created", HttpStatus.CREATED);
+  }
+
+  public boolean isOwner(Long userId, Long snippetId) {
+    return ownershipRepository.findOwnershipByUserIdAndSnippetId(userId, snippetId).isPresent();
+  }
+
+  public ResponseEntity<String> getOwnershipPermission(Long userId, Long snippetId) {
+    if (!validationService.isUserIdValid(userId)) {
+      return new ResponseEntity<>("User isn't valid, it doesn't exists", HttpStatus.BAD_REQUEST);
+    }
+    if (isOwner(userId, snippetId)) {
+      return new ResponseEntity<>("User is the owner of the snippet", HttpStatus.OK);
+    }
+    return new ResponseEntity<>("User is not the owner of the snippet", HttpStatus.FORBIDDEN);
+  }
+
+  public List<Long> findSnippetIdsByUserId(Long userId) {
+    return ownershipRepository.findSnippetIdsByUserId(userId);
+  }
 }

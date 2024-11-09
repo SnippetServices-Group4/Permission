@@ -2,6 +2,10 @@ package com.services.group4.permission.controller;
 
 import com.services.group4.permission.model.Reader;
 import com.services.group4.permission.repository.ReaderRepository;
+import com.services.group4.permission.service.ReaderService;
+
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +16,11 @@ import org.springframework.web.bind.annotation.*;
 public class ReaderController {
 
   private final ReaderRepository readerRepository;
+  private final ReaderService readerService;
 
-  public ReaderController(ReaderRepository readerRepository) {
+  public ReaderController(ReaderRepository readerRepository, ReaderService readerService) {
     this.readerRepository = readerRepository;
+    this.readerService = readerService;
   }
 
   @PostMapping("/create")
@@ -61,5 +67,39 @@ public class ReaderController {
       return new ResponseEntity<>(
           "Something went wrong deleting the Reader", HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+
+  // new routes for snippet-service
+  // reader/share funciona por postman
+  @PostMapping("/share")
+  public ResponseEntity<String> shareSnippet(@RequestBody Map<String, Object> requestData) {
+    Long ownerId = ((Integer) requestData.get("ownerId")).longValue();
+    Long snippetId = ((Integer) requestData.get("snippetId")).longValue();
+    Long targetUserId = ((Integer) requestData.get("targetUserId")).longValue();
+
+    return readerService.shareSnippet(ownerId, snippetId, targetUserId);
+  }
+
+  // reader/getPermission funciona por postman
+  @GetMapping("/getPermission")
+  public ResponseEntity<Boolean> getReaderPermission(@RequestBody Map<String, Object> requestData) {
+    Long userId = ((Integer) requestData.get("userId")).longValue();
+    Long snippetId = ((Integer) requestData.get("snippetId")).longValue();
+    ResponseEntity<String> response = readerService.getReaderPermission(userId, snippetId);
+    try {
+      if (response.getStatusCode() == HttpStatus.OK) {
+        return new ResponseEntity<>(true, HttpStatus.OK);
+      }
+      return new ResponseEntity<>(false, response.getStatusCode());
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @GetMapping("/getAllowedSnippets")
+  public ResponseEntity<List<Long>> getAllowedSnippets(@RequestBody Long userId) {
+    return readerService.getAllowedSnippets(userId);
   }
 }
