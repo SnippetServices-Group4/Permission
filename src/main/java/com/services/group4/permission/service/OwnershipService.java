@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OwnershipService {
@@ -32,7 +33,7 @@ public class OwnershipService {
     return ownershipRepository.findOwnershipByUserIdAndSnippetId(userId, snippetId).isPresent();
   }
 
-  public ResponseEntity<String> getOwnershipPermission(Long userId, Long snippetId) {
+  public ResponseEntity<String> hasOwnerPermission(Long userId, Long snippetId) {
     if (!validationService.isUserIdValid(userId)) {
       return new ResponseEntity<>("User isn't valid, it doesn't exists", HttpStatus.BAD_REQUEST);
     }
@@ -42,7 +43,7 @@ public class OwnershipService {
     return new ResponseEntity<>("User is not the owner of the snippet", HttpStatus.FORBIDDEN);
   }
 
-  public List<Long> findSnippetIdsByUserId(Long userId) {
+  public Optional<List<Long>> findSnippetIdsByUserId(Long userId) {
     return ownershipRepository.findSnippetIdsByUserId(userId);
   }
 }

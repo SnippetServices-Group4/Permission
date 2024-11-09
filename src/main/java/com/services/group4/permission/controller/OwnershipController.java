@@ -84,11 +84,10 @@ public class OwnershipController {
   }
 
   // ownership/getPermission funciona por postman
-  @GetMapping("/getPermission")
-  public ResponseEntity<Boolean> getOwnershipPermission(@RequestBody Map<String, Object> requestData) {
-      Long userId = ((Integer) requestData.get("userId")).longValue();
-      Long snippetId = ((Integer) requestData.get("snippetId")).longValue();
-      ResponseEntity<String> response = ownershipService.getOwnershipPermission(userId, snippetId);
+  @GetMapping("/permission/{userId}/for/{snippetId}")
+  public ResponseEntity<Boolean> hasOwnerPermission(
+      @PathVariable Long userId, @PathVariable Long snippetId) {
+      ResponseEntity<String> response = ownershipService.hasOwnerPermission(userId, snippetId);
       try {
         if (response.getStatusCode() == HttpStatus.OK) {
           return new ResponseEntity<>(true, HttpStatus.OK);

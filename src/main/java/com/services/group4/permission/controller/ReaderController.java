@@ -82,10 +82,9 @@ public class ReaderController {
   }
 
   // reader/getPermission funciona por postman
-  @GetMapping("/getPermission")
-  public ResponseEntity<Boolean> getReaderPermission(@RequestBody Map<String, Object> requestData) {
-    Long userId = ((Integer) requestData.get("userId")).longValue();
-    Long snippetId = ((Integer) requestData.get("snippetId")).longValue();
+  @GetMapping("/permission/{userId}/for/{snippetId}")
+  public ResponseEntity<Boolean> hasReaderPermission(
+      @PathVariable Long userId, @PathVariable Long snippetId) {
     ResponseEntity<String> response = readerService.getReaderPermission(userId, snippetId);
     try {
       if (response.getStatusCode() == HttpStatus.OK) {
@@ -98,8 +97,8 @@ public class ReaderController {
     }
   }
 
-  @GetMapping("/getAllowedSnippets")
-  public ResponseEntity<List<Long>> getAllowedSnippets(@RequestBody Long userId) {
+  @GetMapping("/allowedSnippets/{userId}")
+  public ResponseEntity<List<Long>> getAllowedSnippets(@PathVariable Long userId) {
     return readerService.getAllowedSnippets(userId);
   }
 }

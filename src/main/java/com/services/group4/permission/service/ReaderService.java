@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReaderService {
@@ -50,13 +51,21 @@ public class ReaderService {
 
   public ResponseEntity<List<Long>> getAllowedSnippets(Long userId) {
     if (!validationService.isUserIdValid(userId)) {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    List<Long> readerSnippets = readerRepository.findSnippetIdsByUserId(userId);
-    List<Long> ownerSnippets = ownershipService.findSnippetIdsByUserId(userId);
-    List<Long> allowedSnippets;
-    allowedSnippets = readerSnippets;
-    allowedSnippets.addAll(ownerSnippets);
-    return new ResponseEntity<>(allowedSnippets, HttpStatus.OK);
-  }
+
+    try {
+        Optional<List<Long>> readerSnippets = readerRepository.findSnippetIdByUserId(userId);
+        Optional<List<Long>> ownerSnippets = ownershipService.findSnippetIdsByUserId(userId);
+        List<Long> allowedSnippets = new ArrayList<>();
+
+        readerSnippets.ifPresent(allowedSnippets::addAll);
+        ownerSnippets.ifPresent(allowedSnippets::addAll);
+
+        return new ResponseEntity<>(allowedSnippets, HttpStatus.OK);
+    } catch (Exception e) {
+        System.out.println("Error: " + e.getMessage());
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
 }
