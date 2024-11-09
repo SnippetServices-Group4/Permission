@@ -68,7 +68,8 @@ public class OwnershipController {
   }
 
 
-  // new routes
+  // new routes for snippet-service
+  // ownership/created funciona por postman
   @PostMapping("/created")
   public ResponseEntity<String> createOwnership(@RequestBody Map<String, Object> requestData) {
     try {
@@ -82,6 +83,7 @@ public class OwnershipController {
     }
   }
 
+  // ownership/getPermission funciona por postman
   @GetMapping("/getPermission")
   public ResponseEntity<Boolean> getOwnershipPermission(@RequestBody Map<String, Object> requestData) {
       Long userId = ((Integer) requestData.get("userId")).longValue();

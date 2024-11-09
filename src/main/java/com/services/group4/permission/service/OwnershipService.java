@@ -9,8 +9,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class OwnershipService {
 
-  private OwnershipRepository ownershipRepository;
-  private ValidationService validationService;
+  private final OwnershipRepository ownershipRepository;
+  private final ValidationService validationService;
+
+  public OwnershipService(OwnershipRepository ownershipRepository, ValidationService validationService) {
+    this.ownershipRepository = ownershipRepository;
+    this.validationService = validationService;
+  }
 
   public ResponseEntity<String> createOwnership(Long userId, Long snippetId) {
     if (!validationService.isUserIdValid(userId)) {

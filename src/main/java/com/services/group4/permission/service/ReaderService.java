@@ -9,9 +9,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class ReaderService {
 
-  private ReaderRepository readerRepository;
-  private OwnershipService ownershipService;
-  private ValidationService validationService;
+  private final ReaderRepository readerRepository;
+  private final OwnershipService ownershipService;
+  private final ValidationService validationService;
+
+  public ReaderService(ReaderRepository readerRepository, OwnershipService ownershipService, ValidationService validationService) {
+    this.readerRepository = readerRepository;
+    this.ownershipService = ownershipService;
+    this.validationService = validationService;
+  }
 
   public ResponseEntity<String> shareSnippet(Long ownerId, Long snippetId, Long targetUserId) {
     if (!validationService.isUserIdValid(targetUserId)) {

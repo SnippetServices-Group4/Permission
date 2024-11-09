@@ -15,10 +15,11 @@ import org.springframework.web.bind.annotation.*;
 public class ReaderController {
 
   private final ReaderRepository readerRepository;
-  private ReaderService readerService;
+  private final ReaderService readerService;
 
-  public ReaderController(ReaderRepository readerRepository) {
+  public ReaderController(ReaderRepository readerRepository, ReaderService readerService) {
     this.readerRepository = readerRepository;
+    this.readerService = readerService;
   }
 
   @PostMapping("/create")
@@ -73,7 +74,8 @@ public class ReaderController {
     return readerService.shareSnippet(ownerId, snippetId, targetUserId);
   }
 
-
+  // new routes for snippet-service
+  // reader/getPermission funciona por postman
   @GetMapping("/getPermission")
   public ResponseEntity<Boolean> getReaderPermission(@RequestBody Map<String, Object> requestData) {
     Long userId = ((Integer) requestData.get("userId")).longValue();
