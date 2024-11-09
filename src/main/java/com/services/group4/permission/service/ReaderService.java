@@ -1,5 +1,6 @@
 package com.services.group4.permission.service;
 
+import com.services.group4.permission.dto.ResponseDto;
 import com.services.group4.permission.model.Reader;
 import com.services.group4.permission.repository.ReaderRepository;
 import org.springframework.http.HttpStatus;
@@ -23,16 +24,16 @@ public class ReaderService {
     this.validationService = validationService;
   }
 
-  public ResponseEntity<String> shareSnippet(Long ownerId, Long snippetId, Long targetUserId) {
+  public ResponseEntity<ResponseDto<Long>> shareSnippet(Long ownerId, Long snippetId, Long targetUserId) {
     if (!validationService.isUserIdValid(targetUserId)) {
-      return new ResponseEntity<>("User isn't valid, it doesn't exists", HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", ownerId), HttpStatus.BAD_REQUEST);
     }
     if (!ownershipService.isOwner(ownerId, snippetId)) {
-      return new ResponseEntity<>("User is not the owner of the snippet", HttpStatus.FORBIDDEN);
+      return new ResponseEntity<>(new ResponseDto<>("User is not the owner of the snippet", ownerId), HttpStatus.FORBIDDEN);
     }
     Reader reader = new Reader(targetUserId, snippetId);
     readerRepository.save(reader);
-    return new ResponseEntity<>("Snippet shared successfully", HttpStatus.OK);
+    return new ResponseEntity<>(new ResponseDto<>("Snippet shared successfully", targetUserId), HttpStatus.OK);
   }
 
   public boolean isReader(Long userId, Long snippetId) {
@@ -49,23 +50,18 @@ public class ReaderService {
     return new ResponseEntity<>("User is not a reader of the snippet", HttpStatus.FORBIDDEN);
   }
 
-  public ResponseEntity<List<Long>> getAllowedSnippets(Long userId) {
+  public ResponseEntity<ResponseDto<List<Long>>> getAllowedSnippets(Long userId) {
     if (!validationService.isUserIdValid(userId)) {
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", null),HttpStatus.BAD_REQUEST);
     }
 
-    try {
-        Optional<List<Long>> readerSnippets = readerRepository.findSnippetIdByUserId(userId);
-        Optional<List<Long>> ownerSnippets = ownershipService.findSnippetIdsByUserId(userId);
-        List<Long> allowedSnippets = new ArrayList<>();
+    Optional<List<Long>> readerSnippets = readerRepository.findSnippetIdByUserId(userId);
+    Optional<List<Long>> ownerSnippets = ownershipService.findSnippetIdsByUserId(userId);
+    List<Long> allowedSnippets = new ArrayList<>();
 
-        readerSnippets.ifPresent(allowedSnippets::addAll);
-        ownerSnippets.ifPresent(allowedSnippets::addAll);
+    readerSnippets.ifPresent(allowedSnippets::addAll);
+    ownerSnippets.ifPresent(allowedSnippets::addAll);
 
-        return new ResponseEntity<>(allowedSnippets, HttpStatus.OK);
-    } catch (Exception e) {
-        System.out.println("Error: " + e.getMessage());
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-}
+    return new ResponseEntity<>(new ResponseDto<>("User has permission to this snippets", allowedSnippets), HttpStatus.OK);
+  }
 }

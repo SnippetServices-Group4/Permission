@@ -1,5 +1,6 @@
 package com.services.group4.permission.controller;
 
+import com.services.group4.permission.dto.ResponseDto;
 import com.services.group4.permission.model.Reader;
 import com.services.group4.permission.repository.ReaderRepository;
 import com.services.group4.permission.service.ReaderService;
@@ -73,7 +74,7 @@ public class ReaderController {
   // new routes for snippet-service
   // reader/share funciona por postman
   @PostMapping("/share")
-  public ResponseEntity<String> shareSnippet(@RequestBody Map<String, Object> requestData) {
+  public ResponseEntity<ResponseDto<Long>> shareSnippet(@RequestBody Map<String, Object> requestData) {
     Long ownerId = ((Integer) requestData.get("ownerId")).longValue();
     Long snippetId = ((Integer) requestData.get("snippetId")).longValue();
     Long targetUserId = ((Integer) requestData.get("targetUserId")).longValue();
@@ -83,22 +84,26 @@ public class ReaderController {
 
   // reader/getPermission funciona por postman
   @GetMapping("/permission/{userId}/for/{snippetId}")
-  public ResponseEntity<Boolean> hasReaderPermission(
+  public ResponseEntity<ResponseDto<Boolean>> hasReaderPermission(
       @PathVariable Long userId, @PathVariable Long snippetId) {
     ResponseEntity<String> response = readerService.getReaderPermission(userId, snippetId);
     try {
       if (response.getStatusCode() == HttpStatus.OK) {
-        return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(response.getBody(), true), HttpStatus.OK);
       }
-      return new ResponseEntity<>(false, response.getStatusCode());
+      return new ResponseEntity<>(new ResponseDto<>(response.getBody(),false), response.getStatusCode());
     } catch (Exception e) {
-      System.out.println(e.getMessage());
-      return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(new ResponseDto<>(e.getMessage(),false), HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   @GetMapping("/allowedSnippets/{userId}")
-  public ResponseEntity<List<Long>> getAllowedSnippets(@PathVariable Long userId) {
-    return readerService.getAllowedSnippets(userId);
+  public ResponseEntity<ResponseDto<List<Long>>> getAllowedSnippets(@PathVariable Long userId) {
+    try {
+      return readerService.getAllowedSnippets(userId);
+    } catch (Exception e) {
+      System.out.println("Error: " + e.getMessage());
+      return new ResponseEntity<>(new ResponseDto<>(e.getMessage(), null),HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }
