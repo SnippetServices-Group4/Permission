@@ -69,8 +69,11 @@ public class ReaderController {
   }
 
   @PostMapping("/share")
-  public ResponseEntity<String> shareSnippet(
-      @RequestParam Long ownerId, @RequestParam Long snippetId, @RequestParam Long targetUserId) {
+  public ResponseEntity<String> shareSnippet(@RequestBody Map<String, Object> requestData) {
+    Long ownerId = ((Integer) requestData.get("ownerId")).longValue();
+    Long snippetId = ((Integer) requestData.get("snippetId")).longValue();
+    Long targetUserId = ((Integer) requestData.get("targetUserId")).longValue();
+
     return readerService.shareSnippet(ownerId, snippetId, targetUserId);
   }
 
