@@ -86,12 +86,8 @@ public class ReaderController {
   @GetMapping("/permission/{userId}/for/{snippetId}")
   public ResponseEntity<ResponseDto<Boolean>> hasReaderPermission(
       @PathVariable Long userId, @PathVariable Long snippetId) {
-    ResponseEntity<String> response = readerService.getReaderPermission(userId, snippetId);
     try {
-      if (response.getStatusCode() == HttpStatus.OK) {
-        return new ResponseEntity<>(new ResponseDto<>(response.getBody(), true), HttpStatus.OK);
-      }
-      return new ResponseEntity<>(new ResponseDto<>(response.getBody(),false), response.getStatusCode());
+      return readerService.getReaderPermission(userId, snippetId);
     } catch (Exception e) {
       return new ResponseEntity<>(new ResponseDto<>(e.getMessage(),false), HttpStatus.INTERNAL_SERVER_ERROR);
     }

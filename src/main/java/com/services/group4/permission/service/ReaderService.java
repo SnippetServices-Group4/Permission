@@ -45,14 +45,14 @@ public class ReaderService {
     return readerRepository.findReadersBySnippetId(snippetId).isPresent();
   }
 
-  public ResponseEntity<String> getReaderPermission(Long userId, Long snippetId) {
+  public ResponseEntity<ResponseDto<Boolean>> getReaderPermission(Long userId, Long snippetId) {
     if (!validationService.isUserIdValid(userId)) {
-      return new ResponseEntity<>("User isn't valid, it doesn't exists", HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", false), HttpStatus.BAD_REQUEST);
     }
     if (isReader(userId, snippetId)) {
-      return new ResponseEntity<>("User is a reader of the snippet", HttpStatus.OK);
+      return new ResponseEntity<>(new ResponseDto<>("User is a reader of the snippet", true), HttpStatus.OK);
     }
-    return new ResponseEntity<>("User is not a reader of the snippet", HttpStatus.FORBIDDEN);
+    return new ResponseEntity<>(new ResponseDto<>("User is not a reader of the snippet", false), HttpStatus.FORBIDDEN);
   }
 
   public Optional<List<Long>> findSnippetIdsByUserId(Long userId) {

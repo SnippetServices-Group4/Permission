@@ -91,17 +91,11 @@ public class OwnershipController {
   @GetMapping("/permission/{userId}/for/{snippetId}")
   public ResponseEntity<ResponseDto<Boolean>> hasOwnerPermission(
       @PathVariable Long userId, @PathVariable Long snippetId) {
-      ResponseEntity<ResponseDto<Long>> response = ownershipService.hasOwnerPermission(userId, snippetId);
       try {
-        if (response.getStatusCode() == HttpStatus.OK) {
-          return new ResponseEntity<>(new ResponseDto<>(Objects.requireNonNull(response.getBody()).message(), true), HttpStatus.OK);
-        } else {
-          return new ResponseEntity<>(new ResponseDto<>(Objects.requireNonNull(response.getBody()).message(), false) , response.getStatusCode());
-        }
+        return ownershipService.hasOwnerPermission(userId, snippetId);
       } catch (Exception e) {
         return new ResponseEntity<>(new ResponseDto<>(e.getMessage(), false), HttpStatus.INTERNAL_SERVER_ERROR);
       }
-
   }
 
 

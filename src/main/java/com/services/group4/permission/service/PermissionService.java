@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -59,4 +60,20 @@ public class PermissionService {
     return responseOwnership;
   }
 
+  public ResponseEntity<ResponseDto<Boolean>> hasPermissionOnSnippet(Long userId, Long snippetId) {
+    if (!validationService.isUserIdValid(userId)) {
+      return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", null),HttpStatus.BAD_REQUEST);
+    }
+
+    ResponseEntity<ResponseDto<Boolean>> readerPermission = readerService.getReaderPermission(userId, snippetId);
+    ResponseEntity<ResponseDto<Boolean>> ownerPermission = ownershipService.hasOwnerPermission(userId, snippetId);
+    if (Objects.requireNonNull(ownerPermission.getBody()).data() ||
+        Objects.requireNonNull(readerPermission.getBody()).data()) {
+      return new ResponseEntity<>(new ResponseDto<>("User has permission to this snippet", true), HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>(new ResponseDto<>("User doesn't have permission to this snippet", false), HttpStatus.FORBIDDEN);
+    }
+
+
+  }
 }

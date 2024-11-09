@@ -34,14 +34,14 @@ public class OwnershipService {
     return ownershipRepository.findOwnershipByUserIdAndSnippetId(userId, snippetId).isPresent();
   }
 
-  public ResponseEntity<ResponseDto<Long>> hasOwnerPermission(Long userId, Long snippetId) {
+  public ResponseEntity<ResponseDto<Boolean>> hasOwnerPermission(Long userId, Long snippetId) {
     if (!validationService.isUserIdValid(userId)) {
-      return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", userId), HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", false), HttpStatus.BAD_REQUEST);
     }
     if (isOwner(userId, snippetId)) {
-      return new ResponseEntity<>(new ResponseDto<>("User is the owner of the snippet",userId), HttpStatus.OK);
+      return new ResponseEntity<>(new ResponseDto<>("User is the owner of the snippet",true), HttpStatus.OK);
     }
-    return new ResponseEntity<>(new ResponseDto<>("User is not the owner of the snippet", userId), HttpStatus.FORBIDDEN);
+    return new ResponseEntity<>(new ResponseDto<>("User is not the owner of the snippet", false), HttpStatus.FORBIDDEN);
   }
 
   public Optional<List<Long>> findSnippetIdsByUserId(Long userId) {
