@@ -16,6 +16,14 @@ java {
 
 repositories {
 	mavenCentral()
+	maven {
+		name = "GitHubPackages"
+		url = "https://maven.pkg.github.com/austral-ingsis/class-redis-streams"
+		credentials {
+			username = project.findProperty("gpr.user") ?: System.getenv("GRAD_USER")
+			password = project.findProperty("gpr.token") ?: System.getenv("GRAD_PASS")
+		}
+	}
 }
 
 ext {
