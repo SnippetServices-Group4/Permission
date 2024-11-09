@@ -4,6 +4,7 @@ import com.services.group4.permission.model.Reader;
 import com.services.group4.permission.repository.ReaderRepository;
 import com.services.group4.permission.service.ReaderService;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
@@ -68,6 +69,9 @@ public class ReaderController {
     }
   }
 
+
+  // new routes for snippet-service
+  // reader/share funciona por postman
   @PostMapping("/share")
   public ResponseEntity<String> shareSnippet(@RequestBody Map<String, Object> requestData) {
     Long ownerId = ((Integer) requestData.get("ownerId")).longValue();
@@ -77,7 +81,6 @@ public class ReaderController {
     return readerService.shareSnippet(ownerId, snippetId, targetUserId);
   }
 
-  // new routes for snippet-service
   // reader/getPermission funciona por postman
   @GetMapping("/getPermission")
   public ResponseEntity<Boolean> getReaderPermission(@RequestBody Map<String, Object> requestData) {
@@ -95,5 +98,8 @@ public class ReaderController {
     }
   }
 
-
+  @GetMapping("/getAllowedSnippets")
+  public ResponseEntity<List<Long>> getAllowedSnippets(@RequestBody Long userId) {
+    return readerService.getAllowedSnippets(userId);
+  }
 }

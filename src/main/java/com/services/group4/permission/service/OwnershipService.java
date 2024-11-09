@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class OwnershipService {
 
@@ -38,5 +40,9 @@ public class OwnershipService {
       return new ResponseEntity<>("User is the owner of the snippet", HttpStatus.OK);
     }
     return new ResponseEntity<>("User is not the owner of the snippet", HttpStatus.FORBIDDEN);
+  }
+
+  public List<Long> findSnippetIdsByUserId(Long userId) {
+    return ownershipRepository.findSnippetIdsByUserId(userId);
   }
 }

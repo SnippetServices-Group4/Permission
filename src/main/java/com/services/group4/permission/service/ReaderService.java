@@ -6,6 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class ReaderService {
 
@@ -43,5 +46,17 @@ public class ReaderService {
       return new ResponseEntity<>("User is a reader of the snippet", HttpStatus.OK);
     }
     return new ResponseEntity<>("User is not a reader of the snippet", HttpStatus.FORBIDDEN);
+  }
+
+  public ResponseEntity<List<Long>> getAllowedSnippets(Long userId) {
+    if (!validationService.isUserIdValid(userId)) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+    List<Long> readerSnippets = readerRepository.findSnippetIdsByUserId(userId);
+    List<Long> ownerSnippets = ownershipService.findSnippetIdsByUserId(userId);
+    List<Long> allowedSnippets;
+    allowedSnippets = readerSnippets;
+    allowedSnippets.addAll(ownerSnippets);
+    return new ResponseEntity<>(allowedSnippets, HttpStatus.OK);
   }
 }
