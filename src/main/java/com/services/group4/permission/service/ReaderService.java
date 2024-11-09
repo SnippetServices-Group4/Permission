@@ -21,7 +21,7 @@ public class ReaderService {
 
   public ResponseEntity<String> shareSnippet(Long ownerId, Long snippetId, Long targetUserId) {
     if (!validationService.isUserIdValid(targetUserId)) {
-      return new ResponseEntity<>("Invalid target user ID", HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>("User isn't valid, it doesn't exists", HttpStatus.BAD_REQUEST);
     }
     if (!ownershipService.isOwner(ownerId, snippetId)) {
       return new ResponseEntity<>("User is not the owner of the snippet", HttpStatus.FORBIDDEN);
