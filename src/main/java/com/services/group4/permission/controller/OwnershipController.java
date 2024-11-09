@@ -72,7 +72,7 @@ public class OwnershipController {
 
   // TODO: new routes for snippet-service
   // ownership/created funciona por postman
-  @PostMapping("/created")
+  @PostMapping("/createRelation")
   public ResponseEntity<ResponseDto<Long>> createOwnership(@RequestBody Map<String, Object> requestData) {
     try {
       Long userId = ((Integer) requestData.get("userId")).longValue();
