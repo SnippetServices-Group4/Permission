@@ -49,14 +49,13 @@ public class OwnershipService {
   }
 
   public ResponseEntity<ResponseDto<Long>> deleteOwnership(Long userId, Long snippetId) {
-    if (!validationService.isUserIdValid(userId)) {
-      return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", userId), HttpStatus.BAD_REQUEST);
+    if (isOwner(userId, snippetId)) {
+      Optional<Ownership> ownership = ownershipRepository.findOwnershipByUserIdAndSnippetId(userId, snippetId);
+      if (ownership.isPresent()) {
+        ownershipRepository.delete(ownership.get());
+        return new ResponseEntity<>(new ResponseDto<>("Ownership deleted", snippetId), HttpStatus.OK);
+      }
     }
-    Optional<Ownership> ownership = ownershipRepository.findOwnershipByUserIdAndSnippetId(userId, snippetId);
-    if (ownership.isPresent()) {
-      ownershipRepository.delete(ownership.get());
-      return new ResponseEntity<>(new ResponseDto<>("Ownership deleted", snippetId), HttpStatus.OK);
-    }
-    return new ResponseEntity<>(new ResponseDto<>("User doesn't have permission over this snippet", snippetId), HttpStatus.FORBIDDEN);
+    return new ResponseEntity<>(new ResponseDto<>("User is not the owner of the snippet", snippetId), HttpStatus.FORBIDDEN);
   }
 }

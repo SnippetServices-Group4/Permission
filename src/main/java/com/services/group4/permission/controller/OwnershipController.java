@@ -104,18 +104,5 @@ public class OwnershipController {
 
   }
 
-  // ownership/delete funciona por postman
-  @DeleteMapping("/deleteRelation")
-  public ResponseEntity<ResponseDto<Long>> deleteOwnership(@RequestBody Map<String, Object> requestData) {
-    try {
-      Long userId = ((Integer) requestData.get("userId")).longValue();
-      Long snippetId = ((Integer) requestData.get("snippetId")).longValue();
-      return ownershipService.deleteOwnership(userId, snippetId);
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-      return new ResponseEntity<>(
-          new ResponseDto<>("Something went wrong deleting the ownership for the snippet",null),
-          HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
+
 }

@@ -1,6 +1,7 @@
 package com.services.group4.permission.service;
 
 import com.services.group4.permission.dto.ResponseDto;
+import com.services.group4.permission.model.Ownership;
 import com.services.group4.permission.model.Reader;
 import com.services.group4.permission.repository.ReaderRepository;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,10 @@ public class ReaderService {
     return readerRepository.findReaderByUserIdAndSnippetId(userId, snippetId).isPresent();
   }
 
+  public boolean hasReader(Long snippetId) {
+    return readerRepository.findReadersBySnippetId(snippetId).isPresent();
+  }
+
   public ResponseEntity<String> getReaderPermission(Long userId, Long snippetId) {
     if (!validationService.isUserIdValid(userId)) {
       return new ResponseEntity<>("User isn't valid, it doesn't exists", HttpStatus.BAD_REQUEST);
@@ -50,18 +55,18 @@ public class ReaderService {
     return new ResponseEntity<>("User is not a reader of the snippet", HttpStatus.FORBIDDEN);
   }
 
-  public ResponseEntity<ResponseDto<List<Long>>> getAllowedSnippets(Long userId) {
-    if (!validationService.isUserIdValid(userId)) {
-        return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", null),HttpStatus.BAD_REQUEST);
+  public Optional<List<Long>> findSnippetIdsByUserId(Long userId) {
+    return readerRepository.findSnippetIdByUserId(userId);
+  }
+
+  public ResponseEntity<ResponseDto<Long>> deleteReaders(Long snippetId) {
+    if (hasReader(snippetId)) {
+      Optional<List<Reader>> readers = readerRepository.findReadersBySnippetId(snippetId);
+      if (readers.isPresent()) {
+        readerRepository.deleteAll(readers.get());
+        return new ResponseEntity<>(new ResponseDto<>("Readers deleted", snippetId), HttpStatus.OK);
+      }
     }
-
-    Optional<List<Long>> readerSnippets = readerRepository.findSnippetIdByUserId(userId);
-    Optional<List<Long>> ownerSnippets = ownershipService.findSnippetIdsByUserId(userId);
-    List<Long> allowedSnippets = new ArrayList<>();
-
-    readerSnippets.ifPresent(allowedSnippets::addAll);
-    ownerSnippets.ifPresent(allowedSnippets::addAll);
-
-    return new ResponseEntity<>(new ResponseDto<>("User has permission to this snippets", allowedSnippets), HttpStatus.OK);
+    return new ResponseEntity<>(new ResponseDto<>("Snippet wasn't shared with other users", snippetId), HttpStatus.NO_CONTENT);
   }
 }

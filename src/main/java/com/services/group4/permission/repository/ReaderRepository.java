@@ -16,4 +16,7 @@ public interface ReaderRepository extends JpaRepository<Reader, Long> {
 
   @Query("SELECT r.snippetId FROM Reader r WHERE r.userId = :userId")
   Optional<List<Long>> findSnippetIdByUserId(Long userId);
+
+  @Query("SELECT r FROM Reader r WHERE r.snippetId = :snippetId")
+  Optional<List<Reader>> findReadersBySnippetId(Long snippetId);
 }

@@ -97,13 +97,4 @@ public class ReaderController {
     }
   }
 
-  @GetMapping("/allowedSnippets/{userId}")
-  public ResponseEntity<ResponseDto<List<Long>>> getAllowedSnippets(@PathVariable Long userId) {
-    try {
-      return readerService.getAllowedSnippets(userId);
-    } catch (Exception e) {
-      System.out.println("Error: " + e.getMessage());
-      return new ResponseEntity<>(new ResponseDto<>(e.getMessage(), null),HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
 }

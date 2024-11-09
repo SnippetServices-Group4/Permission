@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ValidationService {
 
+  // FUTURE: Check if the user is valid on AUTH0
   @Autowired private UserRepository userRepository;
 
   public boolean isUserIdValid(Long userId) {
