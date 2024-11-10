@@ -1,5 +1,6 @@
 package com.services.group4.permission.service;
 
+import com.services.group4.permission.dto.ResponseDto;
 import com.services.group4.permission.model.Ownership;
 import com.services.group4.permission.repository.OwnershipRepository;
 import org.springframework.http.HttpStatus;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OwnershipService {
@@ -19,30 +21,41 @@ public class OwnershipService {
     this.validationService = validationService;
   }
 
-  public ResponseEntity<String> createOwnership(Long userId, Long snippetId) {
+  public ResponseEntity<ResponseDto<Long>> createOwnership(Long userId, Long snippetId) {
     if (!validationService.isUserIdValid(userId)) {
-      return new ResponseEntity<>("User isn't valid, it doesn't exists", HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists",userId) ,HttpStatus.BAD_REQUEST);
     }
     Ownership ownership = new Ownership(userId, snippetId);
     ownershipRepository.save(ownership);
-    return new ResponseEntity<>("Ownership created", HttpStatus.CREATED);
+    return new ResponseEntity<>(new ResponseDto<>("Ownership created",null), HttpStatus.CREATED);
   }
 
   public boolean isOwner(Long userId, Long snippetId) {
     return ownershipRepository.findOwnershipByUserIdAndSnippetId(userId, snippetId).isPresent();
   }
 
-  public ResponseEntity<String> getOwnershipPermission(Long userId, Long snippetId) {
+  public ResponseEntity<ResponseDto<Boolean>> hasOwnerPermission(Long userId, Long snippetId) {
     if (!validationService.isUserIdValid(userId)) {
-      return new ResponseEntity<>("User isn't valid, it doesn't exists", HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", false), HttpStatus.BAD_REQUEST);
     }
     if (isOwner(userId, snippetId)) {
-      return new ResponseEntity<>("User is the owner of the snippet", HttpStatus.OK);
+      return new ResponseEntity<>(new ResponseDto<>("User is the owner of the snippet",true), HttpStatus.OK);
     }
-    return new ResponseEntity<>("User is not the owner of the snippet", HttpStatus.FORBIDDEN);
+    return new ResponseEntity<>(new ResponseDto<>("User is not the owner of the snippet", false), HttpStatus.FORBIDDEN);
   }
 
-  public List<Long> findSnippetIdsByUserId(Long userId) {
+  public Optional<List<Long>> findSnippetIdsByUserId(Long userId) {
     return ownershipRepository.findSnippetIdsByUserId(userId);
+  }
+
+  public ResponseEntity<ResponseDto<Long>> deleteOwnership(Long userId, Long snippetId) {
+    if (isOwner(userId, snippetId)) {
+      Optional<Ownership> ownership = ownershipRepository.findOwnershipByUserIdAndSnippetId(userId, snippetId);
+      if (ownership.isPresent()) {
+        ownershipRepository.delete(ownership.get());
+        return new ResponseEntity<>(new ResponseDto<>("Ownership deleted", snippetId), HttpStatus.OK);
+      }
+    }
+    return new ResponseEntity<>(new ResponseDto<>("User is not the owner of the snippet", snippetId), HttpStatus.FORBIDDEN);
   }
 }

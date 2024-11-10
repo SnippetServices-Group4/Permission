@@ -1,5 +1,7 @@
 package com.services.group4.permission.service;
 
+import com.services.group4.permission.dto.ResponseDto;
+import com.services.group4.permission.model.Ownership;
 import com.services.group4.permission.model.Reader;
 import com.services.group4.permission.repository.ReaderRepository;
 import org.springframework.http.HttpStatus;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReaderService {
@@ -22,41 +25,48 @@ public class ReaderService {
     this.validationService = validationService;
   }
 
-  public ResponseEntity<String> shareSnippet(Long ownerId, Long snippetId, Long targetUserId) {
+  public ResponseEntity<ResponseDto<Long>> shareSnippet(Long ownerId, Long snippetId, Long targetUserId) {
     if (!validationService.isUserIdValid(targetUserId)) {
-      return new ResponseEntity<>("User isn't valid, it doesn't exists", HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", ownerId), HttpStatus.BAD_REQUEST);
     }
     if (!ownershipService.isOwner(ownerId, snippetId)) {
-      return new ResponseEntity<>("User is not the owner of the snippet", HttpStatus.FORBIDDEN);
+      return new ResponseEntity<>(new ResponseDto<>("User is not the owner of the snippet", ownerId), HttpStatus.FORBIDDEN);
     }
     Reader reader = new Reader(targetUserId, snippetId);
     readerRepository.save(reader);
-    return new ResponseEntity<>("Snippet shared successfully", HttpStatus.OK);
+    return new ResponseEntity<>(new ResponseDto<>("Snippet shared successfully", targetUserId), HttpStatus.OK);
   }
 
   public boolean isReader(Long userId, Long snippetId) {
     return readerRepository.findReaderByUserIdAndSnippetId(userId, snippetId).isPresent();
   }
 
-  public ResponseEntity<String> getReaderPermission(Long userId, Long snippetId) {
-    if (!validationService.isUserIdValid(userId)) {
-      return new ResponseEntity<>("User isn't valid, it doesn't exists", HttpStatus.BAD_REQUEST);
-    }
-    if (isReader(userId, snippetId)) {
-      return new ResponseEntity<>("User is a reader of the snippet", HttpStatus.OK);
-    }
-    return new ResponseEntity<>("User is not a reader of the snippet", HttpStatus.FORBIDDEN);
+  public boolean hasReader(Long snippetId) {
+    return readerRepository.findReadersBySnippetId(snippetId).isPresent();
   }
 
-  public ResponseEntity<List<Long>> getAllowedSnippets(Long userId) {
+  public ResponseEntity<ResponseDto<Boolean>> getReaderPermission(Long userId, Long snippetId) {
     if (!validationService.isUserIdValid(userId)) {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", false), HttpStatus.BAD_REQUEST);
     }
-    List<Long> readerSnippets = readerRepository.findSnippetIdsByUserId(userId);
-    List<Long> ownerSnippets = ownershipService.findSnippetIdsByUserId(userId);
-    List<Long> allowedSnippets;
-    allowedSnippets = readerSnippets;
-    allowedSnippets.addAll(ownerSnippets);
-    return new ResponseEntity<>(allowedSnippets, HttpStatus.OK);
+    if (isReader(userId, snippetId)) {
+      return new ResponseEntity<>(new ResponseDto<>("User is a reader of the snippet", true), HttpStatus.OK);
+    }
+    return new ResponseEntity<>(new ResponseDto<>("User is not a reader of the snippet", false), HttpStatus.FORBIDDEN);
+  }
+
+  public Optional<List<Long>> findSnippetIdsByUserId(Long userId) {
+    return readerRepository.findSnippetIdByUserId(userId);
+  }
+
+  public ResponseEntity<ResponseDto<Long>> deleteReaders(Long snippetId) {
+    if (hasReader(snippetId)) {
+      Optional<List<Reader>> readers = readerRepository.findReadersBySnippetId(snippetId);
+      if (readers.isPresent()) {
+        readerRepository.deleteAll(readers.get());
+        return new ResponseEntity<>(new ResponseDto<>("Readers deleted", snippetId), HttpStatus.OK);
+      }
+    }
+    return new ResponseEntity<>(new ResponseDto<>("Snippet wasn't shared with other users", snippetId), HttpStatus.NO_CONTENT);
   }
 }

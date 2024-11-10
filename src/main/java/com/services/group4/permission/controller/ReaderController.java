@@ -1,5 +1,6 @@
 package com.services.group4.permission.controller;
 
+import com.services.group4.permission.dto.ResponseDto;
 import com.services.group4.permission.model.Reader;
 import com.services.group4.permission.repository.ReaderRepository;
 import com.services.group4.permission.service.ReaderService;
@@ -73,7 +74,7 @@ public class ReaderController {
   // new routes for snippet-service
   // reader/share funciona por postman
   @PostMapping("/share")
-  public ResponseEntity<String> shareSnippet(@RequestBody Map<String, Object> requestData) {
+  public ResponseEntity<ResponseDto<Long>> shareSnippet(@RequestBody Map<String, Object> requestData) {
     Long ownerId = ((Integer) requestData.get("ownerId")).longValue();
     Long snippetId = ((Integer) requestData.get("snippetId")).longValue();
     Long targetUserId = ((Integer) requestData.get("targetUserId")).longValue();
@@ -82,24 +83,14 @@ public class ReaderController {
   }
 
   // reader/getPermission funciona por postman
-  @GetMapping("/getPermission")
-  public ResponseEntity<Boolean> getReaderPermission(@RequestBody Map<String, Object> requestData) {
-    Long userId = ((Integer) requestData.get("userId")).longValue();
-    Long snippetId = ((Integer) requestData.get("snippetId")).longValue();
-    ResponseEntity<String> response = readerService.getReaderPermission(userId, snippetId);
+  @GetMapping("/permission/{userId}/for/{snippetId}")
+  public ResponseEntity<ResponseDto<Boolean>> hasReaderPermission(
+      @PathVariable Long userId, @PathVariable Long snippetId) {
     try {
-      if (response.getStatusCode() == HttpStatus.OK) {
-        return new ResponseEntity<>(true, HttpStatus.OK);
-      }
-      return new ResponseEntity<>(false, response.getStatusCode());
+      return readerService.getReaderPermission(userId, snippetId);
     } catch (Exception e) {
-      System.out.println(e.getMessage());
-      return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(new ResponseDto<>(e.getMessage(),false), HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  @GetMapping("/getAllowedSnippets")
-  public ResponseEntity<List<Long>> getAllowedSnippets(@RequestBody Long userId) {
-    return readerService.getAllowedSnippets(userId);
-  }
 }
