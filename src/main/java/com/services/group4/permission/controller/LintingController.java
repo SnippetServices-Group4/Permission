@@ -32,12 +32,18 @@ public class LintingController {
       LintConfig config = lintingService.updateRules(req);
 
       System.out.println("Getting snippets");
-      List<Long> snippetsId = ownershipService.findSnippetIdsByUserId(config.getUserId());
+      Optional<List<Long>> snippetsId = ownershipService.findSnippetIdsByUserId(config.getUserId());
 
-      System.out.println("Linting snippets");
-      Optional<Integer> snippetsInQueue = lintingService.asyncLint(snippetsId, config);
+      Optional<Integer> snippetsInQueue = Optional.of(0);
 
-      return new ResponseEntity<>("Linting " + snippetsInQueue + " snippets", HttpStatus.OK);
+      if (snippetsId.isPresent()) {
+        System.out.println("Linting snippets");
+        snippetsInQueue = lintingService.asyncLint(snippetsId.get(), config);
+      }
+
+      return snippetsInQueue
+          .map(integer -> new ResponseEntity<>("Linting " + integer + " snippets", HttpStatus.OK))
+          .orElseGet(() -> new ResponseEntity<>("No snippets to lint", HttpStatus.OK));
     } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
