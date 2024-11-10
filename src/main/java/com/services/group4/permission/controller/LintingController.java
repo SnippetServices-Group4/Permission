@@ -1,5 +1,6 @@
 package com.services.group4.permission.controller;
 
+import com.services.group4.permission.dto.ResponseDto;
 import com.services.group4.permission.dto.UpdateRulesRequestDto;
 import com.services.group4.permission.model.LintConfig;
 import com.services.group4.permission.service.LintingService;
@@ -26,7 +27,7 @@ public class LintingController {
   }
 
   @PostMapping("/update/rules")
-  public ResponseEntity<String> updateRulesAndLint(@RequestBody UpdateRulesRequestDto req) {
+  public ResponseEntity<ResponseDto> updateRulesAndLint(@RequestBody UpdateRulesRequestDto req) {
     try {
       System.out.println("Updating rules");
       LintConfig config = lintingService.updateRules(req);
@@ -41,9 +42,10 @@ public class LintingController {
         snippetsInQueue = lintingService.asyncLint(snippetsId.get(), config);
       }
 
-      return snippetsInQueue
-          .map(integer -> new ResponseEntity<>("Linting " + integer + " snippets", HttpStatus.OK))
-          .orElseGet(() -> new ResponseEntity<>("No snippets to lint", HttpStatus.OK));
+      String message = snippetsInQueue
+          .map(i -> "Linting of " + i + " snippets in progress.")
+          .orElse("No snippets to lint");
+      return new ResponseEntity<>(new ResponseDto<>(message, null), HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }

@@ -14,7 +14,7 @@ public class LintConfig {
   private Long id;
 
   @Column(nullable = false, unique = true)
-  private Long userId;
+  private String userId;
 
   @Column(nullable = false)
   private String writingConventionName;
@@ -27,7 +27,7 @@ public class LintConfig {
 
   public LintConfig() {}
 
-  public LintConfig(Long userId, String writingConventionName, boolean printLnAcceptsExpressions, boolean readInputAcceptsExpressions) {
+  public LintConfig(String userId, String writingConventionName, boolean printLnAcceptsExpressions, boolean readInputAcceptsExpressions) {
     this.userId = userId;
     this.writingConventionName = writingConventionName;
     this.printLnAcceptsExpressions = printLnAcceptsExpressions;

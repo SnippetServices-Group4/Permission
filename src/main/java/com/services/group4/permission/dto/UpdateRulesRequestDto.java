@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record UpdateRulesRequestDto(
     @NotNull(message = "User ID is required")
-    Long userId,
+    String userId,
     @NotNull(message = "Rules are required")
     LintRulesDto rules) {
 }

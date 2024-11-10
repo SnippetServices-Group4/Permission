@@ -21,7 +21,7 @@ public class LintingService {
   }
 
   public LintConfig updateRules(UpdateRulesRequestDto req) {
-    Long userId = req.userId();
+    String userId = req.userId();
     LintRulesDto rules = req.rules();
 
     System.out.println("Updating rules for user: " + userId);
