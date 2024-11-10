@@ -2,6 +2,7 @@ package com.services.group4.permission.service.async;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.services.group4.permission.model.LintConfig;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,11 +32,11 @@ public class LintEventProducer {
     redis.opsForStream().add(result);
   }
 
-  public void publishEvent(Long userId, Map<String, Object> jsonPayload) {
+  public void publishEvent(Long snippetId, LintConfig config) {
     ObjectMapper mapper = new ObjectMapper();
     try {
-      String jsonPayloadString = mapper.writeValueAsString(jsonPayload);
-      EventMessage product = new EventMessage(userId, jsonPayloadString);
+      String jsonPayloadString = mapper.writeValueAsString(config);
+      EventMessage product = new EventMessage(snippetId, jsonPayloadString);
       emit(product);
     } catch (Exception e) {
       System.err.println("Error serializing jsonPayload: " + e.getMessage());
