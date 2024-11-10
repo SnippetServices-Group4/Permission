@@ -1,6 +1,7 @@
 package com.services.group4.permission.controller;
 
 import com.services.group4.permission.dto.UpdateRulesRequestDto;
+import com.services.group4.permission.model.LintConfig;
 import com.services.group4.permission.service.LintingService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,8 @@ public class LintingController {
 
   @PostMapping("/update/rules")
   public void updateRulesAndLint(@RequestBody UpdateRulesRequestDto req) {
-    lintingService.updateRules(req);
+    LintConfig config = lintingService.updateRules(req);
+
+    String message
   }
 }
