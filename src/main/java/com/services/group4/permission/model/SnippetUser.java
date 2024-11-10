@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Table
 public class SnippetUser {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(nullable = false, unique = true)
   private String userID;
 
   @Column(nullable = false, unique = true)

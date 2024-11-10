@@ -72,7 +72,7 @@ public class ReaderRequestE2ETests {
 
   @Test
   public void canCreateReader() {
-    Reader reader = new Reader(4L, 4L);
+    Reader reader = new Reader("4L", 4L);
     client.post().uri(BASE + "/create").bodyValue(reader).exchange().expectStatus().isCreated();
 
     List<Reader> readers = readerRepository.findAll();
