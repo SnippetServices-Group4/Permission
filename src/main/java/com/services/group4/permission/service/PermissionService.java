@@ -28,7 +28,7 @@ public class PermissionService {
 
   public ResponseEntity<ResponseDto<List<Long>>> getAllowedSnippets(String userId) {
     if (!validationService.isUserIdValid(userId)) {
-        return FullResponse.create("User isn't valid, it doesn't exists", "snippetList", null, HttpStatus.BAD_REQUEST);
+        return FullResponse.create("User isn't valid, it doesn't exists", "snippetList", new ArrayList<>(), HttpStatus.BAD_REQUEST);
     }
 
     Optional<List<Long>> readerSnippets = readerService.findSnippetIdsByUserId(userId);
@@ -62,7 +62,7 @@ public class PermissionService {
 
   public ResponseEntity<ResponseDto<Boolean>> hasPermissionOnSnippet(String userId, Long snippetId) {
     if (!validationService.isUserIdValid(userId)) {
-      return FullResponse.create("User isn't valid, it doesn't exists", "permission", null, HttpStatus.BAD_REQUEST);
+      return FullResponse.create("User isn't valid, it doesn't exists", "permission", false, HttpStatus.BAD_REQUEST);
     }
 
     ResponseEntity<ResponseDto<Boolean>> readerPermission = readerService.getReaderPermission(userId, snippetId);
