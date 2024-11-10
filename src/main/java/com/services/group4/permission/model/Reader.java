@@ -11,7 +11,7 @@ public class Reader {
   @Column(nullable = false)
   private String userId;
 
-  @Column(nullable = false, unique = true)
+  @Column(nullable = false)
   private Long snippetId;
 
   // Added for testing purposes
