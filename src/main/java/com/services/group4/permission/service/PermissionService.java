@@ -1,5 +1,6 @@
 package com.services.group4.permission.service;
 
+import com.services.group4.permission.common.FullResponse;
 import com.services.group4.permission.dto.ResponseDto;
 import com.services.group4.permission.model.Reader;
 import com.services.group4.permission.repository.ReaderRepository;
@@ -27,7 +28,7 @@ public class PermissionService {
 
   public ResponseEntity<ResponseDto<List<Long>>> getAllowedSnippets(String userId) {
     if (!validationService.isUserIdValid(userId)) {
-        return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", null),HttpStatus.BAD_REQUEST);
+        return FullResponse.create("User isn't valid, it doesn't exists", "snippetList", null, HttpStatus.BAD_REQUEST);
     }
 
     Optional<List<Long>> readerSnippets = readerService.findSnippetIdsByUserId(userId);
@@ -37,12 +38,12 @@ public class PermissionService {
     readerSnippets.ifPresent(allowedSnippets::addAll);
     ownerSnippets.ifPresent(allowedSnippets::addAll);
 
-    return new ResponseEntity<>(new ResponseDto<>("User has permission to this snippets", allowedSnippets), HttpStatus.OK);
+    return FullResponse.create("User has permission to this snippets", "snippetList", allowedSnippets, HttpStatus.OK);
   }
 
   public ResponseEntity<ResponseDto<Long>> deletePermissionsOfSnippet(String userId, Long snippetId) {
     if (!validationService.isUserIdValid(userId)) {
-      return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", snippetId), HttpStatus.BAD_REQUEST);
+      return FullResponse.create("User isn't valid, it doesn't exists", "snippetId", snippetId, HttpStatus.BAD_REQUEST);
     }
 
     ResponseEntity<ResponseDto<Long>> responseOwnership = ownershipService.deleteOwnership(userId, snippetId);
@@ -50,9 +51,9 @@ public class PermissionService {
 
     if (responseOwnership.getStatusCode().equals(HttpStatus.OK)){
       if (responseReader.getStatusCode().equals(HttpStatus.OK)) {
-        return new ResponseEntity<>(new ResponseDto<>("Permissions and shared relations deleted successfully", snippetId), HttpStatus.OK);
+        return FullResponse.create("Permissions and shared relations deleted successfully", "snippetId", snippetId, HttpStatus.OK);
       } else if (responseReader.getStatusCode().equals(HttpStatus.FORBIDDEN)) {
-        return new ResponseEntity<>(new ResponseDto<>("Permissions deleted successfully", snippetId), HttpStatus.OK);
+        return FullResponse.create("Permissions deleted successfully", "snippetId", snippetId, HttpStatus.OK);
       }
     }
 
@@ -61,18 +62,16 @@ public class PermissionService {
 
   public ResponseEntity<ResponseDto<Boolean>> hasPermissionOnSnippet(String userId, Long snippetId) {
     if (!validationService.isUserIdValid(userId)) {
-      return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", null),HttpStatus.BAD_REQUEST);
+      return FullResponse.create("User isn't valid, it doesn't exists", "permission", null, HttpStatus.BAD_REQUEST);
     }
 
     ResponseEntity<ResponseDto<Boolean>> readerPermission = readerService.getReaderPermission(userId, snippetId);
     ResponseEntity<ResponseDto<Boolean>> ownerPermission = ownershipService.hasOwnerPermission(userId, snippetId);
-    if (Objects.requireNonNull(ownerPermission.getBody()).data() ||
-        Objects.requireNonNull(readerPermission.getBody()).data()) {
-      return new ResponseEntity<>(new ResponseDto<>("User has permission to this snippet", true), HttpStatus.OK);
+    if (Objects.requireNonNull(ownerPermission.getBody()).data().data() ||
+        Objects.requireNonNull(readerPermission.getBody()).data().data()) {
+      return FullResponse.create("User has permission to this snippet", "permission", true, HttpStatus.OK);
     } else {
-      return new ResponseEntity<>(new ResponseDto<>("User doesn't have permission to this snippet", false), HttpStatus.FORBIDDEN);
+      return FullResponse.create("User doesn't have permission to this snippet", "permission", false, HttpStatus.FORBIDDEN);
     }
-
-
   }
 }

@@ -1,5 +1,6 @@
 package com.services.group4.permission.service;
 
+import com.services.group4.permission.common.FullResponse;
 import com.services.group4.permission.dto.ResponseDto;
 import com.services.group4.permission.model.Ownership;
 import com.services.group4.permission.model.Reader;
@@ -27,14 +28,14 @@ public class ReaderService {
 
   public ResponseEntity<ResponseDto<String>> shareSnippet(String ownerId, Long snippetId, String targetUserId) {
     if (!validationService.isUserIdValid(targetUserId)) {
-      return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", ownerId), HttpStatus.BAD_REQUEST);
+      return FullResponse.create("User isn't valid, it doesn't exists", "ownerId", ownerId, HttpStatus.BAD_REQUEST);
     }
     if (!ownershipService.isOwner(ownerId, snippetId)) {
-      return new ResponseEntity<>(new ResponseDto<>("User is not the owner of the snippet", ownerId), HttpStatus.FORBIDDEN);
+      return FullResponse.create("User is not the owner of the snippet", "ownerId", ownerId, HttpStatus.FORBIDDEN);
     }
     Reader reader = new Reader(targetUserId, snippetId);
     readerRepository.save(reader);
-    return new ResponseEntity<>(new ResponseDto<>("Snippet shared successfully", targetUserId), HttpStatus.OK);
+    return FullResponse.create("Snippet shared successfully", "targetUserId", targetUserId, HttpStatus.OK);
   }
 
   public boolean isReader(String userId, Long snippetId) {
@@ -47,12 +48,12 @@ public class ReaderService {
 
   public ResponseEntity<ResponseDto<Boolean>> getReaderPermission(String userId, Long snippetId) {
     if (!validationService.isUserIdValid(userId)) {
-      return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", false), HttpStatus.BAD_REQUEST);
+      return FullResponse.create("User isn't valid, it doesn't exists", "readerPermission", false, HttpStatus.BAD_REQUEST);
     }
     if (isReader(userId, snippetId)) {
-      return new ResponseEntity<>(new ResponseDto<>("User is a reader of the snippet", true), HttpStatus.OK);
+      return FullResponse.create("User is a reader of the snippet", "readerPermission", true, HttpStatus.OK);
     }
-    return new ResponseEntity<>(new ResponseDto<>("User is not a reader of the snippet", false), HttpStatus.FORBIDDEN);
+    return FullResponse.create("User is not a reader of the snippet", "readerPermission", false, HttpStatus.FORBIDDEN);
   }
 
   public Optional<List<Long>> findSnippetIdsByUserId(String userId) {
@@ -64,9 +65,9 @@ public class ReaderService {
       Optional<List<Reader>> readers = readerRepository.findReadersBySnippetId(snippetId);
       if (readers.isPresent()) {
         readerRepository.deleteAll(readers.get());
-        return new ResponseEntity<>(new ResponseDto<>("Readers deleted", snippetId), HttpStatus.OK);
+        return FullResponse.create("Readers deleted", "snippetId", snippetId, HttpStatus.OK);
       }
     }
-    return new ResponseEntity<>(new ResponseDto<>("Snippet wasn't shared with other users", snippetId), HttpStatus.NO_CONTENT);
+    return FullResponse.create("Snippet wasn't shared with other users", "snippetId", snippetId, HttpStatus.NO_CONTENT);
   }
 }

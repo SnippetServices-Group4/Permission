@@ -1,5 +1,6 @@
 package com.services.group4.permission.controller;
 
+import com.services.group4.permission.common.FullResponse;
 import com.services.group4.permission.dto.ResponseDto;
 import com.services.group4.permission.model.Ownership;
 import com.services.group4.permission.repository.OwnershipRepository;
@@ -79,10 +80,7 @@ public class OwnershipController {
       Long snippetId = ((Integer) requestData.get("snippetId")).longValue();
       return ownershipService.createOwnership(userId, snippetId);
     } catch (Exception e) {
-      System.out.println(e.getMessage());
-      return new ResponseEntity<>(
-          new ResponseDto<>("Something went wrong creating the ownership for the snippet",null),
-          HttpStatus.INTERNAL_SERVER_ERROR);
+      return FullResponse.create("Something went wrong creating the ownership for the snippet", "Empty",null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -93,7 +91,7 @@ public class OwnershipController {
       try {
         return ownershipService.hasOwnerPermission(userId, snippetId);
       } catch (Exception e) {
-        return new ResponseEntity<>(new ResponseDto<>(e.getMessage(), false), HttpStatus.INTERNAL_SERVER_ERROR);
+        return FullResponse.create("Something went wrong getting the ownership permission for the snippet", "ownerPermission", false, HttpStatus.INTERNAL_SERVER_ERROR);
       }
   }
 
