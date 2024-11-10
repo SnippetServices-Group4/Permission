@@ -78,7 +78,7 @@ public class OwnershipRequestE2ETests {
 
   @Test
   public void canCreateOwnership() {
-    Ownership newOwnerships = new Ownership(4L, 4L);
+    Ownership newOwnerships = new Ownership("4L", 4L);
     client
         .post()
         .uri(BASE + "/create")

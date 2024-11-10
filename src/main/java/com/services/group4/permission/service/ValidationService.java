@@ -10,7 +10,7 @@ public class ValidationService {
   // FUTURE: Check if the user is valid on AUTH0
   @Autowired private UserRepository userRepository;
 
-  public boolean isUserIdValid(Long userId) {
+  public boolean isUserIdValid(String userId) {
     return userRepository.existsById(userId);
   }
 }

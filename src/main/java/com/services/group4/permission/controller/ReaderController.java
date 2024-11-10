@@ -5,7 +5,6 @@ import com.services.group4.permission.model.Reader;
 import com.services.group4.permission.repository.ReaderRepository;
 import com.services.group4.permission.service.ReaderService;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
@@ -36,9 +35,9 @@ public class ReaderController {
     }
   }
 
-  @GetMapping("/user/{id}")
-  public ResponseEntity<Reader> getReaderByUserId(@PathVariable Long id) {
-    Optional<Reader> reader = readerRepository.findReaderByUserId(id);
+  @GetMapping("/user/{userId}")
+  public ResponseEntity<Reader> getReaderByUserId(@PathVariable String userId) {
+    Optional<Reader> reader = readerRepository.findReaderByUserId(userId);
     return reader
         .map(value -> new ResponseEntity<>(value, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -74,10 +73,10 @@ public class ReaderController {
   // new routes for snippet-service
   // reader/share funciona por postman
   @PostMapping("/share")
-  public ResponseEntity<ResponseDto<Long>> shareSnippet(@RequestBody Map<String, Object> requestData) {
-    Long ownerId = ((Integer) requestData.get("ownerId")).longValue();
+  public ResponseEntity<ResponseDto<String>> shareSnippet(@RequestBody Map<String, Object> requestData) {
+    String ownerId = ((String) requestData.get("ownerId"));
     Long snippetId = ((Integer) requestData.get("snippetId")).longValue();
-    Long targetUserId = ((Integer) requestData.get("targetUserId")).longValue();
+    String targetUserId = ((String) requestData.get("targetUserId"));
 
     return readerService.shareSnippet(ownerId, snippetId, targetUserId);
   }
@@ -85,7 +84,7 @@ public class ReaderController {
   // reader/getPermission funciona por postman
   @GetMapping("/permission/{userId}/for/{snippetId}")
   public ResponseEntity<ResponseDto<Boolean>> hasReaderPermission(
-      @PathVariable Long userId, @PathVariable Long snippetId) {
+      @PathVariable String userId, @PathVariable Long snippetId) {
     try {
       return readerService.getReaderPermission(userId, snippetId);
     } catch (Exception e) {

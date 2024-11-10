@@ -26,7 +26,7 @@ public class PermissionController {
   // new routes for snippet-service
 
   @GetMapping("/allowedSnippets/{userId}")
-  public ResponseEntity<ResponseDto<List<Long>>> getAllowedSnippets(@PathVariable Long userId) {
+  public ResponseEntity<ResponseDto<List<Long>>> getAllowedSnippets(@PathVariable String userId) {
     try {
       return permissionService.getAllowedSnippets(userId);
     } catch (Exception e) {
@@ -36,7 +36,7 @@ public class PermissionController {
   }
 
   @GetMapping("/{userId}/for/{snippetId}")
-  public ResponseEntity<ResponseDto<Boolean>> hasPermission(@PathVariable Long userId, @PathVariable Long snippetId) {
+  public ResponseEntity<ResponseDto<Boolean>> hasPermission(@PathVariable String userId, @PathVariable Long snippetId) {
     return permissionService.hasPermissionOnSnippet(userId, snippetId);
   }
 
@@ -44,7 +44,7 @@ public class PermissionController {
   @DeleteMapping("/deleteRelation")
   public ResponseEntity<ResponseDto<Long>> deleteOwnership(@RequestBody Map<String, Object> requestData) {
     try {
-      Long userId = ((Integer) requestData.get("userId")).longValue();
+      String userId = ((String) requestData.get("userId"));
       Long snippetId = ((Integer) requestData.get("snippetId")).longValue();
       return permissionService.deletePermissionsOfSnippet(userId, snippetId);
     } catch (Exception e) {

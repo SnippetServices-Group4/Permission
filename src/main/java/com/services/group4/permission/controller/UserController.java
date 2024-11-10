@@ -40,7 +40,7 @@ public class UserController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<SnippetUser> getUserById(@PathVariable Long id) {
+  public ResponseEntity<SnippetUser> getUserById(@PathVariable String id) {
     Optional<SnippetUser> user = userRepository.findById(id);
     return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -54,7 +54,7 @@ public class UserController {
 
   @PutMapping("/update/{id}")
   public ResponseEntity<String> updateUser(
-      @PathVariable Long id, @RequestBody SnippetUser updatedUser) {
+      @PathVariable String id, @RequestBody SnippetUser updatedUser) {
     Optional<SnippetUser> user = userRepository.findById(id);
     if (user.isPresent()) {
       SnippetUser existingUser = user.get();
@@ -69,7 +69,7 @@ public class UserController {
   }
 
   @DeleteMapping("/delete/{id}")
-  public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+  public ResponseEntity<String> deleteUser(@PathVariable String id) {
     try {
       userRepository.deleteById(id);
       return new ResponseEntity<>("User deleted", HttpStatus.OK);

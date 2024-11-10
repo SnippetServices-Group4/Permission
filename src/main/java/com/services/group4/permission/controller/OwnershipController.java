@@ -4,7 +4,6 @@ import com.services.group4.permission.dto.ResponseDto;
 import com.services.group4.permission.model.Ownership;
 import com.services.group4.permission.repository.OwnershipRepository;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import com.services.group4.permission.service.OwnershipService;
@@ -36,17 +35,17 @@ public class OwnershipController {
     }
   }
 
-  @GetMapping("/user/{id}")
-  public ResponseEntity<Ownership> getOwnershipByUserId(@PathVariable Long id) {
-    Optional<Ownership> ownership = ownershipRepository.findOwnershipByUserId(id);
+  @GetMapping("/user/{userId}")
+  public ResponseEntity<Ownership> getOwnershipByUserId(@PathVariable String userId) {
+    Optional<Ownership> ownership = ownershipRepository.findOwnershipByUserId(userId);
     return ownership
         .map(value -> new ResponseEntity<>(value, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
-  @GetMapping("/snippet/{id}")
-  public ResponseEntity<Ownership> getOwnershipBySnippetId(@PathVariable Long id) {
-    Optional<Ownership> ownership = ownershipRepository.findOwnershipBySnippetId(id);
+  @GetMapping("/snippet/{snippetId}")
+  public ResponseEntity<Ownership> getOwnershipBySnippetId(@PathVariable Long snippetId) {
+    Optional<Ownership> ownership = ownershipRepository.findOwnershipBySnippetId(snippetId);
     return ownership
         .map(value -> new ResponseEntity<>(value, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -76,7 +75,7 @@ public class OwnershipController {
   @PostMapping("/createRelation")
   public ResponseEntity<ResponseDto<Long>> createOwnership(@RequestBody Map<String, Object> requestData) {
     try {
-      Long userId = ((Integer) requestData.get("userId")).longValue();
+      String userId = ((String) requestData.get("userId"));
       Long snippetId = ((Integer) requestData.get("snippetId")).longValue();
       return ownershipService.createOwnership(userId, snippetId);
     } catch (Exception e) {
@@ -90,7 +89,7 @@ public class OwnershipController {
   // ownership/getPermission funciona por postman
   @GetMapping("/permission/{userId}/for/{snippetId}")
   public ResponseEntity<ResponseDto<Boolean>> hasOwnerPermission(
-      @PathVariable Long userId, @PathVariable Long snippetId) {
+      @PathVariable String userId, @PathVariable Long snippetId) {
       try {
         return ownershipService.hasOwnerPermission(userId, snippetId);
       } catch (Exception e) {

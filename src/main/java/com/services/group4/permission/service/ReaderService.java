@@ -25,7 +25,7 @@ public class ReaderService {
     this.validationService = validationService;
   }
 
-  public ResponseEntity<ResponseDto<Long>> shareSnippet(Long ownerId, Long snippetId, Long targetUserId) {
+  public ResponseEntity<ResponseDto<String>> shareSnippet(String ownerId, Long snippetId, String targetUserId) {
     if (!validationService.isUserIdValid(targetUserId)) {
       return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", ownerId), HttpStatus.BAD_REQUEST);
     }
@@ -37,7 +37,7 @@ public class ReaderService {
     return new ResponseEntity<>(new ResponseDto<>("Snippet shared successfully", targetUserId), HttpStatus.OK);
   }
 
-  public boolean isReader(Long userId, Long snippetId) {
+  public boolean isReader(String userId, Long snippetId) {
     return readerRepository.findReaderByUserIdAndSnippetId(userId, snippetId).isPresent();
   }
 
@@ -45,7 +45,7 @@ public class ReaderService {
     return readerRepository.findReadersBySnippetId(snippetId).isPresent();
   }
 
-  public ResponseEntity<ResponseDto<Boolean>> getReaderPermission(Long userId, Long snippetId) {
+  public ResponseEntity<ResponseDto<Boolean>> getReaderPermission(String userId, Long snippetId) {
     if (!validationService.isUserIdValid(userId)) {
       return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", false), HttpStatus.BAD_REQUEST);
     }
@@ -55,7 +55,7 @@ public class ReaderService {
     return new ResponseEntity<>(new ResponseDto<>("User is not a reader of the snippet", false), HttpStatus.FORBIDDEN);
   }
 
-  public Optional<List<Long>> findSnippetIdsByUserId(Long userId) {
+  public Optional<List<Long>> findSnippetIdsByUserId(String userId) {
     return readerRepository.findSnippetIdByUserId(userId);
   }
 
