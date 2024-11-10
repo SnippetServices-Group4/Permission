@@ -37,12 +37,7 @@ public class PermissionController {
 
   @GetMapping("/{userId}/for/{snippetId}")
   public ResponseEntity<ResponseDto<Boolean>> hasPermission(@PathVariable Long userId, @PathVariable Long snippetId) {
-    try {
-      return permissionService.hasPermissionOnSnippet(userId, snippetId);
-    } catch (Exception e) {
-      System.out.println("Error: " + e.getMessage());
-      return new ResponseEntity<>(new ResponseDto<>(e.getMessage(), null),HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return permissionService.hasPermissionOnSnippet(userId, snippetId);
   }
 
   // ownership/delete funciona por postman
