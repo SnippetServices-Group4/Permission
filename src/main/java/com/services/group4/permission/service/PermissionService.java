@@ -25,7 +25,7 @@ public class PermissionService {
     this.validationService = validationService;
   }
 
-  public ResponseEntity<ResponseDto<List<Long>>> getAllowedSnippets(Long userId) {
+  public ResponseEntity<ResponseDto<List<Long>>> getAllowedSnippets(String userId) {
     if (!validationService.isUserIdValid(userId)) {
         return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", null),HttpStatus.BAD_REQUEST);
     }
@@ -40,10 +40,9 @@ public class PermissionService {
     return new ResponseEntity<>(new ResponseDto<>("User has permission to this snippets", allowedSnippets), HttpStatus.OK);
   }
 
-  public ResponseEntity<ResponseDto<Long>> deletePermissionsOfSnippet(Long userId, Long snippetId) {
-    //TODO: delete in process
+  public ResponseEntity<ResponseDto<Long>> deletePermissionsOfSnippet(String userId, Long snippetId) {
     if (!validationService.isUserIdValid(userId)) {
-      return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", userId), HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", snippetId), HttpStatus.BAD_REQUEST);
     }
 
     ResponseEntity<ResponseDto<Long>> responseOwnership = ownershipService.deleteOwnership(userId, snippetId);
@@ -60,7 +59,7 @@ public class PermissionService {
     return responseOwnership;
   }
 
-  public ResponseEntity<ResponseDto<Boolean>> hasPermissionOnSnippet(Long userId, Long snippetId) {
+  public ResponseEntity<ResponseDto<Boolean>> hasPermissionOnSnippet(String userId, Long snippetId) {
     if (!validationService.isUserIdValid(userId)) {
       return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", null),HttpStatus.BAD_REQUEST);
     }

@@ -54,7 +54,7 @@ public class UserRequestE2ETests {
 
   @Test
   public void canGetUserById() {
-    Long userId = userRepository.findByUsername("John Doe").orElseThrow().getUserID();
+    String userId = userRepository.findByUsername("John Doe").orElseThrow().getUserID();
     System.out.println(userId);
     client
         .get()
@@ -77,7 +77,7 @@ public class UserRequestE2ETests {
 
   @Test
   public void canLoginUser_Success() {
-    SnippetUser loginUser = new SnippetUser(1L, "John Doe", "user1", "john.doe@example.com");
+    SnippetUser loginUser = new SnippetUser("1L", "John Doe", "user1", "john.doe@example.com");
 
     client
         .post()
@@ -92,7 +92,7 @@ public class UserRequestE2ETests {
 
   @Test
   public void canUpdateUser() {
-    Long userId = userRepository.findByUsername("John Doe").orElseThrow().getUserID();
+    String userId = userRepository.findByUsername("John Doe").orElseThrow().getUserID();
     System.out.println(userId);
 
     SnippetUser updatedUser =
@@ -115,7 +115,7 @@ public class UserRequestE2ETests {
   public void canDeleteUser() {
     client.delete().uri(BASE + "/delete/1").exchange().expectStatus().isOk();
 
-    SnippetUser user = userRepository.findById(1L).orElse(null);
+    SnippetUser user = userRepository.findById("1L").orElse(null);
     assertNull(user);
   }
 

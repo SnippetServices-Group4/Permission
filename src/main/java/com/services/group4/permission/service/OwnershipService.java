@@ -21,20 +21,20 @@ public class OwnershipService {
     this.validationService = validationService;
   }
 
-  public ResponseEntity<ResponseDto<Long>> createOwnership(Long userId, Long snippetId) {
+  public ResponseEntity<ResponseDto<Long>> createOwnership(String userId, Long snippetId) {
     if (!validationService.isUserIdValid(userId)) {
-      return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists",userId) ,HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", snippetId) ,HttpStatus.BAD_REQUEST);
     }
     Ownership ownership = new Ownership(userId, snippetId);
     ownershipRepository.save(ownership);
     return new ResponseEntity<>(new ResponseDto<>("Ownership created",null), HttpStatus.CREATED);
   }
 
-  public boolean isOwner(Long userId, Long snippetId) {
+  public boolean isOwner(String userId, Long snippetId) {
     return ownershipRepository.findOwnershipByUserIdAndSnippetId(userId, snippetId).isPresent();
   }
 
-  public ResponseEntity<ResponseDto<Boolean>> hasOwnerPermission(Long userId, Long snippetId) {
+  public ResponseEntity<ResponseDto<Boolean>> hasOwnerPermission(String userId, Long snippetId) {
     if (!validationService.isUserIdValid(userId)) {
       return new ResponseEntity<>(new ResponseDto<>("User isn't valid, it doesn't exists", false), HttpStatus.BAD_REQUEST);
     }
@@ -44,11 +44,11 @@ public class OwnershipService {
     return new ResponseEntity<>(new ResponseDto<>("User is not the owner of the snippet", false), HttpStatus.FORBIDDEN);
   }
 
-  public Optional<List<Long>> findSnippetIdsByUserId(Long userId) {
+  public Optional<List<Long>> findSnippetIdsByUserId(String userId) {
     return ownershipRepository.findSnippetIdsByUserId(userId);
   }
 
-  public ResponseEntity<ResponseDto<Long>> deleteOwnership(Long userId, Long snippetId) {
+  public ResponseEntity<ResponseDto<Long>> deleteOwnership(String userId, Long snippetId) {
     if (isOwner(userId, snippetId)) {
       Optional<Ownership> ownership = ownershipRepository.findOwnershipByUserIdAndSnippetId(userId, snippetId);
       if (ownership.isPresent()) {
