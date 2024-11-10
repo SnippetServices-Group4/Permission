@@ -9,20 +9,20 @@ public class Reader {
   private Long readerID;
 
   @Column(nullable = false)
-  private Long userId;
+  private String userId;
 
-  @Column(nullable = false, unique = true)
+  @Column(nullable = false)
   private Long snippetId;
 
   // Added for testing purposes
-  public Reader(Long userId, Long snippetId) {
+  public Reader(String userId, Long snippetId) {
     this.userId = userId;
     this.snippetId = snippetId;
   }
 
   public Reader() {}
 
-  public Long getUserId() {
+  public String getUserId() {
     return userId;
   }
 

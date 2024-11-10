@@ -9,20 +9,20 @@ public class Ownership {
   private Long ownershipID;
 
   @Column(nullable = false)
-  private Long userId;
+  private String userId;
 
   @Column(nullable = false, unique = true)
   private Long snippetId;
 
   // Added for testing purposes
-  public Ownership(Long userId, Long snippetId) {
+  public Ownership(String userId, Long snippetId) {
     this.userId = userId;
     this.snippetId = snippetId;
   }
 
   public Ownership() {}
 
-  public Long getUserId() {
+  public String getUserId() {
     return userId;
   }
 

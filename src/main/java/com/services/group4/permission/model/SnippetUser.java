@@ -6,8 +6,8 @@ import jakarta.persistence.*;
 @Table
 public class SnippetUser {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long userID;
+  @Column(nullable = false, unique = true)
+  private String userID;
 
   @Column(nullable = false, unique = true)
   private String username;
@@ -21,7 +21,7 @@ public class SnippetUser {
   public SnippetUser() {}
 
   // Added for testing purposes
-  public SnippetUser(Long userID, String username, String password, String email) {
+  public SnippetUser(String userID, String username, String password, String email) {
     this.userID = userID;
     this.username = username;
     this.password = password;
@@ -34,7 +34,7 @@ public class SnippetUser {
     this.email = email;
   }
 
-  public Long getUserID() {
+  public String getUserID() {
     return userID;
   }
 
