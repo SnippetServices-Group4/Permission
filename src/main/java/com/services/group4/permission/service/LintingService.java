@@ -50,7 +50,7 @@ public class LintingService {
       for (Long snippetId : snippetsId) {
         System.out.println("Producing linting event for snippet: " + snippetId);
 
-//        lintEventProducer.publishEvent(snippetId, config);
+        lintEventProducer.publishEvent(snippetId, config);
 
         i++;
       }
