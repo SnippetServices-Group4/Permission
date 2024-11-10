@@ -4,16 +4,20 @@ import com.services.group4.permission.dto.LintRulesDto;
 import com.services.group4.permission.dto.UpdateRulesRequestDto;
 import com.services.group4.permission.model.LintConfig;
 import com.services.group4.permission.repository.LintConfigRepository;
+import com.services.group4.permission.service.async.LintEventProducer;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class LintingService {
   private final LintConfigRepository lintConfigRepository;
+  private final LintEventProducer lintEventProducer;
 
-  public LintingService(LintConfigRepository lintConfigRepository) {
+  public LintingService(LintConfigRepository lintConfigRepository, LintEventProducer lintEventProducer) {
     this.lintConfigRepository = lintConfigRepository;
+    this.lintEventProducer = lintEventProducer;
   }
 
   public LintConfig updateRules(UpdateRulesRequestDto req) {
@@ -39,5 +43,21 @@ public class LintingService {
     }
   }
 
-  public String
+  public Optional<Integer> asyncLint(List<Long> snippetsId, LintConfig config) {
+    int i = 0;
+
+    try {
+      for (Long snippetId : snippetsId) {
+        System.out.println("Producing linting event for snippet: " + snippetId);
+
+//        lintEventProducer.publishEvent(snippetId, config);
+
+        i++;
+      }
+    } catch (Exception e) {
+      return Optional.empty();
+    }
+
+    return Optional.of(i);
+  }
 }
