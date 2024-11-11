@@ -22,4 +22,3 @@ jobs:
       environment: "development"
       service_name: "permissions"
     secrets: inherit
-
