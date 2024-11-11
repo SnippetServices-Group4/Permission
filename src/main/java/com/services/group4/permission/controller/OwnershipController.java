@@ -11,6 +11,7 @@ import com.services.group4.permission.service.OwnershipService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 @RestController
 @RequestMapping("/ownership")
@@ -89,7 +90,10 @@ public class OwnershipController {
   public ResponseEntity<ResponseDto<Boolean>> hasOwnerPermission(
       @PathVariable String userId, @PathVariable Long snippetId) {
       try {
-        return ownershipService.hasOwnerPermission(userId, snippetId);
+        ResponseEntity<ResponseDto<Boolean>> ownerPermission = ownershipService.hasOwnerPermission(userId, snippetId);
+        return ownerPermission;
+      } catch (HttpClientErrorException.Forbidden e) {
+        return FullResponse.create("User does not have permission to update this snippet", "snippet", null, HttpStatus.FORBIDDEN);
       } catch (Exception e) {
         return FullResponse.create("Something went wrong getting the ownership permission for the snippet", "ownerPermission", false, HttpStatus.INTERNAL_SERVER_ERROR);
       }
