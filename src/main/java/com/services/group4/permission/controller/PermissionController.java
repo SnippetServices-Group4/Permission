@@ -29,7 +29,8 @@ public class PermissionController {
   @GetMapping("/allowedSnippets/{userId}")
   public ResponseEntity<ResponseDto<List<Long>>> getAllowedSnippets(@PathVariable String userId) {
     try {
-      return permissionService.getAllowedSnippets(userId);
+      ResponseEntity<ResponseDto<List<Long>>> allowedSnippets = permissionService.getAllowedSnippets(userId);
+      return allowedSnippets;
     } catch (Exception e) {
       System.out.println("Error: " + e.getMessage());
       return FullResponse.create("User doesn't have permission to view any snippet", "Snippet", null, HttpStatus.NOT_FOUND);
