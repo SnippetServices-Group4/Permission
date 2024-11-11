@@ -1,5 +1,6 @@
 package com.services.group4.permission.controller;
 
+import com.services.group4.permission.common.FullResponse;
 import com.services.group4.permission.dto.ResponseDto;
 import com.services.group4.permission.model.Reader;
 import com.services.group4.permission.repository.ReaderRepository;
@@ -70,7 +71,7 @@ public class ReaderController {
   }
 
 
-  // new routes for snippet-service
+  // TODO: new routes for snippet-service
   // reader/share funciona por postman
   @PostMapping("/share")
   public ResponseEntity<ResponseDto<String>> shareSnippet(@RequestBody Map<String, Object> requestData) {
@@ -88,7 +89,7 @@ public class ReaderController {
     try {
       return readerService.getReaderPermission(userId, snippetId);
     } catch (Exception e) {
-      return new ResponseEntity<>(new ResponseDto<>(e.getMessage(),false), HttpStatus.INTERNAL_SERVER_ERROR);
+      return FullResponse.create(e.getMessage(), "readerPermission",false, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

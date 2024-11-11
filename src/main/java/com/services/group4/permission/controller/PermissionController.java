@@ -1,5 +1,6 @@
 package com.services.group4.permission.controller;
 
+import com.services.group4.permission.common.FullResponse;
 import com.services.group4.permission.dto.ResponseDto;
 import com.services.group4.permission.model.Reader;
 import com.services.group4.permission.repository.ReaderRepository;
@@ -28,16 +29,18 @@ public class PermissionController {
   @GetMapping("/allowedSnippets/{userId}")
   public ResponseEntity<ResponseDto<List<Long>>> getAllowedSnippets(@PathVariable String userId) {
     try {
-      return permissionService.getAllowedSnippets(userId);
+      ResponseEntity<ResponseDto<List<Long>>> allowedSnippets = permissionService.getAllowedSnippets(userId);
+      return allowedSnippets;
     } catch (Exception e) {
       System.out.println("Error: " + e.getMessage());
-      return new ResponseEntity<>(new ResponseDto<>(e.getMessage(), null),HttpStatus.INTERNAL_SERVER_ERROR);
+      return FullResponse.create("User doesn't have permission to view any snippet", "Snippet", null, HttpStatus.NOT_FOUND);
     }
   }
 
   @GetMapping("/{userId}/for/{snippetId}")
   public ResponseEntity<ResponseDto<Boolean>> hasPermission(@PathVariable String userId, @PathVariable Long snippetId) {
     return permissionService.hasPermissionOnSnippet(userId, snippetId);
+
   }
 
   // ownership/delete funciona por postman
@@ -48,10 +51,7 @@ public class PermissionController {
       Long snippetId = ((Integer) requestData.get("snippetId")).longValue();
       return permissionService.deletePermissionsOfSnippet(userId, snippetId);
     } catch (Exception e) {
-      System.out.println(e.getMessage());
-      return new ResponseEntity<>(
-          new ResponseDto<>("Something went wrong deleting the ownership of the snippet",null),
-          HttpStatus.INTERNAL_SERVER_ERROR);
+      return FullResponse.create("Something went wrong deleting the ownership of the snippet", "Ownership", null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }
