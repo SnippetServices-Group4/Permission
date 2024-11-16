@@ -1,5 +1,6 @@
 package com.services.group4.permission.controller;
 
+import com.services.group4.permission.common.DataTuple;
 import com.services.group4.permission.dto.ResponseDto;
 import com.services.group4.permission.dto.UpdateRulesRequestDto;
 import com.services.group4.permission.model.LintConfig;
@@ -45,7 +46,10 @@ public class LintingController {
       String message = snippetsInQueue
           .map(i -> "Linting of " + i + " snippets in progress.")
           .orElse("No snippets to lint");
-      return new ResponseEntity<>(new ResponseDto<>(message, null), HttpStatus.OK);
+
+      List<Long> snippetsIds = snippetsId.orElse(List.of());
+
+      return new ResponseEntity<>(new ResponseDto<>(message, new DataTuple<>("snippetsIds", snippetsIds)), HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
