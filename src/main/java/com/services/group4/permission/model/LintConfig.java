@@ -1,7 +1,6 @@
 package com.services.group4.permission.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,7 +26,11 @@ public class LintConfig {
 
   public LintConfig() {}
 
-  public LintConfig(String userId, String writingConventionName, boolean printLnAcceptsExpressions, boolean readInputAcceptsExpressions) {
+  public LintConfig(
+      String userId,
+      String writingConventionName,
+      boolean printLnAcceptsExpressions,
+      boolean readInputAcceptsExpressions) {
     this.userId = userId;
     this.writingConventionName = writingConventionName;
     this.printLnAcceptsExpressions = printLnAcceptsExpressions;

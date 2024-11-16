@@ -32,7 +32,13 @@ public class FormatConfig {
 
   public FormatConfig() {}
 
-  public FormatConfig(String userId, boolean spaceBeforeColon, boolean spaceAfterColon, boolean equalSpaces, Integer printLineBreaks, Integer indentSize) {
+  public FormatConfig(
+      String userId,
+      boolean spaceBeforeColon,
+      boolean spaceAfterColon,
+      boolean equalSpaces,
+      Integer printLineBreaks,
+      Integer indentSize) {
     this.userId = userId;
     this.spaceBeforeColon = spaceBeforeColon;
     this.spaceAfterColon = spaceAfterColon;

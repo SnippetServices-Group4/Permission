@@ -7,15 +7,14 @@ import com.services.group4.permission.dto.UpdateRulesRequestDto;
 import com.services.group4.permission.model.LintConfig;
 import com.services.group4.permission.service.LintingService;
 import com.services.group4.permission.service.OwnershipService;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/linting")
@@ -29,7 +28,8 @@ public class LintingController {
   }
 
   @PostMapping("/update/rules")
-  public ResponseEntity<ResponseDto<List<Long>>> updateRulesAndLint(@RequestBody UpdateRulesRequestDto<LintRulesDto> req) {
+  public ResponseEntity<ResponseDto<List<Long>>> updateRulesAndLint(
+      @RequestBody UpdateRulesRequestDto<LintRulesDto> req) {
     try {
       System.out.println("Updating rules");
       LintConfig config = lintingService.updateRules(req);
@@ -44,13 +44,15 @@ public class LintingController {
         snippetsInQueue = lintingService.asyncLint(snippetsId.get(), config);
       }
 
-      String message = snippetsInQueue
-          .map(i -> "Linting of " + i + " snippets in progress.")
-          .orElse("No snippets to lint");
+      String message =
+          snippetsInQueue
+              .map(i -> "Linting of " + i + " snippets in progress.")
+              .orElse("No snippets to lint");
 
       List<Long> snippetsIds = snippetsId.orElse(List.of());
 
-      return new ResponseEntity<>(new ResponseDto<>(message, new DataTuple<>("snippetsIds", snippetsIds)), HttpStatus.OK);
+      return new ResponseEntity<>(
+          new ResponseDto<>(message, new DataTuple<>("snippetsIds", snippetsIds)), HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }

@@ -3,21 +3,19 @@ package com.services.group4.permission.service;
 import com.services.group4.permission.dto.FormatRulesDto;
 import com.services.group4.permission.dto.UpdateRulesRequestDto;
 import com.services.group4.permission.model.FormatConfig;
-import com.services.group4.permission.model.LintConfig;
 import com.services.group4.permission.repository.FormatConfigRepository;
 import com.services.group4.permission.service.async.FormatEventProducer;
-import com.services.group4.permission.service.async.LintEventProducer;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
 @Service
 public class FormattingService {
   private final FormatConfigRepository formatConfigRepository;
   private final FormatEventProducer formatEventProducer;
 
-  public FormattingService(FormatConfigRepository formatConfigRepository, FormatEventProducer formatEventProducer) {
+  public FormattingService(
+      FormatConfigRepository formatConfigRepository, FormatEventProducer formatEventProducer) {
     this.formatConfigRepository = formatConfigRepository;
     this.formatEventProducer = formatEventProducer;
   }
@@ -42,7 +40,14 @@ public class FormattingService {
 
       return formatConfigRepository.save(updatedConfig);
     } else {
-      FormatConfig newConfig = new FormatConfig(userId, rules.isSpaceBeforeColon(), rules.isSpaceAfterColon(), rules.isEqualSpaces(), rules.getPrintLineBreaks(), rules.getIndentSize());
+      FormatConfig newConfig =
+          new FormatConfig(
+              userId,
+              rules.isSpaceBeforeColon(),
+              rules.isSpaceAfterColon(),
+              rules.isEqualSpaces(),
+              rules.getPrintLineBreaks(),
+              rules.getIndentSize());
       return formatConfigRepository.save(newConfig);
     }
   }

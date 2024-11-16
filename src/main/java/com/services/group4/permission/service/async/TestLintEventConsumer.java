@@ -2,6 +2,8 @@ package com.services.group4.permission.service.async;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.Duration;
+import java.util.Map;
 import org.austral.ingsis.redis.RedisStreamConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +12,6 @@ import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.stream.StreamReceiver;
 import org.springframework.stereotype.Component;
-
-import java.time.Duration;
-import java.util.Map;
 
 @Component
 public class TestLintEventConsumer extends RedisStreamConsumer<EventMessage> {
@@ -31,8 +30,7 @@ public class TestLintEventConsumer extends RedisStreamConsumer<EventMessage> {
 
     ObjectMapper mapper = new ObjectMapper();
     try {
-      Map<String, Object> payloadMap =
-          mapper.readValue(product.config(), new TypeReference<>() {});
+      Map<String, Object> payloadMap = mapper.readValue(product.config(), new TypeReference<>() {});
       System.out.println("JSON Payload: " + payloadMap);
     } catch (Exception e) {
       System.err.println("Error deserializing jsonPayload: " + e.getMessage());
@@ -40,7 +38,9 @@ public class TestLintEventConsumer extends RedisStreamConsumer<EventMessage> {
   }
 
   @Override
-  protected @NotNull StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, EventMessage>> options() {
+  protected @NotNull StreamReceiver.StreamReceiverOptions<
+          String, ObjectRecord<String, EventMessage>>
+      options() {
     return StreamReceiver.StreamReceiverOptions.builder()
         .pollTimeout(Duration.ofSeconds(1))
         .targetType(EventMessage.class)

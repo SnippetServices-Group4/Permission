@@ -2,7 +2,6 @@ package com.services.group4.permission.service.async;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.permission.model.FormatConfig;
-import com.services.group4.permission.model.LintConfig;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +17,8 @@ public class FormatEventProducer {
 
   @Autowired
   public FormatEventProducer(
-      @Value("${stream.format.key}") String streamKey, @NotNull RedisTemplate<String, String> redis) {
+      @Value("${stream.format.key}") String streamKey,
+      @NotNull RedisTemplate<String, String> redis) {
     this.streamKey = streamKey;
     this.redis = redis;
   }
