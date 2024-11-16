@@ -5,5 +5,4 @@ import com.services.group4.permission.common.DataTuple;
 import com.services.group4.permission.common.ResponseDtoSerializer;
 
 @JsonSerialize(using = ResponseDtoSerializer.class)
-public record ResponseDto<T>(String message, DataTuple<T> data) {
-}
+public record ResponseDto<T>(String message, DataTuple<T> data) {}
