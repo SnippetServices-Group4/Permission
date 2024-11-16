@@ -28,7 +28,7 @@ public class LintingController {
   }
 
   @PostMapping("/update/rules")
-  public ResponseEntity<ResponseDto> updateRulesAndLint(@RequestBody UpdateRulesRequestDto req) {
+  public ResponseEntity<ResponseDto<List<Long>>> updateRulesAndLint(@RequestBody UpdateRulesRequestDto req) {
     try {
       System.out.println("Updating rules");
       LintConfig config = lintingService.updateRules(req);
