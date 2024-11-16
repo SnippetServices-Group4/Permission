@@ -18,58 +18,10 @@ import org.springframework.web.client.HttpClientErrorException;
 public class OwnershipController {
 
   private final OwnershipService ownershipService;
-  private final OwnershipRepository ownershipRepository;
 
-  public OwnershipController(OwnershipService ownershipService, OwnershipRepository ownershipRepository) {
+  public OwnershipController(OwnershipService ownershipService) {
     this.ownershipService = ownershipService;
-    this.ownershipRepository = ownershipRepository;
   }
-
-  @PostMapping("/create")
-  public ResponseEntity<String> addOwnership(@RequestBody Ownership ownership) {
-    try {
-      ownershipRepository.save(ownership);
-      return new ResponseEntity<>("Ownership created", HttpStatus.CREATED);
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-      return new ResponseEntity<>(
-          "Something went wrong creating the ownership", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  @GetMapping("/user/{userId}")
-  public ResponseEntity<Ownership> getOwnershipByUserId(@PathVariable String userId) {
-    Optional<Ownership> ownership = ownershipRepository.findOwnershipByUserId(userId);
-    return ownership
-        .map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-  }
-
-  @GetMapping("/snippet/{snippetId}")
-  public ResponseEntity<Ownership> getOwnershipBySnippetId(@PathVariable Long snippetId) {
-    Optional<Ownership> ownership = ownershipRepository.findOwnershipBySnippetId(snippetId);
-    return ownership
-        .map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-  }
-
-  @GetMapping
-  public ResponseEntity<Iterable<Ownership>> getAllOwnerships() {
-    return new ResponseEntity<>(ownershipRepository.findAll(), HttpStatus.OK);
-  }
-
-  @DeleteMapping("/delete/{id}")
-  public ResponseEntity<String> deleteOwnership(@PathVariable Long id) {
-    try {
-      ownershipRepository.deleteById(id);
-      return new ResponseEntity<>("Ownership deleted", HttpStatus.OK);
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-      return new ResponseEntity<>(
-          "Something went wrong deleting the ownership", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
 
   // TODO: new routes for snippet-service
 
