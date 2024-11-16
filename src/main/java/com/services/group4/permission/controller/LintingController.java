@@ -37,7 +37,7 @@ public class LintingController {
       System.out.println("Getting snippets");
       Optional<List<Long>> snippetsId = ownershipService.findSnippetIdsByUserId(config.getUserId());
 
-      Optional<Integer> snippetsInQueue = Optional.of(0);
+      Optional<Integer> snippetsInQueue = Optional.empty();
 
       if (snippetsId.isPresent()) {
         System.out.println("Linting snippets");
