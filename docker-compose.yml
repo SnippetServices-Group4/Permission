@@ -13,6 +13,8 @@ services:
       DB_NAME: "${DB_NAME}"
       DB_USER: "${DB_USER}"
       DB_PASSWORD: "${DB_PASSWORD}"
+      REDIS_HOST: "${REDIS_HOST}"
+      REDIS_PORT: "${REDIS_PORT}"
     ports:
       - ${SPRING_PORT}:${SPRING_PORT}
 
@@ -27,6 +29,12 @@ services:
       - ${DB_PORT}:5432
     volumes:
       - db_data:/var/lib/postgresql/data
+
+  redis:
+    container_name: "${REDIS_HOST}"
+    image: redis:6-alpine
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
 
 volumes:
   db_data:
