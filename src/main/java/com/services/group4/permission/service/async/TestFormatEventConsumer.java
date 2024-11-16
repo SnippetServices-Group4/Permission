@@ -14,11 +14,11 @@ import org.springframework.data.redis.stream.StreamReceiver;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TestLintEventConsumer extends RedisStreamConsumer<EventMessage> {
+public class TestFormatEventConsumer extends RedisStreamConsumer<EventMessage> {
   @Autowired
-  public TestLintEventConsumer(
-      @Value("${stream.lint.key}") String streamKey,
-      @Value("${groups.lint}") String groupId,
+  public TestFormatEventConsumer(
+      @Value("${stream.format.key}") String streamKey,
+      @Value("${groups.format}") String groupId,
       @NotNull RedisTemplate<String, String> redis) {
     super(streamKey, groupId, redis);
   }

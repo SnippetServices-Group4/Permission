@@ -5,22 +5,22 @@ import com.services.group4.permission.dto.UpdateRulesRequestDto;
 import com.services.group4.permission.model.LintConfig;
 import com.services.group4.permission.repository.LintConfigRepository;
 import com.services.group4.permission.service.async.LintEventProducer;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
 @Service
 public class LintingService {
   private final LintConfigRepository lintConfigRepository;
   private final LintEventProducer lintEventProducer;
 
-  public LintingService(LintConfigRepository lintConfigRepository, LintEventProducer lintEventProducer) {
+  public LintingService(
+      LintConfigRepository lintConfigRepository, LintEventProducer lintEventProducer) {
     this.lintConfigRepository = lintConfigRepository;
     this.lintEventProducer = lintEventProducer;
   }
 
-  public LintConfig updateRules(UpdateRulesRequestDto req) {
+  public LintConfig updateRules(UpdateRulesRequestDto<LintRulesDto> req) {
     String userId = req.userId();
     LintRulesDto rules = req.rules();
 
@@ -38,7 +38,12 @@ public class LintingService {
 
       return lintConfigRepository.save(updatedConfig);
     } else {
-      LintConfig newConfig = new LintConfig(userId, rules.getWritingConventionName(), rules.isPrintLnAcceptsExpressions(), rules.isReadInputAcceptsExpressions());
+      LintConfig newConfig =
+          new LintConfig(
+              userId,
+              rules.getWritingConventionName(),
+              rules.isPrintLnAcceptsExpressions(),
+              rules.isReadInputAcceptsExpressions());
       return lintConfigRepository.save(newConfig);
     }
   }
