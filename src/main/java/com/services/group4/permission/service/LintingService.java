@@ -47,7 +47,7 @@ public class LintingService {
     }
   }
 
-  public Optional<Integer> asyncLint(List<Long> snippetsId, LintConfig config) {
+  public Optional<Integer> asyncLint(List<Long> snippetsId, LintRulesDto config) {
     int i = 0;
 
     try {

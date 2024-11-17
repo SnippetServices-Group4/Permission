@@ -31,16 +31,16 @@ public class FormattingController {
       @RequestHeader("userId") String userId) {
     try {
       System.out.println("Updating rules");
-      FormatConfig config = formattingService.updateRules(userId, req);
+      formattingService.updateRules(userId, req);
 
       System.out.println("Getting snippets");
-      Optional<List<Long>> snippetsId = ownershipService.findSnippetIdsByUserId(config.getUserId());
+      Optional<List<Long>> snippetsId = ownershipService.findSnippetIdsByUserId(userId);
 
       Optional<Integer> snippetsInQueue = Optional.empty();
 
       if (snippetsId.isPresent()) {
         System.out.println("Formatting snippets");
-        snippetsInQueue = formattingService.asyncFormat(snippetsId.get(), config);
+        snippetsInQueue = formattingService.asyncFormat(snippetsId.get(), req.rules());
       }
 
       String message =

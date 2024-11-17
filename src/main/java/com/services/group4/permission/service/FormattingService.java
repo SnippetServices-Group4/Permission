@@ -51,7 +51,7 @@ public class FormattingService {
     }
   }
 
-  public Optional<Integer> asyncFormat(List<Long> snippetsId, FormatConfig config) {
+  public Optional<Integer> asyncFormat(List<Long> snippetsId, FormatRulesDto config) {
     int i = 0;
 
     try {

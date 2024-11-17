@@ -30,16 +30,16 @@ public class LintingController {
       @RequestHeader("userId") String userId) {
     try {
       System.out.println("Updating rules");
-      LintConfig config = lintingService.updateRules(userId, req);
+      lintingService.updateRules(userId, req);
 
       System.out.println("Getting snippets");
-      Optional<List<Long>> snippetsId = ownershipService.findSnippetIdsByUserId(config.getUserId());
+      Optional<List<Long>> snippetsId = ownershipService.findSnippetIdsByUserId(userId);
 
       Optional<Integer> snippetsInQueue = Optional.empty();
 
       if (snippetsId.isPresent()) {
         System.out.println("Linting snippets");
-        snippetsInQueue = lintingService.asyncLint(snippetsId.get(), config);
+        snippetsInQueue = lintingService.asyncLint(snippetsId.get(), req.rules());
       }
 
       String message =
