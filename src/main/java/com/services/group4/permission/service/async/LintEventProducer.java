@@ -1,8 +1,8 @@
 package com.services.group4.permission.service.async;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.services.group4.permission.model.FormatConfig;
 import com.services.group4.permission.model.LintConfig;
+import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,8 +10,6 @@ import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.connection.stream.StreamRecords;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 @Component
 public class LintEventProducer {
@@ -39,10 +37,10 @@ public class LintEventProducer {
       String jsonPayloadString = mapper.writeValueAsString(config);
 
       // Construct the entire message structure
-      Map<String, Object> message = Map.of(
-          "snippetId", snippetId,
-          "config", jsonPayloadString
-      );
+      Map<String, Object> message =
+          Map.of(
+              "snippetId", snippetId,
+              "config", jsonPayloadString);
 
       // Serialize the complete message to a JSON string
       String finalMessageJson = mapper.writeValueAsString(message);

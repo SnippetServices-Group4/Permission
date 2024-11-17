@@ -49,8 +49,7 @@ public class TestLintEventConsumer extends RedisStreamConsumer<String> {
   }
 
   @Override
-  protected @NotNull StreamReceiver.StreamReceiverOptions<
-          String, ObjectRecord<String, String>>
+  protected @NotNull StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, String>>
       options() {
     return StreamReceiver.StreamReceiverOptions.builder()
         .pollTimeout(Duration.ofSeconds(1))
