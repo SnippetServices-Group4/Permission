@@ -1,20 +1,29 @@
 package com.services.group4.permission.controller;
 
+import com.services.group4.permission.dto.ResponseDto;
+import com.services.group4.permission.dto.UserDto;
 import com.services.group4.permission.model.SnippetUser;
 import com.services.group4.permission.repository.UserRepository;
+
+import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
+import com.services.group4.permission.service.Auth0Users;
+import com.services.group4.permission.service.TokenService;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
   private final UserRepository userRepository;
+  private final Auth0Users auth0Users;
 
-  public UserController(UserRepository userRepository) {
+  public UserController(UserRepository userRepository, RestTemplate restTemplate) {
     this.userRepository = userRepository;
+    this.auth0Users = new Auth0Users(new TokenService(restTemplate), restTemplate);
   }
 
   @PostMapping("/register")
@@ -84,5 +93,10 @@ public class UserController {
   public ResponseEntity<List<SnippetUser>> searchUsers(@RequestParam String username) {
     List<SnippetUser> users = userRepository.findByUsernameContaining(username);
     return new ResponseEntity<>(users, HttpStatus.OK);
+  }
+
+  @GetMapping("/getAll")
+  public ResponseDto<List<UserDto>> getUsers() {
+    return auth0Users.getUsers();
   }
 }
