@@ -90,7 +90,7 @@ public class TokenService {
         body.add("client_id", "G5JC0DlwnrIv7YlY03lqCdBcKqY0RLI4");
         body.add("client_secret", "SD4jJCvJdfGU4UWGtUgD2otbRxAlH3mVTwnzXBNlVIvjv9AR22Llt3XW3m5XTOKZ");
         body.add("audience", "https://dev-ybvfkgr1bd82iozp.us.auth0.com/api/v2/");
-        body.add("scope", "read:users");
+        body.add("scope", "read:users read:user_idp_tokens");
 
         return new HttpEntity<>(body, headers);
     }
