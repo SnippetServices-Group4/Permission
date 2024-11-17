@@ -2,11 +2,14 @@ package com.services.group4.permission.controller;
 
 import com.services.group4.permission.model.SnippetUser;
 import com.services.group4.permission.repository.UserRepository;
+
+import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("/user")
@@ -84,5 +87,21 @@ public class UserController {
   public ResponseEntity<List<SnippetUser>> searchUsers(@RequestParam String username) {
     List<SnippetUser> users = userRepository.findByUsernameContaining(username);
     return new ResponseEntity<>(users, HttpStatus.OK);
+  }
+
+  @GetMapping("/getAll")
+  public ResponseEntity<String> getAll() {
+    String url = "https://dev-ybvfkgr1bd82iozp.us.auth0.com/oauth/token";
+    String body = "grant_type=client_credentials&client_id=G5JC0DlwnrIv7YlY03lqCdBcKqY0RLI4&client_secret=%7ByourClientSecret%7D&audience=https%3A%2F%2Fdev-ybvfkgr1bd82iozp.us.auth0.com%2Fapi%2Fv2%2F";
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+    HttpEntity<String> request = new HttpEntity<>(body, headers);
+
+    ResponseEntity<String> response = new RestTemplate().postForEntity(url, request, String.class);
+    response.getBody();
+
+    return new ResponseEntity<>("All users", HttpStatus.OK);
   }
 }
