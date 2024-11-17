@@ -1,12 +1,9 @@
 name: "CD - Development"
 
 on:
-  workflow_dispatch:
-    inputs:
-      trigger_event:
-        description: "Ejecutar la acción manualmente"
-        required: false
-        default: "manual"
+  push:
+    branches: 
+      - dev
   pull_request:
     types: [closed]
     branches: [dev]
