@@ -1,58 +1,63 @@
 package com.services.group4.permission.controller;
 
-import com.services.group4.permission.model.Ownership;
-import com.services.group4.permission.repository.OwnershipRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import com.services.group4.permission.common.FullResponse;
+import com.services.group4.permission.dto.RequestDtoSnippet;
+import com.services.group4.permission.dto.ResponseDto;
+import com.services.group4.permission.service.OwnershipService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 @RestController
 @RequestMapping("/ownership")
 public class OwnershipController {
 
-  private final OwnershipRepository ownershipRepository;
+  private final OwnershipService ownershipService;
 
-  public OwnershipController(OwnershipRepository ownershipRepository) {
-    this.ownershipRepository = ownershipRepository;
+  public OwnershipController(OwnershipService ownershipService) {
+    this.ownershipService = ownershipService;
   }
 
+  // TODO: new routes for snippet-service
 
-  @PostMapping("/create")
-  public ResponseEntity<String> addOwnership(@RequestBody Ownership ownership) {
+  // ownership/created funciona por postman
+  @PostMapping("/createRelation")
+  public ResponseEntity<ResponseDto<Long>> createOwnership(
+      @RequestBody RequestDtoSnippet requestData) {
     try {
-      ownershipRepository.save(ownership);
-      return new ResponseEntity<>("Ownership created", HttpStatus.CREATED);
+      String userId = requestData.userId();
+      Long snippetId = requestData.snippetId();
+      return ownershipService.createOwnership(userId, snippetId);
     } catch (Exception e) {
-      System.out.println(e.getMessage());
-      return new ResponseEntity<>("Something went wrong creating the ownership",
-              HttpStatus.INTERNAL_SERVER_ERROR);
+      return FullResponse.create(
+          "Something went wrong creating the ownership for the snippet",
+          "Empty",
+          null,
+          HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<Ownership> getOwnershipById(@PathVariable Long id) {
-    return ownershipRepository.findById(id)
-            .map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-  }
-
-  @GetMapping
-  public ResponseEntity<Iterable<Ownership>> getAllOwnerships() {
-    return new ResponseEntity<>(ownershipRepository.findAll(), HttpStatus.OK);
-  }
-
-  //delete
-  @DeleteMapping("/delete/{id}")
-  public ResponseEntity<String> deleteOwnership(@PathVariable Long id) {
+  // ownership/getPermission funciona por postman
+  @GetMapping("/permission/{userId}/for/{snippetId}")
+  public ResponseEntity<ResponseDto<Boolean>> hasOwnerPermission(
+      @PathVariable String userId, @PathVariable Long snippetId) {
     try {
-      ownershipRepository.deleteById(id);
-      return new ResponseEntity<>("Ownership deleted", HttpStatus.OK);
+      ResponseEntity<ResponseDto<Boolean>> ownerPermission =
+          ownershipService.hasOwnerPermission(userId, snippetId);
+      return ownerPermission;
+    } catch (HttpClientErrorException.Forbidden e) {
+      return FullResponse.create(
+          "User does not have permission to update this snippet",
+          "snippet",
+          null,
+          HttpStatus.FORBIDDEN);
     } catch (Exception e) {
-      System.out.println(e.getMessage());
-      return new ResponseEntity<>("Something went wrong deleting the ownership",
-              HttpStatus.INTERNAL_SERVER_ERROR);
+      return FullResponse.create(
+          "Something went wrong getting the ownership permission for the snippet",
+          "ownerPermission",
+          false,
+          HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

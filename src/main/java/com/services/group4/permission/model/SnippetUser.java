@@ -5,58 +5,60 @@ import jakarta.persistence.*;
 @Entity
 @Table
 public class SnippetUser {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userID;
-    @Column(nullable = false, unique = true)
-    private String username;
-    @Column(nullable = false)
-    private String password;
-    @Column(nullable = false, unique = true)
-    private String email;
+  @Id
+  @Column(nullable = false, unique = true)
+  private String userID;
 
-    public SnippetUser() {
-    }
+  @Column(nullable = false, unique = true)
+  private String username;
 
-    public SnippetUser(String username, String password, String email) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-    }
+  @Column(nullable = false)
+  private String password;
 
-    // Added for testing purposes
-    public SnippetUser(Long userID, String username, String password, String email) {
+  @Column(nullable = false, unique = true)
+  private String email;
+
+  public SnippetUser() {}
+
+  // Added for testing purposes
+  public SnippetUser(String userID, String username, String password, String email) {
     this.userID = userID;
     this.username = username;
     this.password = password;
     this.email = email;
   }
 
-    public Long getUserID() {
-        return userID;
-    }
+  public SnippetUser(String username, String password, String email) {
+    this.username = username;
+    this.password = password;
+    this.email = email;
+  }
 
-    public String getUsername() {
-        return username;
-    }
+  public String getUserID() {
+    return userID;
+  }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+  public String getUsername() {
+    return username;
+  }
 
-    public String getPassword() {
-        return password;
-    }
+  public void setUsername(String username) {
+    this.username = username;
+  }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+  public String getPassword() {
+    return password;
+  }
 
-    public String getEmail() {
-        return email;
-    }
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
 }
