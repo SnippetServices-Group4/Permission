@@ -18,7 +18,7 @@ public class TestFormatEventConsumer extends RedisStreamConsumer<EventMessage> {
   @Autowired
   public TestFormatEventConsumer(
       @Value("${stream.format.key}") String streamKey,
-      @Value("${groups.format}") String groupId,
+      @Value("test-format-group") String groupId,
       @NotNull RedisTemplate<String, String> redis) {
     super(streamKey, groupId, redis);
   }

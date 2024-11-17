@@ -18,7 +18,7 @@ public class TestLintEventConsumer extends RedisStreamConsumer<EventMessage> {
   @Autowired
   public TestLintEventConsumer(
       @Value("${stream.lint.key}") String streamKey,
-      @Value("${groups.lint}") String groupId,
+      @Value("test-lint-group") String groupId,
       @NotNull RedisTemplate<String, String> redis) {
     super(streamKey, groupId, redis);
   }
