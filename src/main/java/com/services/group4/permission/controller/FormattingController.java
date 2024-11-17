@@ -27,7 +27,8 @@ public class FormattingController {
 
   @PostMapping("/update/rules")
   public ResponseEntity<ResponseDto<List<Long>>> updateRulesAndFormat(
-      @RequestBody UpdateRulesRequestDto<FormatRulesDto> req, @RequestHeader("userId") String userId) {
+      @RequestBody UpdateRulesRequestDto<FormatRulesDto> req,
+      @RequestHeader("userId") String userId) {
     try {
       System.out.println("Updating rules");
       FormatConfig config = formattingService.updateRules(userId, req);

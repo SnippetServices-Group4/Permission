@@ -4,13 +4,10 @@ import com.services.group4.permission.dto.ResponseDto;
 import com.services.group4.permission.dto.UserDto;
 import com.services.group4.permission.model.SnippetUser;
 import com.services.group4.permission.repository.UserRepository;
-
-import java.net.http.HttpResponse;
-import java.util.List;
-import java.util.Optional;
-
 import com.services.group4.permission.service.Auth0Users;
 import com.services.group4.permission.service.TokenService;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
