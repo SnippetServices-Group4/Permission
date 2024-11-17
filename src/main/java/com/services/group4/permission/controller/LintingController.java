@@ -4,7 +4,6 @@ import com.services.group4.permission.common.DataTuple;
 import com.services.group4.permission.dto.LintRulesDto;
 import com.services.group4.permission.dto.ResponseDto;
 import com.services.group4.permission.dto.UpdateRulesRequestDto;
-import com.services.group4.permission.model.LintConfig;
 import com.services.group4.permission.service.LintingService;
 import com.services.group4.permission.service.OwnershipService;
 import java.util.List;

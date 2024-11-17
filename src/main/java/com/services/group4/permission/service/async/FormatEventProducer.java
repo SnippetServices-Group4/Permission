@@ -2,7 +2,6 @@ package com.services.group4.permission.service.async;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.permission.dto.FormatRulesDto;
-import com.services.group4.permission.model.FormatConfig;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
