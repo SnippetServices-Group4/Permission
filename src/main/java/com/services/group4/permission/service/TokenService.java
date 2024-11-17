@@ -64,8 +64,6 @@ public class TokenService {
             ResponseEntity<String> response = restTemplate.exchange(
                     url, HttpMethod.POST, requestEntity, String.class);
 
-            System.out.println(response.getBody());
-
             ObjectMapper mapper = new ObjectMapper();
             JsonNode responseJson = mapper.readTree(response.getBody());
             this.accessToken = responseJson.get("access_token").asText();

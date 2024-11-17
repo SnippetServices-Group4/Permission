@@ -1,5 +1,7 @@
 package com.services.group4.permission.controller;
 
+import com.services.group4.permission.dto.ResponseDto;
+import com.services.group4.permission.dto.UserDto;
 import com.services.group4.permission.model.SnippetUser;
 import com.services.group4.permission.repository.UserRepository;
 
@@ -7,6 +9,8 @@ import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Optional;
 
+import com.services.group4.permission.service.Auth0Users;
+import com.services.group4.permission.service.TokenService;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -15,9 +19,11 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping("/user")
 public class UserController {
   private final UserRepository userRepository;
+  private final Auth0Users auth0Users;
 
-  public UserController(UserRepository userRepository) {
+  public UserController(UserRepository userRepository, RestTemplate restTemplate) {
     this.userRepository = userRepository;
+    this.auth0Users = new Auth0Users(new TokenService(restTemplate), restTemplate);
   }
 
   @PostMapping("/register")
@@ -90,18 +96,7 @@ public class UserController {
   }
 
   @GetMapping("/getAll")
-  public ResponseEntity<String> getAll() {
-    String url = "https://dev-ybvfkgr1bd82iozp.us.auth0.com/oauth/token";
-    String body = "grant_type=client_credentials&client_id=G5JC0DlwnrIv7YlY03lqCdBcKqY0RLI4&client_secret=%7ByourClientSecret%7D&audience=https%3A%2F%2Fdev-ybvfkgr1bd82iozp.us.auth0.com%2Fapi%2Fv2%2F";
-
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-    HttpEntity<String> request = new HttpEntity<>(body, headers);
-
-    ResponseEntity<String> response = new RestTemplate().postForEntity(url, request, String.class);
-    response.getBody();
-
-    return new ResponseEntity<>("All users", HttpStatus.OK);
+  public ResponseDto<List<UserDto>> getUsers() {
+    return auth0Users.getUsers();
   }
 }
