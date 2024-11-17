@@ -1,5 +1,12 @@
 name: "Continuous Deployment"
+
 on:
+  workflow_dispatch:
+    inputs:
+      trigger_event:
+        description: "Ejecutar la acción manualmente"
+        required: false
+        default: "manual"
   pull_request:
     types: [closed]
     branches:
