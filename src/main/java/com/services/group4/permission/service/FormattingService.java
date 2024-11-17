@@ -20,8 +20,7 @@ public class FormattingService {
     this.formatEventProducer = formatEventProducer;
   }
 
-  public FormatConfig updateRules(UpdateRulesRequestDto<FormatRulesDto> req) {
-    String userId = req.userId();
+  public FormatConfig updateRules(String userId, UpdateRulesRequestDto<FormatRulesDto> req) {
     FormatRulesDto rules = req.rules();
 
     System.out.println("Updating rules for user: " + userId);

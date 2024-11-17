@@ -11,10 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/linting")
@@ -29,10 +26,11 @@ public class LintingController {
 
   @PostMapping("/update/rules")
   public ResponseEntity<ResponseDto<List<Long>>> updateRulesAndLint(
-      @RequestBody UpdateRulesRequestDto<LintRulesDto> req) {
+      @RequestBody UpdateRulesRequestDto<LintRulesDto> req,
+      @RequestHeader("userId") String userId) {
     try {
       System.out.println("Updating rules");
-      LintConfig config = lintingService.updateRules(req);
+      LintConfig config = lintingService.updateRules(userId, req);
 
       System.out.println("Getting snippets");
       Optional<List<Long>> snippetsId = ownershipService.findSnippetIdsByUserId(config.getUserId());

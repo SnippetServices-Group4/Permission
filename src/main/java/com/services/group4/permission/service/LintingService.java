@@ -20,8 +20,7 @@ public class LintingService {
     this.lintEventProducer = lintEventProducer;
   }
 
-  public LintConfig updateRules(UpdateRulesRequestDto<LintRulesDto> req) {
-    String userId = req.userId();
+  public LintConfig updateRules(String userId, UpdateRulesRequestDto<LintRulesDto> req) {
     LintRulesDto rules = req.rules();
 
     System.out.println("Updating rules for user: " + userId);
