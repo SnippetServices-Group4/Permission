@@ -11,10 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/formatting")
@@ -30,10 +27,10 @@ public class FormattingController {
 
   @PostMapping("/update/rules")
   public ResponseEntity<ResponseDto<List<Long>>> updateRulesAndFormat(
-      @RequestBody UpdateRulesRequestDto<FormatRulesDto> req) {
+      @RequestBody UpdateRulesRequestDto<FormatRulesDto> req, @RequestHeader("userId") String userId) {
     try {
       System.out.println("Updating rules");
-      FormatConfig config = formattingService.updateRules(req);
+      FormatConfig config = formattingService.updateRules(userId, req);
 
       System.out.println("Getting snippets");
       Optional<List<Long>> snippetsId = ownershipService.findSnippetIdsByUserId(config.getUserId());
