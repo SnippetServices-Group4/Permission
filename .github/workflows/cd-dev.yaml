@@ -1,6 +1,10 @@
 name: "CD - Development"
 
 on:
+#Simplify Publishing 
+  push:
+    branches: 
+      - dev
   pull_request:
     types: [closed]
     branches: [dev]
