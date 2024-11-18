@@ -8,7 +8,6 @@ import com.services.group4.permission.service.Auth0Users;
 import com.services.group4.permission.service.TokenService;
 import java.util.List;
 import java.util.Optional;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
