@@ -7,10 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface OwnershipRepository extends JpaRepository<Ownership, Long> {
-  Optional<Ownership> findOwnershipByUserId(String userId);
-
-  Optional<Ownership> findOwnershipBySnippetId(Long snippetId);
-
   Optional<Ownership> findOwnershipByUserIdAndSnippetId(String userId, Long snippetId);
 
   @Query("SELECT o.snippetId FROM Ownership o WHERE o.userId = :userId")
