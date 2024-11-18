@@ -8,10 +8,14 @@ import com.services.group4.permission.service.Auth0Users;
 import com.services.group4.permission.service.TokenService;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.http.*;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+@Slf4j
 @RestController
 @RequestMapping("/user")
 public class UserController {

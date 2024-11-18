@@ -23,8 +23,7 @@ public class ReaderController {
   // reader/share funciona por postman
   @PostMapping("/share")
   public ResponseEntity<ResponseDto<String>> shareSnippet(
-      @RequestBody RequestDtoShareSnippet requestData) {
-    String ownerId = requestData.userId();
+      @RequestBody RequestDtoShareSnippet requestData, @RequestHeader("userId") String ownerId) {
     Long snippetId = requestData.snippetId();
     String targetUserId = requestData.targetUserId();
 
