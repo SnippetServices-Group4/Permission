@@ -4,7 +4,6 @@ import com.services.group4.permission.common.DataTuple;
 import com.services.group4.permission.dto.FormatRulesDto;
 import com.services.group4.permission.dto.ResponseDto;
 import com.services.group4.permission.dto.UpdateRulesRequestDto;
-import com.services.group4.permission.model.FormatConfig;
 import com.services.group4.permission.service.FormattingService;
 import com.services.group4.permission.service.OwnershipService;
 import java.util.List;
@@ -25,22 +24,39 @@ public class FormattingController {
     this.ownershipService = ownershipService;
   }
 
+  @GetMapping("/rules")
+  public ResponseEntity<ResponseDto<FormatRulesDto>> getConfig(
+      @RequestHeader("userId") String userId) {
+    Optional<FormatRulesDto> config = formattingService.getConfig(userId);
+    return config
+        .map(
+            c ->
+                new ResponseEntity<>(
+                    new ResponseDto<>(
+                        "Config of user " + userId + " found.", new DataTuple<>("config", c)),
+                    HttpStatus.OK))
+        .orElseGet(
+            () ->
+                new ResponseEntity<>(
+                    new ResponseDto<>("User doesn't exist.", null), HttpStatus.NOT_FOUND));
+  }
+
   @PostMapping("/update/rules")
   public ResponseEntity<ResponseDto<List<Long>>> updateRulesAndFormat(
       @RequestBody UpdateRulesRequestDto<FormatRulesDto> req,
       @RequestHeader("userId") String userId) {
     try {
       System.out.println("Updating rules");
-      FormatConfig config = formattingService.updateRules(userId, req);
+      formattingService.updateRules(userId, req);
 
       System.out.println("Getting snippets");
-      Optional<List<Long>> snippetsId = ownershipService.findSnippetIdsByUserId(config.getUserId());
+      Optional<List<Long>> snippetsId = ownershipService.findSnippetIdsByUserId(userId);
 
       Optional<Integer> snippetsInQueue = Optional.empty();
 
       if (snippetsId.isPresent()) {
         System.out.println("Formatting snippets");
-        snippetsInQueue = formattingService.asyncFormat(snippetsId.get(), config);
+        snippetsInQueue = formattingService.asyncFormat(snippetsId.get(), req.rules());
       }
 
       String message =

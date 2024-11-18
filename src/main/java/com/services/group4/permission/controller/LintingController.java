@@ -4,7 +4,6 @@ import com.services.group4.permission.common.DataTuple;
 import com.services.group4.permission.dto.LintRulesDto;
 import com.services.group4.permission.dto.ResponseDto;
 import com.services.group4.permission.dto.UpdateRulesRequestDto;
-import com.services.group4.permission.model.LintConfig;
 import com.services.group4.permission.service.LintingService;
 import com.services.group4.permission.service.OwnershipService;
 import java.util.List;
@@ -24,22 +23,39 @@ public class LintingController {
     this.ownershipService = ownershipService;
   }
 
+  @GetMapping("/rules")
+  public ResponseEntity<ResponseDto<LintRulesDto>> getConfig(
+      @RequestHeader("userId") String userId) {
+    Optional<LintRulesDto> config = lintingService.getConfig(userId);
+    return config
+        .map(
+            c ->
+                new ResponseEntity<>(
+                    new ResponseDto<>(
+                        "Config of user " + userId + " found.", new DataTuple<>("config", c)),
+                    HttpStatus.OK))
+        .orElseGet(
+            () ->
+                new ResponseEntity<>(
+                    new ResponseDto<>("User doesn't exist.", null), HttpStatus.NOT_FOUND));
+  }
+
   @PostMapping("/update/rules")
   public ResponseEntity<ResponseDto<List<Long>>> updateRulesAndLint(
       @RequestBody UpdateRulesRequestDto<LintRulesDto> req,
       @RequestHeader("userId") String userId) {
     try {
       System.out.println("Updating rules");
-      LintConfig config = lintingService.updateRules(userId, req);
+      lintingService.updateRules(userId, req);
 
       System.out.println("Getting snippets");
-      Optional<List<Long>> snippetsId = ownershipService.findSnippetIdsByUserId(config.getUserId());
+      Optional<List<Long>> snippetsId = ownershipService.findSnippetIdsByUserId(userId);
 
       Optional<Integer> snippetsInQueue = Optional.empty();
 
       if (snippetsId.isPresent()) {
         System.out.println("Linting snippets");
-        snippetsInQueue = lintingService.asyncLint(snippetsId.get(), config);
+        snippetsInQueue = lintingService.asyncLint(snippetsId.get(), req.rules());
       }
 
       String message =

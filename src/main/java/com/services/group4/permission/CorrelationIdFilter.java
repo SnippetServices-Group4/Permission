@@ -7,14 +7,13 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.MDC;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
-
 import java.io.IOException;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 @Component
 @Order(1)
@@ -34,9 +33,12 @@ public class CorrelationIdFilter implements Filter {
       String correlationId = httpRequest.getHeader(CORRELATION_ID_HEADER);
       if (correlationId == null) {
         correlationId = UUID.randomUUID().toString();
-        logger.info("(PermissionService) No Correlation ID found, generating a new one: {}", correlationId);
+        logger.info(
+            "(PermissionService) No Correlation ID found, generating a new one: {}", correlationId);
       } else {
-        logger.info("(PermissionService) Found Correlation ID in request header (SnippetService): {}", correlationId);
+        logger.info(
+            "(PermissionService) Found Correlation ID in request header (SnippetService): {}",
+            correlationId);
       }
 
       MDC.put(CORRELATION_ID_KEY, correlationId);
