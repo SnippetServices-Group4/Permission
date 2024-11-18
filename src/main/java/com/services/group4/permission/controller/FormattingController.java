@@ -24,7 +24,7 @@ public class FormattingController {
     this.ownershipService = ownershipService;
   }
 
-  @GetMapping("/config")
+  @GetMapping("/rules")
   public ResponseEntity<ResponseDto<FormatRulesDto>> getConfig(
       @RequestHeader("userId") String userId) {
     Optional<FormatRulesDto> config = formattingService.getConfig(userId);

@@ -25,11 +25,18 @@ public class FormattingService {
     Optional<FormatConfig> config = formatConfigRepository.findFormatConfigByUserId(userId);
 
     if (config.isEmpty()) {
-      return Optional.of(getDefaultRules());
+      FormatRulesDto defaultRules = setDefaultRules(userId);
+      return Optional.of(defaultRules);
     } else {
       FormatConfig rules = config.get();
       return Optional.of(toFormatRulesDto(rules));
     }
+  }
+
+  private FormatRulesDto setDefaultRules(String userId) {
+    FormatConfig defaultConfig = new FormatConfig(userId, false, true, true, 0, 2);
+    formatConfigRepository.save(defaultConfig);
+    return toFormatRulesDto(defaultConfig);
   }
 
   private @NotNull FormatRulesDto toFormatRulesDto(FormatConfig rules) {
@@ -39,10 +46,6 @@ public class FormattingService {
         rules.isEqualSpaces(),
         rules.getPrintLineBreaks(),
         rules.getIndentSize());
-  }
-
-  private FormatRulesDto getDefaultRules() {
-    return new FormatRulesDto(false, true, true, 0, 2);
   }
 
   public FormatConfig updateRules(String userId, UpdateRulesRequestDto<FormatRulesDto> req) {

@@ -7,6 +7,7 @@ import com.services.group4.permission.repository.LintConfigRepository;
 import com.services.group4.permission.service.async.LintEventProducer;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,11 +25,18 @@ public class LintingService {
     Optional<LintConfig> config = lintConfigRepository.findLintConfigByUserId(userId);
 
     if (config.isEmpty()) {
-      return Optional.of(getDefaultRules());
+      LintRulesDto defaultRules = setDefaultRules(userId);
+      return Optional.of(defaultRules);
     } else {
       LintConfig rules = config.get();
       return Optional.of(toLintRulesDto(rules));
     }
+  }
+
+  private LintRulesDto setDefaultRules(String userId) {
+    LintConfig defaultConfig = new LintConfig(userId, "camelCase", true, true);
+    lintConfigRepository.save(defaultConfig);
+    return toLintRulesDto(defaultConfig);
   }
 
   private LintRulesDto toLintRulesDto(LintConfig rules) {
@@ -36,10 +44,6 @@ public class LintingService {
         rules.getWritingConventionName(),
         rules.isPrintLnAcceptsExpressions(),
         rules.isReadInputAcceptsExpressions());
-  }
-
-  private LintRulesDto getDefaultRules() {
-    return new LintRulesDto("camelCase", true, true);
   }
 
   public LintConfig updateRules(String userId, UpdateRulesRequestDto<LintRulesDto> req) {

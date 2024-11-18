@@ -23,7 +23,7 @@ public class LintingController {
     this.ownershipService = ownershipService;
   }
 
-  @GetMapping("/config")
+  @GetMapping("/rules")
   public ResponseEntity<ResponseDto<LintRulesDto>> getConfig(
       @RequestHeader("userId") String userId) {
     Optional<LintRulesDto> config = lintingService.getConfig(userId);
