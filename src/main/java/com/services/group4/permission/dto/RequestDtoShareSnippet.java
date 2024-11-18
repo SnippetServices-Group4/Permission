@@ -1,8 +1,8 @@
 package com.services.group4.permission.dto;
 
-public record RequestDtoShareSnippet(String userId, Long snippetId, String targetUserId) {
+public record RequestDtoShareSnippet(Long snippetId, String targetUserId) {
   public RequestDtoShareSnippet {
-    if (userId == null || snippetId == null) {
+    if (snippetId == null) {
       throw new IllegalArgumentException("userId and snippetId must not be null");
     }
   }
