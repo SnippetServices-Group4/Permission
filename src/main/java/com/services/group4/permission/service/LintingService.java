@@ -7,7 +7,6 @@ import com.services.group4.permission.repository.LintConfigRepository;
 import com.services.group4.permission.service.async.LintEventProducer;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 
 @Service
