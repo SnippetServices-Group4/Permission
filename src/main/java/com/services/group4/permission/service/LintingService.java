@@ -20,6 +20,28 @@ public class LintingService {
     this.lintEventProducer = lintEventProducer;
   }
 
+  public Optional<LintRulesDto> getConfig(String userId) {
+    Optional<LintConfig> config = lintConfigRepository.findLintConfigByUserId(userId);
+
+    if (config.isEmpty()) {
+      return Optional.of(getDefaultRules());
+    } else {
+      LintConfig rules = config.get();
+      return Optional.of(toLintRulesDto(rules));
+    }
+  }
+
+  private LintRulesDto toLintRulesDto(LintConfig rules) {
+    return new LintRulesDto(
+        rules.getWritingConventionName(),
+        rules.isPrintLnAcceptsExpressions(),
+        rules.isReadInputAcceptsExpressions());
+  }
+
+  private LintRulesDto getDefaultRules() {
+    return new LintRulesDto("camelCase", true, true);
+  }
+
   public LintConfig updateRules(String userId, UpdateRulesRequestDto<LintRulesDto> req) {
     LintRulesDto rules = req.rules();
 

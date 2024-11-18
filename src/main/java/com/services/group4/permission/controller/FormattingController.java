@@ -24,6 +24,23 @@ public class FormattingController {
     this.ownershipService = ownershipService;
   }
 
+  @GetMapping("/config")
+  public ResponseEntity<ResponseDto<FormatRulesDto>> getConfig(
+      @RequestHeader("userId") String userId) {
+    Optional<FormatRulesDto> config = formattingService.getConfig(userId);
+    return config
+        .map(
+            c ->
+                new ResponseEntity<>(
+                    new ResponseDto<>(
+                        "Config of user " + userId + " found.", new DataTuple<>("config", c)),
+                    HttpStatus.OK))
+        .orElseGet(
+            () ->
+                new ResponseEntity<>(
+                    new ResponseDto<>("User doesn't exist.", null), HttpStatus.NOT_FOUND));
+  }
+
   @PostMapping("/update/rules")
   public ResponseEntity<ResponseDto<List<Long>>> updateRulesAndFormat(
       @RequestBody UpdateRulesRequestDto<FormatRulesDto> req,
