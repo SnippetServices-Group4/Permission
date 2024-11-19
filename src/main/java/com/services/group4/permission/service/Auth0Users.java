@@ -28,37 +28,44 @@ public class Auth0Users {
     this.restTemplate = restTemplate;
   }
 
-  public ResponseDto<List<UserDto>> getUsers() {
-    // Get the access token from TokenService
+  public ResponseDto<List<UserDto>> getUsers(String excludeUserId) {
     String accessToken = tokenService.getAccessToken();
-
-    // Set the Authorization header with the access token
     HttpHeaders headers = new HttpHeaders();
     headers.set("Authorization", "Bearer " + accessToken);
     headers.set("Accept", "application/json");
 
-    // Make the GET request to the /users endpoint
-    String url = "https://dev-ybvfkgr1bd82iozp.us.auth0.com/api/v2/users";
-    HttpEntity<String> entity = new HttpEntity<>(headers);
-
-    ResponseEntity<String> response =
-        restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-
-    // Parse the response and map to UserDto
     List<UserDto> userDtos = new ArrayList<>();
+    boolean hasMoreUsers = true;
+    int page = 0;
+    int perPage = 50;
+
     try {
-      ObjectMapper mapper = new ObjectMapper();
-      JsonNode root = mapper.readTree(response.getBody());
-      for (JsonNode node : root) {
-        String userId = node.get("user_id").asText();
-        String username = node.get("given_name").asText();
-        userDtos.add(new UserDto(userId, username));
+      while (hasMoreUsers) {
+        String url = String.format("https://dev-ybvfkgr1bd82iozp.us.auth0.com/api/v2/users?page=%d&per_page=%d", page, perPage);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(response.getBody());
+
+        if (root.isArray() && !root.isEmpty()) {
+          for (JsonNode node : root) {
+            String userId = node.get("user_id").asText();
+            if (!userId.equals(excludeUserId)) {
+              String username = node.has("given_name") ? node.get("given_name").asText() : node.get("nickname").asText();
+              userDtos.add(new UserDto(userId, username));
+            }
+          }
+          page++;
+        } else {
+          hasMoreUsers = false;
+        }
       }
     } catch (Exception e) {
       e.printStackTrace();
     }
 
-    // Return the ResponseDto
     return new ResponseDto<>("Users retrieved successfully", new DataTuple<>("users", userDtos));
   }
+
 }
