@@ -96,7 +96,7 @@ public class UserController {
   }
 
   @GetMapping("/getAll")
-  public ResponseDto<List<UserDto>> getUsers() {
-    return auth0Users.getUsers();
+  public ResponseDto<List<UserDto>> getUsers(@RequestHeader("userId") String userId) {
+    return auth0Users.getUsers(userId);
   }
 }
