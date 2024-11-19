@@ -7,6 +7,7 @@ import com.services.group4.permission.repository.FormatConfigRepository;
 import com.services.group4.permission.service.async.FormatEventProducer;
 import java.util.List;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,6 +19,33 @@ public class FormattingService {
       FormatConfigRepository formatConfigRepository, FormatEventProducer formatEventProducer) {
     this.formatConfigRepository = formatConfigRepository;
     this.formatEventProducer = formatEventProducer;
+  }
+
+  public Optional<FormatRulesDto> getConfig(String userId) {
+    Optional<FormatConfig> config = formatConfigRepository.findFormatConfigByUserId(userId);
+
+    if (config.isEmpty()) {
+      FormatRulesDto defaultRules = setDefaultRules(userId);
+      return Optional.of(defaultRules);
+    } else {
+      FormatConfig rules = config.get();
+      return Optional.of(toFormatRulesDto(rules));
+    }
+  }
+
+  private FormatRulesDto setDefaultRules(String userId) {
+    FormatConfig defaultConfig = new FormatConfig(userId, false, true, true, 0, 2);
+    formatConfigRepository.save(defaultConfig);
+    return toFormatRulesDto(defaultConfig);
+  }
+
+  private @NotNull FormatRulesDto toFormatRulesDto(FormatConfig rules) {
+    return new FormatRulesDto(
+        rules.isSpaceBeforeColon(),
+        rules.isSpaceAfterColon(),
+        rules.isEqualSpaces(),
+        rules.getPrintLineBreaks(),
+        rules.getIndentSize());
   }
 
   public FormatConfig updateRules(String userId, UpdateRulesRequestDto<FormatRulesDto> req) {
@@ -51,7 +79,7 @@ public class FormattingService {
     }
   }
 
-  public Optional<Integer> asyncFormat(List<Long> snippetsId, FormatConfig config) {
+  public Optional<Integer> asyncFormat(List<Long> snippetsId, FormatRulesDto config) {
     int i = 0;
 
     try {

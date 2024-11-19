@@ -20,6 +20,31 @@ public class LintingService {
     this.lintEventProducer = lintEventProducer;
   }
 
+  public Optional<LintRulesDto> getConfig(String userId) {
+    Optional<LintConfig> config = lintConfigRepository.findLintConfigByUserId(userId);
+
+    if (config.isEmpty()) {
+      LintRulesDto defaultRules = setDefaultRules(userId);
+      return Optional.of(defaultRules);
+    } else {
+      LintConfig rules = config.get();
+      return Optional.of(toLintRulesDto(rules));
+    }
+  }
+
+  private LintRulesDto setDefaultRules(String userId) {
+    LintConfig defaultConfig = new LintConfig(userId, "camelCase", true, true);
+    lintConfigRepository.save(defaultConfig);
+    return toLintRulesDto(defaultConfig);
+  }
+
+  private LintRulesDto toLintRulesDto(LintConfig rules) {
+    return new LintRulesDto(
+        rules.getWritingConventionName(),
+        rules.isPrintLnAcceptsExpressions(),
+        rules.isReadInputAcceptsExpressions());
+  }
+
   public LintConfig updateRules(String userId, UpdateRulesRequestDto<LintRulesDto> req) {
     LintRulesDto rules = req.rules();
 
@@ -47,7 +72,7 @@ public class LintingService {
     }
   }
 
-  public Optional<Integer> asyncLint(List<Long> snippetsId, LintConfig config) {
+  public Optional<Integer> asyncLint(List<Long> snippetsId, LintRulesDto config) {
     int i = 0;
 
     try {
