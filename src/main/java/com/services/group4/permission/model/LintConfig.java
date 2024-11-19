@@ -15,7 +15,7 @@ public class LintConfig {
   @Column(nullable = false, unique = true)
   private String userId;
 
-  @Column(nullable = false)
+  @Column
   private String writingConventionName;
 
   @Column(nullable = false)
