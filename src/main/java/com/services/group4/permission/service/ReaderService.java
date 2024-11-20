@@ -28,7 +28,7 @@ public class ReaderService {
 
   public ResponseEntity<ResponseDto<String>> shareSnippet(
       String ownerId, Long snippetId, String targetUserId) {
-    if (!validationService.isUserIdValid(targetUserId)) {
+    if (validationService.isUserIdInvalid(ownerId, targetUserId)) {
       return FullResponse.create(
           "User isn't valid, it doesn't exists", "ownerId", ownerId, HttpStatus.BAD_REQUEST);
     }
@@ -51,10 +51,6 @@ public class ReaderService {
   }
 
   public ResponseEntity<ResponseDto<Boolean>> getReaderPermission(String userId, Long snippetId) {
-    if (!validationService.isUserIdValid(userId)) {
-      return FullResponse.create(
-          "User isn't valid, it doesn't exists", "readerPermission", false, HttpStatus.BAD_REQUEST);
-    }
     if (isReader(userId, snippetId)) {
       return FullResponse.create(
           "User is a reader of the snippet", "readerPermission", true, HttpStatus.OK);

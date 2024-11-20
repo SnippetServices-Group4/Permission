@@ -14,19 +14,13 @@ import org.springframework.stereotype.Service;
 public class OwnershipService {
 
   private final OwnershipRepository ownershipRepository;
-  private final ValidationService validationService;
 
   public OwnershipService(
-      OwnershipRepository ownershipRepository, ValidationService validationService) {
+      OwnershipRepository ownershipRepository) {
     this.ownershipRepository = ownershipRepository;
-    this.validationService = validationService;
   }
 
   public ResponseEntity<ResponseDto<Long>> createOwnership(String userId, Long snippetId) {
-    if (!validationService.isUserIdValid(userId)) {
-      return FullResponse.create(
-          "User isn't valid, it doesn't exists", "snippetId", snippetId, HttpStatus.BAD_REQUEST);
-    }
     Ownership ownership = new Ownership(userId, snippetId);
     ownershipRepository.save(ownership);
     return FullResponse.create("Ownership created", "snippetId", snippetId, HttpStatus.CREATED);
@@ -37,10 +31,6 @@ public class OwnershipService {
   }
 
   public ResponseEntity<ResponseDto<Boolean>> hasOwnerPermission(String userId, Long snippetId) {
-    if (!validationService.isUserIdValid(userId)) {
-      return FullResponse.create(
-          "User isn't valid, it doesn't exists", "ownerPermission", false, HttpStatus.BAD_REQUEST);
-    }
     if (isOwner(userId, snippetId)) {
       return FullResponse.create(
           "User is the owner of the snippet", "ownerPermission", true, HttpStatus.OK);
