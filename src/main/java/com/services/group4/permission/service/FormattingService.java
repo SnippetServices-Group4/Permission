@@ -131,7 +131,7 @@ public class FormattingService {
       return FullResponse.create("You don't have permission to format this snippet", "formattingResponse", null, HttpStatus.FORBIDDEN);
     }
     ResponseEntity<ResponseDto<SnippetResponseDto>> snippetResponse = snippetService.getSnippetInfo(snippetId);
-    if (snippetResponse.getStatusCode().equals(HttpStatus.OK) && Objects.requireNonNull(snippetResponse.getBody()).data() != null){
+    if (snippetResponse.getStatusCode().equals(HttpStatus.OK) && Objects.requireNonNull(snippetResponse.getBody()).data() != null) {
       SnippetResponseDto snippet = snippetResponse.getBody().data().data();
       FormatRulesDto formatRules = getConfig(userId);
       return parserService.runFormatting(snippet, formatRules);

@@ -39,8 +39,8 @@ public class FormattingController {
     }
   }
 
-  @PostMapping("/run/${snippetId}")
-  public ResponseEntity<ResponseDto<Object>> runFormatting(@RequestParam Long snippetId, @RequestHeader("userId") String userId) {
+  @PostMapping("/run/{snippetId}")
+  public ResponseEntity<ResponseDto<Object>> runFormatting(@RequestHeader("userId") String userId, @PathVariable Long snippetId) {
     return formattingService.runFormatting(snippetId, userId);
   }
 }
