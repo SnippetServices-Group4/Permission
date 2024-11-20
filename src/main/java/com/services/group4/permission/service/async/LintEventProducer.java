@@ -18,7 +18,8 @@ public class LintEventProducer {
 
   @Autowired
   public LintEventProducer(
-      @Value("${stream.initial.lint.key}") String streamKey, @NotNull RedisTemplate<String, String> redis) {
+      @Value("${stream.initial.lint.key}") String streamKey,
+      @NotNull RedisTemplate<String, String> redis) {
     this.streamKey = streamKey;
     this.redis = redis;
   }
