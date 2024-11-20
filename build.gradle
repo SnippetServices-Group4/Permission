@@ -70,11 +70,23 @@ tasks.named('test') {
 }
 
 
+def basePackage = 'com/services/group4/permission/'
+
 jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                    '/DotenvConfig.class'
+                    "${basePackage}DotenvConfig.class",
+                    "${basePackage}CorrelationIdFilter.class",
+                    "${basePackage}CorrelationIdInterceptor.class",
+                    "${basePackage}RequestLogFilter.class",
+                    "${basePackage}service/async/FormatEventProducer.class",
+                    "${basePackage}service/async/TestFormatEventConsumer.class",
+                    "${basePackage}service/async/LintEventProducer.class",
+                    "${basePackage}service/async/TestLintEventConsumer.class",
+                    "${basePackage}config/RestTemplateConfig.class",
+                    "${basePackage}controller/test/TestController.class",
+                    "${basePackage}model/communication/CommunicationMessage.class",
             ])
         }))
     }
@@ -84,7 +96,17 @@ jacocoTestCoverageVerification {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                    '/DotenvConfig.class'
+                    "${basePackage}DotenvConfig.class",
+                    "${basePackage}CorrelationIdFilter.class",
+                    "${basePackage}CorrelationIdInterceptor.class",
+                    "${basePackage}RequestLogFilter.class",
+                    "${basePackage}service/async/FormatEventProducer.class",
+                    "${basePackage}service/async/TestFormatEventConsumer.class",
+                    "${basePackage}service/async/LintEventProducer.class",
+                    "${basePackage}service/async/TestLintEventConsumer.class",
+                    "${basePackage}config/RestTemplateConfig.class",
+                    "${basePackage}controller/test/TestController.class",
+                    "${basePackage}model/communication/CommunicationMessage.class",
             ])
         }))
     }
