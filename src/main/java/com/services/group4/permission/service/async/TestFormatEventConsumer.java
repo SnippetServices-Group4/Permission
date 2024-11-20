@@ -36,7 +36,7 @@ public class TestFormatEventConsumer extends RedisStreamConsumer<String> {
 
       // Access specific fields from the Map
       Long snippetId = (Long) ((Integer) messageMap.get("snippetId")).longValue();
-      String configJson = (String) messageMap.get("config");
+      String configJson = (String) messageMap.get("formatRules");
       System.out.println("SnippetId: " + snippetId);
       System.out.println("Config JSON String: " + configJson);
 

@@ -40,7 +40,7 @@ public class LintEventProducer {
       Map<String, Object> message =
           Map.of(
               "snippetId", snippetId,
-              "config", jsonPayloadString);
+              "lintRules", jsonPayloadString);
 
       // Serialize the complete message to a JSON string
       String finalMessageJson = mapper.writeValueAsString(message);
