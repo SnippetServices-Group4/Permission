@@ -1,4 +1,4 @@
-package com.services.group4.permission.common;
+package com.services.group4.permission.common.json;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
