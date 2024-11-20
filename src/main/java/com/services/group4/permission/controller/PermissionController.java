@@ -33,7 +33,7 @@ public class PermissionController {
       System.out.println("Error: " + e.getMessage());
       return FullResponse.create(
           "User doesn't have permission to view any snippet",
-          "Snippet",
+          "snippet",
           null,
           HttpStatus.NOT_FOUND);
     }
@@ -56,7 +56,7 @@ public class PermissionController {
     } catch (Exception e) {
       return FullResponse.create(
           "Something went wrong deleting the ownership of the snippet",
-          "Ownership",
+          "ownership",
           null,
           HttpStatus.INTERNAL_SERVER_ERROR);
     }
