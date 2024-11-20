@@ -4,6 +4,7 @@ import com.services.group4.permission.common.DataTuple;
 import com.services.group4.permission.dto.LintRulesDto;
 import com.services.group4.permission.dto.ResponseDto;
 import com.services.group4.permission.dto.UpdateRulesRequestDto;
+import com.services.group4.permission.model.LintConfig;
 import com.services.group4.permission.service.LintingService;
 import com.services.group4.permission.service.OwnershipService;
 import java.util.List;
@@ -41,34 +42,38 @@ public class LintingController {
   }
 
   @PostMapping("/update/rules")
-  public ResponseEntity<ResponseDto<List<Long>>> updateRulesAndLint(
+  public ResponseEntity<ResponseDto<LintConfig>> updateRulesAndLint(
       @RequestBody UpdateRulesRequestDto<LintRulesDto> req,
       @RequestHeader("userId") String userId) {
     try {
       System.out.println("Updating rules");
-      lintingService.updateRules(userId, req);
+      LintConfig rules = lintingService.updateRules(userId, req);
 
       System.out.println("Getting snippets");
       Optional<List<Long>> snippetsId = ownershipService.findSnippetIdsByUserId(userId);
 
-      Optional<Integer> snippetsInQueue = Optional.empty();
+      DataTuple<LintConfig> lintRules = new DataTuple<>("lintRules", rules);
 
-      if (snippetsId.isPresent()) {
-        System.out.println("Linting snippets");
-        snippetsInQueue = lintingService.asyncLint(snippetsId.get(), req.rules());
+      if (snippetsId.isEmpty()) {
+        return new ResponseEntity<>(
+            new ResponseDto<>("Updated lint rules, no snippets to lint", lintRules),
+            HttpStatus.OK);
       }
 
-      String message =
-          snippetsInQueue
-              .map(i -> "Linting of " + i + " snippets in progress.")
-              .orElse("No snippets to lint");
+      Optional<Integer> totalToLintSnippets = lintingService.asyncLint(snippetsId.get(), req.rules());
 
-      List<Long> snippetsIds = snippetsId.orElse(List.of());
-
-      return new ResponseEntity<>(
-          new ResponseDto<>(message, new DataTuple<>("snippetsIds", snippetsIds)), HttpStatus.OK);
+      return totalToLintSnippets.map(integer -> new ResponseEntity<>(
+          new ResponseDto<>(
+              "Updated lint rules, " + integer + " snippets in queue",
+              lintRules),
+          HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(
+          new ResponseDto<>("Updated lint rules, but something occurred during asynchronous linting",
+              lintRules),
+          HttpStatus.INTERNAL_SERVER_ERROR));
     } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(
+          new ResponseDto<>("Could not update linting rules.", null),
+          HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }
