@@ -41,9 +41,13 @@ public class Auth0Users {
 
     try {
       while (hasMoreUsers) {
-        String url = String.format("https://dev-ybvfkgr1bd82iozp.us.auth0.com/api/v2/users?page=%d&per_page=%d", page, perPage);
+        String url =
+            String.format(
+                "https://dev-ybvfkgr1bd82iozp.us.auth0.com/api/v2/users?page=%d&per_page=%d",
+                page, perPage);
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> response =
+            restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root = mapper.readTree(response.getBody());
@@ -52,7 +56,10 @@ public class Auth0Users {
           for (JsonNode node : root) {
             String userId = node.get("user_id").asText();
             if (!userId.equals(excludeUserId)) {
-              String username = node.has("given_name") ? node.get("given_name").asText() : node.get("nickname").asText();
+              String username =
+                  node.has("given_name")
+                      ? node.get("given_name").asText()
+                      : node.get("nickname").asText();
               userDtos.add(new UserDto(userId, username));
             }
           }
@@ -67,5 +74,4 @@ public class Auth0Users {
 
     return new ResponseDto<>("Users retrieved successfully", new DataTuple<>("users", userDtos));
   }
-
 }

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class TestFormatEventConsumer extends RedisStreamConsumer<String> {
   @Autowired
   public TestFormatEventConsumer(
-      @Value("${stream.format.key}") String streamKey,
+      @Value("${stream.initial.format.key}") String streamKey,
       @Value("test-format-group") String groupId,
       @NotNull RedisTemplate<String, String> redis) {
     super(streamKey, groupId, redis);
