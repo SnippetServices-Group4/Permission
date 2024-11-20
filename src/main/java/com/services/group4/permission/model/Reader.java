@@ -1,7 +1,9 @@
 package com.services.group4.permission.model;
 
 import jakarta.persistence.*;
+import lombok.Generated;
 
+@Generated
 @Entity
 public class Reader {
   @Id

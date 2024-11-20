@@ -1,9 +1,11 @@
 package com.services.group4.permission.model;
 
 import jakarta.persistence.*;
+import lombok.Generated;
 import lombok.Getter;
 import lombok.Setter;
 
+@Generated
 @Setter
 @Getter
 @Entity
