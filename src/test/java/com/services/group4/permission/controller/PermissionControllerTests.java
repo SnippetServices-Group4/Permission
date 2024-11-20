@@ -1,11 +1,18 @@
 package com.services.group4.permission.controller;
 
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.permission.DotenvConfig;
 import com.services.group4.permission.common.FullResponse;
 import com.services.group4.permission.dto.RequestDtoSnippet;
-import com.services.group4.permission.service.OwnershipService;
 import com.services.group4.permission.service.PermissionService;
+import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,16 +22,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.client.HttpClientErrorException;
-
-import java.util.List;
-
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(PermissionController.class)
@@ -106,8 +103,7 @@ class PermissionControllerTests {
     RequestDtoSnippet requestDto = new RequestDtoSnippet("user123", 1L);
     when(permissionService.deletePermissionsOfSnippet(anyString(), anyLong()))
         .thenReturn(
-            FullResponse.create(
-                "Ownership deleted successfully", "snippetId", 1L, HttpStatus.OK));
+            FullResponse.create("Ownership deleted successfully", "snippetId", 1L, HttpStatus.OK));
 
     mockMvc
         .perform(

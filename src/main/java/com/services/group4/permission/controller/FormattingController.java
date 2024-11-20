@@ -38,7 +38,8 @@ public class FormattingController {
         .orElseGet(
             () ->
                 new ResponseEntity<>(
-                    new ResponseDto<>("User doesn't exist.", null), HttpStatus.NOT_FOUND));
+                    new ResponseDto<>("User doesn't exist.", new DataTuple<>("config", null)),
+                    HttpStatus.NOT_FOUND));
   }
 
   @PostMapping("/update/rules")
