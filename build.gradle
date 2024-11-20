@@ -87,7 +87,9 @@ jacocoTestReport {
                     "${basePackage}config/RestTemplateConfig.class",
                     "${basePackage}controller/test/TestController.class",
                     "${basePackage}model/communication/CommunicationMessage.class",
-            ])
+					"${basePackage}Application.class",
+
+			])
         }))
     }
 }
@@ -107,6 +109,7 @@ jacocoTestCoverageVerification {
                     "${basePackage}config/RestTemplateConfig.class",
                     "${basePackage}controller/test/TestController.class",
                     "${basePackage}model/communication/CommunicationMessage.class",
+					"${basePackage}Application.class",
             ])
         }))
     }
