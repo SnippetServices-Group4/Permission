@@ -89,6 +89,8 @@ jacocoTestReport {
                     "${basePackage}model/communication/CommunicationMessage.class",
 					"${basePackage}Application.class",
 
+					"${basePackage}service/async/TestLintEventConsumer\$*.class",
+					"${basePackage}service/async/TestFormatEventConsumer\$*.class",
 			])
         }))
     }
@@ -103,14 +105,17 @@ jacocoTestCoverageVerification {
                     "${basePackage}CorrelationIdInterceptor.class",
                     "${basePackage}RequestLogFilter.class",
                     "${basePackage}service/async/FormatEventProducer.class",
-                    "${basePackage}service/async/TestFormatEventConsumer.class",
+					"${basePackage}service/async/TestFormatEventConsumer.class",
                     "${basePackage}service/async/LintEventProducer.class",
                     "${basePackage}service/async/TestLintEventConsumer.class",
                     "${basePackage}config/RestTemplateConfig.class",
                     "${basePackage}controller/test/TestController.class",
                     "${basePackage}model/communication/CommunicationMessage.class",
 					"${basePackage}Application.class",
-            ])
+
+					"${basePackage}service/async/TestLintEventConsumer\$*.class",
+					"${basePackage}service/async/TestFormatEventConsumer\$*.class",
+			])
         }))
     }
 }

@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.permission.DotenvConfig;
 import com.services.group4.permission.dto.LintRulesDto;
 import com.services.group4.permission.dto.UpdateRulesRequestDto;
+import com.services.group4.permission.model.LintConfig;
 import com.services.group4.permission.service.LintingService;
 import com.services.group4.permission.service.OwnershipService;
 import java.util.List;
@@ -79,12 +80,13 @@ public class LintingControllerTests {
 
   @Test
   void testUpdateRulesAndLint_NoSnippetsToLint() throws Exception {
-    String userId = "user123";
+    String userId = anyString();
     LintRulesDto rulesDto = new LintRulesDto(); // Crear un objeto de ejemplo para LintRulesDto
     UpdateRulesRequestDto<LintRulesDto> requestDto = new UpdateRulesRequestDto<>(rulesDto);
+    LintConfig lintConfig = new LintConfig();
 
     when(ownershipService.findSnippetIdsByUserId(userId)).thenReturn(Optional.empty());
-
+    when(lintingService.updateRules(userId, requestDto)).thenReturn(lintConfig);
     mockMvc
         .perform(
             post("/linting/update/rules")
@@ -92,9 +94,27 @@ public class LintingControllerTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.message").value("No snippets to lint"))
-        .andExpect(jsonPath("$.data.snippetsIds").isArray())
-        .andExpect(jsonPath("$.data.snippetsIds.length()").value(0));
+        .andExpect(jsonPath("$.message").value("Updated lint rules, no snippets to lint"));
+  }
+
+  @Test
+  void testUpdateRulesAndLint() throws Exception {
+    String userId = anyString();
+    LintRulesDto rulesDto = new LintRulesDto(); // Crear un objeto de ejemplo para LintRulesDto
+    UpdateRulesRequestDto<LintRulesDto> requestDto = new UpdateRulesRequestDto<>(rulesDto);
+    LintConfig lintConfig = new LintConfig();
+
+    when(ownershipService.findSnippetIdsByUserId(userId)).thenReturn(Optional.of(List.of(1L, 2L)));
+    when(lintingService.updateRules(userId, requestDto)).thenReturn(lintConfig);
+    when(lintingService.asyncLint(List.of(1L, 2L), rulesDto)).thenReturn(Optional.empty());
+    mockMvc
+        .perform(
+            post("/linting/update/rules")
+                .header("userId", userId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(requestDto)))
+        .andExpect(status().isInternalServerError())
+        .andExpect(jsonPath("$.message").value("Updated lint rules, but something occurred during asynchronous linting"));
   }
 
   @Test
