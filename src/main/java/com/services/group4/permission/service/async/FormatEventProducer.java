@@ -18,7 +18,7 @@ public class FormatEventProducer {
 
   @Autowired
   public FormatEventProducer(
-      @Value("${stream.format.key}") String streamKey,
+      @Value("${stream.initial.format.key}") String streamKey,
       @NotNull RedisTemplate<String, String> redis) {
     this.streamKey = streamKey;
     this.redis = redis;
