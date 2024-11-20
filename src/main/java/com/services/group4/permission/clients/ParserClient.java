@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "parser", url = "${parser.service.url}")
 public interface ParserClient {
-    @RequestMapping(method = RequestMethod.POST, value = "/parsers/format/{snippetId}")
-    ResponseEntity<ResponseDto<Object>>runFormatting(@RequestBody FormattingRequestDto formatRequest, @PathVariable Long snippetId);
+  @RequestMapping(method = RequestMethod.POST, value = "/parsers/format/{snippetId}")
+  ResponseEntity<ResponseDto<Object>> runFormatting(
+      @RequestBody FormattingRequestDto formatRequest, @PathVariable Long snippetId);
 }

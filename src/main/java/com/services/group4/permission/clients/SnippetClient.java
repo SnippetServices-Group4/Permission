@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @FeignClient(name = "snippet", url = "${snippet.service.url}")
 public interface SnippetClient {
-    @RequestMapping(method = RequestMethod.GET, value = "/snippets/getInfo/{snippetId}")
-    ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippetInfo(@PathVariable Long snippetId);
+  @RequestMapping(method = RequestMethod.GET, value = "/snippets/getInfo/{snippetId}")
+  ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippetInfo(@PathVariable Long snippetId);
 }

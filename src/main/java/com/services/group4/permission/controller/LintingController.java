@@ -56,20 +56,26 @@ public class LintingController {
 
       if (snippetsId.isEmpty()) {
         return new ResponseEntity<>(
-            new ResponseDto<>("Updated lint rules, no snippets to lint", lintRules),
-            HttpStatus.OK);
+            new ResponseDto<>("Updated lint rules, no snippets to lint", lintRules), HttpStatus.OK);
       }
 
-      Optional<Integer> totalToLintSnippets = lintingService.asyncLint(snippetsId.get(), req.rules());
+      Optional<Integer> totalToLintSnippets =
+          lintingService.asyncLint(snippetsId.get(), req.rules());
 
-      return totalToLintSnippets.map(integer -> new ResponseEntity<>(
-          new ResponseDto<>(
-              "Updated lint rules, " + integer + " snippets in queue",
-              lintRules),
-          HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(
-          new ResponseDto<>("Updated lint rules, but something occurred during asynchronous linting",
-              lintRules),
-          HttpStatus.INTERNAL_SERVER_ERROR));
+      return totalToLintSnippets
+          .map(
+              integer ->
+                  new ResponseEntity<>(
+                      new ResponseDto<>(
+                          "Updated lint rules, " + integer + " snippets in queue", lintRules),
+                      HttpStatus.OK))
+          .orElseGet(
+              () ->
+                  new ResponseEntity<>(
+                      new ResponseDto<>(
+                          "Updated lint rules, but something occurred during asynchronous linting",
+                          lintRules),
+                      HttpStatus.INTERNAL_SERVER_ERROR));
     } catch (Exception e) {
       return new ResponseEntity<>(
           new ResponseDto<>("Could not update linting rules.", null),

@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SnippetService {
-    private final SnippetClient snippetClient;
+  private final SnippetClient snippetClient;
 
-    public SnippetService(SnippetClient snippetClient) {
-        this.snippetClient = snippetClient;
-    }
+  public SnippetService(SnippetClient snippetClient) {
+    this.snippetClient = snippetClient;
+  }
 
-    public ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippetInfo(Long snippetId) {
-        return snippetClient.getSnippetInfo(snippetId);
-    }
+  public ResponseEntity<ResponseDto<SnippetResponseDto>> getSnippetInfo(Long snippetId) {
+    return snippetClient.getSnippetInfo(snippetId);
+  }
 }

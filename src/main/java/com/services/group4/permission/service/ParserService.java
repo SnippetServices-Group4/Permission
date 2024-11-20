@@ -10,14 +10,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ParserService {
-    private final ParserClient parserClient;
+  private final ParserClient parserClient;
 
-    public ParserService(ParserClient parserClient) {
-        this.parserClient = parserClient;
-    }
+  public ParserService(ParserClient parserClient) {
+    this.parserClient = parserClient;
+  }
 
-    public ResponseEntity<ResponseDto<Object>> runFormatting(SnippetResponseDto snippet, FormatRulesDto formatRules) {
-        FormattingRequestDto formattingRequest = new FormattingRequestDto(formatRules, snippet.language().getLangName(), snippet.language().getVersion());
-        return parserClient.runFormatting(formattingRequest, snippet.snippetId());
-    }
+  public ResponseEntity<ResponseDto<Object>> runFormatting(
+      SnippetResponseDto snippet, FormatRulesDto formatRules) {
+    FormattingRequestDto formattingRequest =
+        new FormattingRequestDto(
+            formatRules, snippet.language().getLangName(), snippet.language().getVersion());
+    return parserClient.runFormatting(formattingRequest, snippet.snippetId());
+  }
 }

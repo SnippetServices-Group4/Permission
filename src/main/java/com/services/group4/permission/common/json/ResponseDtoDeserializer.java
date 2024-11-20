@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.permission.common.DataTuple;
 import com.services.group4.permission.dto.ResponseDto;
 import com.services.group4.permission.dto.snippet.SnippetResponseDto;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +39,11 @@ public class ResponseDtoDeserializer<T> extends JsonDeserializer<ResponseDto<T>>
         List<Long> list = new ArrayList<>();
         valueNode.forEach(node -> list.add(node.asLong()));
         data = (T) list;
-      } else if (name.equals("snippet")){
-        data = mapper.convertValue(valueNode, ctxt.getTypeFactory().constructType(SnippetResponseDto.class));
-      }
-      else {
+      } else if (name.equals("snippet")) {
+        data =
+            mapper.convertValue(
+                valueNode, ctxt.getTypeFactory().constructType(SnippetResponseDto.class));
+      } else {
         data = mapper.convertValue(valueNode, ctxt.getTypeFactory().constructType(Object.class));
       }
       dataTuple = new DataTuple<>(name, data);

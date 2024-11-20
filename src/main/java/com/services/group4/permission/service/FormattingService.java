@@ -28,19 +28,23 @@ public class FormattingService {
 
   @Autowired
   public FormattingService(
-          FormatConfigRepository formatConfigRepository, FormatEventProducer formatEventProducer, ParserService parserService, SnippetService snippetService, OwnershipService ownershipService) {
+      FormatConfigRepository formatConfigRepository,
+      FormatEventProducer formatEventProducer,
+      ParserService parserService,
+      SnippetService snippetService,
+      OwnershipService ownershipService) {
     this.formatConfigRepository = formatConfigRepository;
     this.formatEventProducer = formatEventProducer;
     this.parserService = parserService;
-      this.snippetService = snippetService;
-      this.ownershipService = ownershipService;
+    this.snippetService = snippetService;
+    this.ownershipService = ownershipService;
   }
 
   public FormatRulesDto getConfig(String userId) {
     Optional<FormatConfig> config = formatConfigRepository.findFormatConfigByUserId(userId);
 
     if (config.isEmpty()) {
-        return setDefaultRules(userId);
+      return setDefaultRules(userId);
     } else {
       FormatConfig rules = config.get();
       return toFormatRulesDto(rules);
@@ -62,7 +66,8 @@ public class FormattingService {
         rules.getIndentSize());
   }
 
-  public ResponseEntity<ResponseDto<List<Long>>> updateRules(String userId, UpdateRulesRequestDto<FormatRulesDto> req) {
+  public ResponseEntity<ResponseDto<List<Long>>> updateRules(
+      String userId, UpdateRulesRequestDto<FormatRulesDto> req) {
     FormatRulesDto rules = req.rules();
 
     Optional<FormatConfig> config = formatConfigRepository.findFormatConfigByUserId(userId);
@@ -74,20 +79,21 @@ public class FormattingService {
     Optional<Integer> snippetsInQueue = Optional.empty();
 
     if (snippetsId.isPresent()) {
-      snippetsInQueue =asyncFormat(snippetsId.get(), req.rules());
+      snippetsInQueue = asyncFormat(snippetsId.get(), req.rules());
     }
 
     String message =
-            snippetsInQueue
-                    .map(i -> "Formatting of " + i + " snippets in progress.")
-                    .orElse("No snippets to format");
+        snippetsInQueue
+            .map(i -> "Formatting of " + i + " snippets in progress.")
+            .orElse("No snippets to format");
 
     List<Long> snippetsIds = snippetsId.orElse(List.of());
     return new ResponseEntity<>(
-            new ResponseDto<>(message, new DataTuple<>("snippetsIds", snippetsIds)), HttpStatus.OK);
+        new ResponseDto<>(message, new DataTuple<>("snippetsIds", snippetsIds)), HttpStatus.OK);
   }
 
-  private static @NotNull FormatConfig getNewConfig(String userId, Optional<FormatConfig> config, FormatRulesDto rules) {
+  private static @NotNull FormatConfig getNewConfig(
+      String userId, Optional<FormatConfig> config, FormatRulesDto rules) {
     FormatConfig newConfig;
     if (config.isPresent()) {
       newConfig = config.get();
@@ -100,7 +106,7 @@ public class FormattingService {
     } else {
       newConfig =
           new FormatConfig(
-                  userId,
+              userId,
               rules.isSpaceBeforeColon(),
               rules.isSpaceAfterColon(),
               rules.isEqualSpaces(),
@@ -128,14 +134,22 @@ public class FormattingService {
   public ResponseEntity<ResponseDto<Object>> runFormatting(Long snippetId, String userId) {
     boolean canFormat = ownershipService.isOwner(userId, snippetId);
     if (!canFormat) {
-      return FullResponse.create("You don't have permission to format this snippet", "formattingResponse", null, HttpStatus.FORBIDDEN);
+      return FullResponse.create(
+          "You don't have permission to format this snippet",
+          "formattingResponse",
+          null,
+          HttpStatus.FORBIDDEN);
     }
-    ResponseEntity<ResponseDto<SnippetResponseDto>> snippetResponse = snippetService.getSnippetInfo(snippetId);
-    if (snippetResponse.getStatusCode().equals(HttpStatus.OK) && Objects.requireNonNull(snippetResponse.getBody()).data() != null) {
+    ResponseEntity<ResponseDto<SnippetResponseDto>> snippetResponse =
+        snippetService.getSnippetInfo(snippetId);
+    if (snippetResponse.getStatusCode().equals(HttpStatus.OK)
+        && Objects.requireNonNull(snippetResponse.getBody()).data() != null) {
       SnippetResponseDto snippet = snippetResponse.getBody().data().data();
       FormatRulesDto formatRules = getConfig(userId);
       return parserService.runFormatting(snippet, formatRules);
     }
-    return new ResponseEntity<>(new ResponseDto<>(Objects.requireNonNull(snippetResponse.getBody()).message(), null), snippetResponse.getStatusCode());
+    return new ResponseEntity<>(
+        new ResponseDto<>(Objects.requireNonNull(snippetResponse.getBody()).message(), null),
+        snippetResponse.getStatusCode());
   }
 }

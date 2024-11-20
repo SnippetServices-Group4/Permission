@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class FormattingController {
   private final FormattingService formattingService;
 
-  public FormattingController(
-      FormattingService formattingService) {
+  public FormattingController(FormattingService formattingService) {
     this.formattingService = formattingService;
   }
 
@@ -24,7 +23,8 @@ public class FormattingController {
   public ResponseEntity<ResponseDto<FormatRulesDto>> getConfig(
       @RequestHeader("userId") String userId) {
     FormatRulesDto config = formattingService.getConfig(userId);
-    return FullResponse.create("Config of user " + userId + " found.", "config", config, HttpStatus.OK);
+    return FullResponse.create(
+        "Config of user " + userId + " found.", "config", config, HttpStatus.OK);
   }
 
   @PostMapping("/update/rules")
@@ -35,12 +35,16 @@ public class FormattingController {
       return formattingService.updateRules(userId, req);
     } catch (Exception e) {
       return FullResponse.create(
-          "Error updating rules and formatting", "snippetIds", null, HttpStatus.INTERNAL_SERVER_ERROR);
+          "Error updating rules and formatting",
+          "snippetIds",
+          null,
+          HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   @PostMapping("/run/{snippetId}")
-  public ResponseEntity<ResponseDto<Object>> runFormatting(@RequestHeader("userId") String userId, @PathVariable Long snippetId) {
+  public ResponseEntity<ResponseDto<Object>> runFormatting(
+      @RequestHeader("userId") String userId, @PathVariable Long snippetId) {
     return formattingService.runFormatting(snippetId, userId);
   }
 }
