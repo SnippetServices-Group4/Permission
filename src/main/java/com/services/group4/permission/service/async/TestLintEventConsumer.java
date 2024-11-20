@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class TestLintEventConsumer extends RedisStreamConsumer<String> {
   @Autowired
   public TestLintEventConsumer(
-      @Value("${stream.lint.key}") String streamKey,
+      @Value("${stream.initial.lint.key}") String streamKey,
       @Value("test-lint-group") String groupId,
       @NotNull RedisTemplate<String, String> redis) {
     super(streamKey, groupId, redis);
