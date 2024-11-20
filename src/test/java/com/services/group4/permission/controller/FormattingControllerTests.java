@@ -44,7 +44,7 @@ public class FormattingControllerTests {
     String userId = "user123";
     FormatRulesDto mockConfig =
         new FormatRulesDto(); // Crear un objeto de ejemplo para FormatRulesDto
-    when(formattingService.getConfig(userId)).thenReturn(Optional.of(mockConfig));
+    when(formattingService.getConfig(userId)).thenReturn(mockConfig);
 
     mockMvc
         .perform(get("/formatting/rules").header("userId", userId))
@@ -56,7 +56,7 @@ public class FormattingControllerTests {
   @Test
   void testGetConfig_UserNotFound() throws Exception {
     String userId = "user123";
-    when(formattingService.getConfig(userId)).thenReturn(Optional.empty());
+    when(formattingService.getConfig(userId)).thenReturn(null);
 
     mockMvc
         .perform(get("/formatting/rules").header("userId", userId))
