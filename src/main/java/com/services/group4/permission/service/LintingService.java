@@ -78,15 +78,15 @@ public class LintingService {
     try {
       for (Long snippetId : snippetsId) {
         System.out.println("Producing linting event for snippet: " + snippetId);
-
         lintEventProducer.publishEvent(snippetId, config);
 
         i++;
+        return Optional.of(i);
       }
     } catch (Exception e) {
-      return Optional.empty();
+      throw new RuntimeException();
     }
 
-    return Optional.of(i);
+    return Optional.empty();
   }
 }
