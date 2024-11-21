@@ -11,7 +11,16 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
@@ -28,10 +37,12 @@ public class UserController {
 
   @PostMapping("/register")
   public ResponseEntity<String> addUser(@RequestBody SnippetUser snippetUser) {
+    log.info("Adding user with username: {}", snippetUser.getUsername());
     try {
       userRepository.save(snippetUser);
       return new ResponseEntity<>("User added", HttpStatus.CREATED);
     } catch (Exception e) {
+      log.error("Error creating user: {}", e.getMessage());
       System.out.println(e.getMessage());
       return new ResponseEntity<>(
           "Something went wrong creating the user", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -41,15 +52,18 @@ public class UserController {
   @PostMapping("/login")
   public ResponseEntity<String> loginUser(@RequestBody SnippetUser loginUser) {
     Optional<SnippetUser> user = userRepository.findByUsername(loginUser.getUsername());
+    log.info("Logging in user with username: {}", loginUser.getUsername());
     if (user.isPresent() && user.get().getPassword().equals(loginUser.getPassword())) {
       return new ResponseEntity<>("Login successful", HttpStatus.OK);
     } else {
+      log.error("Invalid username or password");
       return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
     }
   }
 
   @GetMapping("/{id}")
   public ResponseEntity<SnippetUser> getUserById(@PathVariable String id) {
+    log.info("Getting user with id: {}", id);
     Optional<SnippetUser> user = userRepository.findById(id);
     return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -57,6 +71,7 @@ public class UserController {
 
   @GetMapping
   public ResponseEntity<List<SnippetUser>> getAllUsers() {
+    log.info("Getting all users");
     List<SnippetUser> users = userRepository.findAll();
     return new ResponseEntity<>(users, HttpStatus.OK);
   }
@@ -64,8 +79,10 @@ public class UserController {
   @PutMapping("/update/{id}")
   public ResponseEntity<String> updateUser(
       @PathVariable String id, @RequestBody SnippetUser updatedUser) {
+    log.info("Updating user with id: {}", id);
     Optional<SnippetUser> user = userRepository.findById(id);
     if (user.isPresent()) {
+      log.info("User found, updating user");
       SnippetUser existingUser = user.get();
       existingUser.setUsername(updatedUser.getUsername());
       existingUser.setPassword(updatedUser.getPassword());
@@ -73,16 +90,19 @@ public class UserController {
       userRepository.save(existingUser);
       return new ResponseEntity<>("User updated", HttpStatus.OK);
     } else {
+      log.error("User not found");
       return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
     }
   }
 
   @DeleteMapping("/delete/{id}")
   public ResponseEntity<String> deleteUser(@PathVariable String id) {
+    log.info("Deleting user with id: {}", id);
     try {
       userRepository.deleteById(id);
       return new ResponseEntity<>("User deleted", HttpStatus.OK);
     } catch (Exception e) {
+      log.error("Error deleting user: {}", e.getMessage());
       System.out.println(e.getMessage());
       return new ResponseEntity<>(
           "Something went wrong deleting the user", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -91,12 +111,14 @@ public class UserController {
 
   @GetMapping("/search")
   public ResponseEntity<List<SnippetUser>> searchUsers(@RequestParam String username) {
+    log.info("Searching for users with username: {}", username);
     List<SnippetUser> users = userRepository.findByUsernameContaining(username);
     return new ResponseEntity<>(users, HttpStatus.OK);
   }
 
   @GetMapping("/getAll")
   public ResponseDto<List<UserDto>> getUsers(@RequestHeader("userId") String userId) {
+    log.info("Getting all users");
     return auth0Users.getUsers(userId);
   }
 }
