@@ -1,6 +1,7 @@
 package com.services.group4.permission.service;
 
 import com.services.group4.permission.common.DataTuple;
+import com.services.group4.permission.common.FullResponse;
 import com.services.group4.permission.dto.FormatRulesDto;
 import com.services.group4.permission.dto.ResponseDto;
 import com.services.group4.permission.dto.UpdateRulesRequestDto;
@@ -167,34 +168,26 @@ class FormattingServiceTest {
   }
 
   // falla
-//  @Test
-//  void runFormatting_whenUserIsOwner_formatsSnippet() {
-//    // Arrange
-//    Mockito.when(ownershipService.isOwner(USER_ID, SNIPPET_ID)).thenReturn(true);
-//
-//    SnippetResponseDto snippet = new SnippetResponseDto(SNIPPET_ID, "Test Snippet", "Username", new Language("Java", "1.8", ".java"));
-//    Mockito.when(snippetService.getSnippetInfo(SNIPPET_ID))
-//        .thenReturn(new ResponseEntity<>(new ResponseDto<>("Success",
-//            new DataTuple<>("snippet", snippet)), HttpStatus.OK));
-//
-//    FormatRulesDto rulesDto = new FormatRulesDto(true, true, false, 2, 4);
-//    Mockito.when(formatConfigRepository.findFormatConfigByUserId(USER_ID))
-//        .thenReturn(Optional.of(new FormatConfig(USER_ID, true, true, false, 2, 4)));
-//
-//    ResponseEntity<ResponseDto<Object>> expectedResponse =
-//        new ResponseEntity<>(new ResponseDto<>("Formatted", null), HttpStatus.OK);
-//    Mockito.when(parserService.runFormatting(Mockito.any(), Mockito.eq(rulesDto)))
-//        .thenReturn(expectedResponse);
-//
-//    // Act
-//    ResponseEntity<ResponseDto<Object>> response =
-//        formattingService.runFormatting(SNIPPET_ID, USER_ID);
-//
-//    // Assert
-//    assertNotNull(response);
-//    assertEquals(HttpStatus.OK, response.getStatusCode());
-//    Mockito.verify(parserService, Mockito.times(1))
-//        .runFormatting(Mockito.any(), Mockito.eq(rulesDto));
-//  }
+  @Test
+  void runFormatting_whenUserIsOwner_formatsSnippet() {
+    // Arrange
+    Mockito.when(ownershipService.isOwner(USER_ID, SNIPPET_ID)).thenReturn(true);
+    Mockito.when(snippetService.getSnippetInfo(SNIPPET_ID))
+        .thenReturn(FullResponse.create("Snippet info", "snippet",
+            new SnippetResponseDto(SNIPPET_ID, "testSnippet", "owner", new Language("Java", "1.8", "java")),
+            HttpStatus.OK));
+    Mockito.when(parserService.runFormatting(Mockito.any(), Mockito.any()))
+        .thenReturn(FullResponse.create("Formatted snippet", "formattedSnippet",
+            "formattedSnippet", HttpStatus.OK));
+    // Act
+    ResponseEntity<ResponseDto<Object>> response =
+        formattingService.runFormatting(SNIPPET_ID, USER_ID);
+
+    // Assert
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("Formatted snippet",
+        response.getBody().message());
+  }
 }
 
