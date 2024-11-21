@@ -25,6 +25,14 @@ public class FormatEventProducer {
   }
 
   public void emit(String jsonMessage) {
+//    try {
+//      // Introduce a delay before publishing the message
+//      Thread.sleep(5000);
+//    } catch (InterruptedException e) {
+//      Thread.currentThread().interrupt();
+//      System.err.println("Thread was interrupted: " + e.getMessage());
+//    }
+
     ObjectRecord<String, String> result =
         StreamRecords.newRecord().ofObject(jsonMessage).withStreamKey(streamKey);
 
@@ -32,6 +40,8 @@ public class FormatEventProducer {
   }
 
   public void publishEvent(Long snippetId, FormatRulesDto config) {
+    System.out.println("\nFORMAT EVENT PRODUCER\n\n");
+
     ObjectMapper mapper = new ObjectMapper();
     try {
       // Create the JSON for the `config` field

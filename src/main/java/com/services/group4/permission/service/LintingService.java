@@ -81,12 +81,10 @@ public class LintingService {
         lintEventProducer.publishEvent(snippetId, config);
 
         i++;
-        return Optional.of(i);
       }
+      return Optional.of(i);
     } catch (Exception e) {
       throw new RuntimeException();
     }
-
-    return Optional.empty();
   }
 }
