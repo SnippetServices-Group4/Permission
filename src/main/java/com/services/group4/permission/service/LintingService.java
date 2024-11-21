@@ -90,13 +90,11 @@ public class LintingService {
         lintEventProducer.publishEvent(snippetId, config);
 
         i++;
-        return Optional.of(i);
       }
+      return Optional.of(i);
     } catch (Exception e) {
       log.info("Error linting snippets: {}", e.getMessage());
       throw new RuntimeException();
     }
-
-    return Optional.empty();
   }
 }

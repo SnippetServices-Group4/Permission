@@ -25,6 +25,14 @@ public class LintEventProducer {
   }
 
   public void emit(String jsonMessage) {
+//    try {
+//      // Introduce a delay before publishing the message
+//      Thread.sleep(5000);
+//    } catch (InterruptedException e) {
+//      Thread.currentThread().interrupt();
+//      System.err.println("Thread was interrupted: " + e.getMessage());
+//    }
+
     ObjectRecord<String, String> result =
         StreamRecords.newRecord().ofObject(jsonMessage).withStreamKey(streamKey);
 
@@ -32,6 +40,8 @@ public class LintEventProducer {
   }
 
   public void publishEvent(Long snippetId, LintRulesDto config) {
+    System.out.println("\nLINT EVENT PRODUCER\n\n");
+
     ObjectMapper mapper = new ObjectMapper();
     try {
       // Create the JSON for the `config` field
