@@ -23,7 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class FormattingController {
   private final FormattingService formattingService;
 
-  public FormattingController(FormattingService formattingService) {
+  public FormattingController(
+      FormattingService formattingService) {
     this.formattingService = formattingService;
   }
 

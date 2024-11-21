@@ -38,7 +38,7 @@ public class PermissionController {
       log.error("User doesn't have permission to view any snippet");
       return FullResponse.create(
           "User doesn't have permission to view any snippet",
-          "Snippet",
+          "snippet",
           null,
           HttpStatus.NOT_FOUND);
     }
@@ -64,7 +64,7 @@ public class PermissionController {
       log.error("Error deleting ownership for snippet: {}", e.getMessage());
       return FullResponse.create(
           "Something went wrong deleting the ownership of the snippet",
-          "Ownership",
+          "ownership",
           null,
           HttpStatus.INTERNAL_SERVER_ERROR);
     }
