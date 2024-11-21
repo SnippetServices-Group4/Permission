@@ -6,10 +6,12 @@ import com.services.group4.permission.model.Ownership;
 import com.services.group4.permission.repository.OwnershipRepository;
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class OwnershipService {
 
@@ -50,6 +52,7 @@ public class OwnershipService {
   }
 
   public Optional<List<Long>> findSnippetIdsByUserId(String userId) {
+    log.info("Getting snippet id for user with id{}", userId);
     return ownershipRepository.findSnippetIdsByUserId(userId);
   }
 

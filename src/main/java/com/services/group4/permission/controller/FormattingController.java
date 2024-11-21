@@ -6,10 +6,18 @@ import com.services.group4.permission.dto.ResponseDto;
 import com.services.group4.permission.dto.UpdateRulesRequestDto;
 import com.services.group4.permission.service.FormattingService;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("/formatting")
 public class FormattingController {
@@ -34,6 +42,7 @@ public class FormattingController {
     try {
       return formattingService.updateRules(userId, req);
     } catch (Exception e) {
+      log.error("Error updating rules and formatting: {}", e.getMessage());
       return FullResponse.create(
           "Error updating rules and formatting",
           "snippetIds",

@@ -3,6 +3,7 @@ package com.services.group4.permission.service.async;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.permission.dto.FormatRulesDto;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,7 @@ import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @Component
 public class FormatEventProducer {
   private final String streamKey;
@@ -28,11 +30,12 @@ public class FormatEventProducer {
   public Mono<ObjectRecord<String, String>> emit(String jsonMessage) {
     ObjectRecord<String, String> result =
         StreamRecords.newRecord().ofObject(jsonMessage).withStreamKey(streamKey);
-
+    log.info("Emitting message to stream: {}", jsonMessage);
     return redis.opsForStream().add(result).thenReturn(result);
   }
 
   public void publishEvent(Long snippetId, FormatRulesDto config) {
+    log.info("Trying to publish format event for snippet with id: {}", snippetId);
     System.out.println("\nFORMAT EVENT PRODUCER\n\n");
 
     ObjectMapper mapper = new ObjectMapper();
@@ -51,7 +54,9 @@ public class FormatEventProducer {
 
       // Send the message using emit
       emit(finalMessageJson).block();
+      log.info("Emitting message to stream: {}", finalMessageJson);
     } catch (Exception e) {
+      log.error("Error serializing message: {}", e.getMessage());
       System.err.println("Error serializing message: " + e.getMessage());
     }
   }
