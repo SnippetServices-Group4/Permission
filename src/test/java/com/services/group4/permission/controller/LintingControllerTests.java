@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.permission.DotenvConfig;
+import com.services.group4.permission.common.FullResponse;
 import com.services.group4.permission.dto.LintRulesDto;
 import com.services.group4.permission.dto.UpdateRulesRequestDto;
 import com.services.group4.permission.model.LintConfig;
@@ -22,6 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,7 +39,6 @@ public class LintingControllerTests {
 
   @MockBean private LintingService lintingService;
 
-  @MockBean private OwnershipService ownershipService;
 
   @Autowired private MockMvc mockMvc;
 
@@ -56,58 +57,26 @@ public class LintingControllerTests {
         .andExpect(jsonPath("$.data.config").exists());
   }
 
-  // no agarra bien el mock de lintingService
-  //  @Test
-  //  void testUpdateRulesAndLint_SnippetsInQueue() throws Exception {
-  //    String userId = "user123";
-  //    LintRulesDto rulesDto = new LintRulesDto(); // Crear un objeto de ejemplo para LintRulesDto
-  //    UpdateRulesRequestDto<LintRulesDto> requestDto = new UpdateRulesRequestDto<>(rulesDto);
-  //    List<Long> snippetsIds = List.of(1L, 2L);
-  //
-  //    when(ownershipService.findSnippetIdsByUserId(userId)).thenReturn(Optional.of(snippetsIds));
-  //    when(lintingService.asyncLint(snippetsIds,
-  // rulesDto)).thenReturn(Optional.of(snippetsIds.size()));
-  //
-  //    mockMvc.perform(post("/linting/update/rules")
-  //            .header("userId", userId)
-  //            .contentType(MediaType.APPLICATION_JSON)
-  //            .content(new ObjectMapper().writeValueAsString(requestDto)))
-  //        .andExpect(status().isOk())
-  //        .andExpect(jsonPath("$.message").value("Linting of 2 snippets in progress."))
-  //        .andExpect(jsonPath("$.data.snippetsIds").isArray())
-  //        .andExpect(jsonPath("$.data.snippetsIds.length()").value(2));
-  //  }
-
-  /*
   @Test
-  void testUpdateRulesAndLint_NoSnippetsToLint() throws Exception {
-    String userId = anyString();
-    LintRulesDto rulesDto = new LintRulesDto(); // Crear un objeto de ejemplo para LintRulesDto
-    UpdateRulesRequestDto<LintRulesDto> requestDto = new UpdateRulesRequestDto<>(rulesDto);
-    LintConfig lintConfig = new LintConfig();
+  void testGetConfig_ExceptionThrown() throws Exception {
+    String userId = "user123";
+    when(lintingService.getConfig(userId)).thenThrow(new RuntimeException("Error getting config"));
 
-    when(ownershipService.findSnippetIdsByUserId(userId)).thenReturn(Optional.empty());
-    when(lintingService.updateRules(userId, requestDto)).thenReturn(lintConfig);
     mockMvc
-        .perform(
-            post("/linting/update/rules")
-                .header("userId", userId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(requestDto)))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.message").value("Updated lint rules, no snippets to lint"));
+        .perform(get("/linting/rules").header("userId", userId))
+        .andExpect(status().isInternalServerError())
+        .andExpect(jsonPath("$.message").value("Error getting linting rules"));
   }
 
   @Test
-  void testUpdateRulesAndLint() throws Exception {
-    String userId = anyString();
+  void testUpdateRulesAndLint_NoSnippetsToLint() throws Exception {
+    String userId = "user123";
     LintRulesDto rulesDto = new LintRulesDto(); // Crear un objeto de ejemplo para LintRulesDto
     UpdateRulesRequestDto<LintRulesDto> requestDto = new UpdateRulesRequestDto<>(rulesDto);
     LintConfig lintConfig = new LintConfig();
 
-    when(ownershipService.findSnippetIdsByUserId(userId)).thenReturn(Optional.of(List.of(1L, 2L)));
-    when(lintingService.updateRules(userId, requestDto)).thenReturn(lintConfig);
-    when(lintingService.asyncLint(List.of(1L, 2L), rulesDto)).thenReturn(Optional.empty());
+    when(lintingService.updateAndLint(eq(userId), any(UpdateRulesRequestDto.class)))
+        .thenReturn(FullResponse.create("No snippets to lint.", "snippetsIds", lintConfig, HttpStatus.INTERNAL_SERVER_ERROR));
     mockMvc
         .perform(
             post("/linting/update/rules")
@@ -115,27 +84,7 @@ public class LintingControllerTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
         .andExpect(status().isInternalServerError())
-        .andExpect(jsonPath("$.message").value("Updated lint rules, but something occurred during asynchronous linting"));
+        .andExpect(jsonPath("$.message").value("No snippets to lint."));
   }
 
-  @Test
-  void testUpdateRulesAndLint_ServerError() throws Exception {
-    String userId = "user123";
-    LintRulesDto rulesDto = new LintRulesDto(); // Crear un objeto de ejemplo para LintRulesDto
-    UpdateRulesRequestDto<LintRulesDto> requestDto = new UpdateRulesRequestDto<>(rulesDto);
-    List<Long> snippetsIds = List.of(1L, 2L);
-
-    when(ownershipService.findSnippetIdsByUserId(userId))
-        .thenThrow(new RuntimeException("Internal server error"));
-
-    mockMvc
-        .perform(
-            post("/linting/update/rules")
-                .header("userId", userId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(requestDto)))
-        .andExpect(status().isInternalServerError());
-  }
-
-   */
 }
