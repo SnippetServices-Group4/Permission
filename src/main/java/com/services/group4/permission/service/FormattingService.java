@@ -12,12 +12,15 @@ import com.services.group4.permission.service.async.FormatEventProducer;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class FormattingService {
   private final FormatConfigRepository formatConfigRepository;
@@ -41,11 +44,15 @@ public class FormattingService {
   }
 
   public FormatRulesDto getConfig(String userId) {
+    log.info("Getting formatting rules for user with id{}", userId);
     Optional<FormatConfig> config = formatConfigRepository.findFormatConfigByUserId(userId);
 
     if (config.isEmpty()) {
+      log.info("No formatting rules found for user with id{}", userId);
+      log.info("Using default rules to format");
       return setDefaultRules(userId);
     } else {
+      log.info("Formatting rules found for user with id{}", userId);
       FormatConfig rules = config.get();
       return toFormatRulesDto(rules);
     }
@@ -70,8 +77,11 @@ public class FormattingService {
       String userId, UpdateRulesRequestDto<FormatRulesDto> req) {
     FormatRulesDto rules = req.rules();
 
+    log.info("Fetching current formatting rules");
     Optional<FormatConfig> config = formatConfigRepository.findFormatConfigByUserId(userId);
     FormatConfig newConfig = getNewConfig(userId, config, rules);
+
+    log.info("Updating formatting rules");
     formatConfigRepository.save(newConfig);
 
     Optional<List<Long>> snippetsId = ownershipService.findSnippetIdsByUserId(userId);
@@ -87,6 +97,7 @@ public class FormattingService {
             .map(i -> "Formatting of " + i + " snippets in progress.")
             .orElse("No snippets to format");
 
+    log.info(message);
     List<Long> snippetsIds = snippetsId.orElse(List.of());
     return new ResponseEntity<>(
         new ResponseDto<>(message, new DataTuple<>("snippetsIds", snippetsIds)), HttpStatus.OK);
@@ -134,12 +145,16 @@ public class FormattingService {
   public ResponseEntity<ResponseDto<Object>> runFormatting(Long snippetId, String userId) {
     boolean canFormat = ownershipService.isOwner(userId, snippetId);
     if (!canFormat) {
+      log.error("User with id {} doesn't have permission to format snippet with id {}", userId, snippetId);
       return FullResponse.create(
           "You don't have permission to format this snippet",
           "formattingResponse",
           null,
           HttpStatus.FORBIDDEN);
     }
+
+    log.info("Fetching snippet with id {}", snippetId);
+
     ResponseEntity<ResponseDto<SnippetResponseDto>> snippetResponse =
         snippetService.getSnippetInfo(snippetId);
     if (snippetResponse.getStatusCode().equals(HttpStatus.OK)

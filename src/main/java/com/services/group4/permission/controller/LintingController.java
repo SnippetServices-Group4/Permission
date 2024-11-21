@@ -15,7 +15,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/linting")
-public class LintingController {
+public class
+
+
+
+LintingController {
   private final LintingService lintingService;
   private final OwnershipService ownershipService;
 
