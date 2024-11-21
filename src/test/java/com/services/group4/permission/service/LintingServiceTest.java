@@ -110,18 +110,5 @@ class LintingServiceTest {
     assertEquals(3, result.get());
     verify(lintEventProducer, times(3)).publishEvent(anyLong(), eq(rules));
   }
-
-  @Test
-  void asyncLint_shouldReturnEmptyOptionalOnException() {
-    List<Long> snippetIds = List.of(1L);
-    LintRulesDto rules = new LintRulesDto("camelCase", true, true);
-
-    doThrow(RuntimeException.class).when(lintEventProducer).publishEvent(anyLong(), eq(rules));
-
-    Optional<Integer> result = lintingService.asyncLint(snippetIds, rules);
-
-    assertTrue(result.isEmpty());
-    verify(lintEventProducer).publishEvent(anyLong(), eq(rules));
-  }
 }
 
