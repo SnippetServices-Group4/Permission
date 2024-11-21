@@ -60,10 +60,10 @@ public class LintingService {
 
   public ResponseEntity<ResponseDto<LintConfig>> updateAndLint(String userId, UpdateRulesRequestDto<LintRulesDto> req) {
     try {
-      System.out.println("Updating rules");
+      log.info("Updating rules");
       LintConfig rules = updateRules(userId, req);
 
-      System.out.println("Getting snippets");
+      log.info("Getting snippets");
       Optional<List<Long>> snippetsId = ownershipService.findSnippetIdsByUserId(userId);
 
       if (snippetsId.isEmpty()) {
@@ -85,7 +85,7 @@ public class LintingService {
                 rules,
                 HttpStatus.INTERNAL_SERVER_ERROR));
     } catch (Exception e) {
-      return FullResponse.create(
+            return FullResponse.create(
               "Error updating rules and linting",
               "lintRules",
               null,
