@@ -1,4 +1,3 @@
-// RestTemplateConfig.java
 package com.services.group4.permission.config;
 
 import com.services.group4.permission.CorrelationIdInterceptor;
