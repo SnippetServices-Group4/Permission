@@ -38,10 +38,8 @@ class LintingServiceTest {
     String userId = "user123";
     when(lintConfigRepository.findLintConfigByUserId(userId)).thenReturn(Optional.empty());
 
-    Optional<LintRulesDto> result = lintingService.getConfig(userId);
+    LintRulesDto defaultRules = lintingService.getConfig(userId);
 
-    assertTrue(result.isPresent());
-    LintRulesDto defaultRules = result.get();
     assertEquals("camelCase", defaultRules.getWritingConventionName());
     assertTrue(defaultRules.isPrintLnAcceptsExpressions());
     assertTrue(defaultRules.isReadInputAcceptsExpressions());
@@ -54,10 +52,8 @@ class LintingServiceTest {
     LintConfig existingConfig = new LintConfig(userId, "snake_case", false, true);
     when(lintConfigRepository.findLintConfigByUserId(userId)).thenReturn(Optional.of(existingConfig));
 
-    Optional<LintRulesDto> result = lintingService.getConfig(userId);
+    LintRulesDto rules = lintingService.getConfig(userId);
 
-    assertTrue(result.isPresent());
-    LintRulesDto rules = result.get();
     assertEquals("snake_case", rules.getWritingConventionName());
     assertFalse(rules.isPrintLnAcceptsExpressions());
     assertTrue(rules.isReadInputAcceptsExpressions());

@@ -1,34 +1,41 @@
 package com.services.group4.permission.service;
 
+import com.services.group4.permission.common.DataTuple;
+import com.services.group4.permission.common.FullResponse;
 import com.services.group4.permission.dto.LintRulesDto;
+import com.services.group4.permission.dto.ResponseDto;
 import com.services.group4.permission.dto.UpdateRulesRequestDto;
 import com.services.group4.permission.model.LintConfig;
 import com.services.group4.permission.repository.LintConfigRepository;
 import com.services.group4.permission.service.async.LintEventProducer;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 public class LintingService {
   private final LintConfigRepository lintConfigRepository;
   private final LintEventProducer lintEventProducer;
+  private final OwnershipService ownershipService;
 
   public LintingService(
-      LintConfigRepository lintConfigRepository, LintEventProducer lintEventProducer) {
+          LintConfigRepository lintConfigRepository, LintEventProducer lintEventProducer, OwnershipService ownershipService) {
     this.lintConfigRepository = lintConfigRepository;
     this.lintEventProducer = lintEventProducer;
+      this.ownershipService = ownershipService;
   }
 
-  public Optional<LintRulesDto> getConfig(String userId) {
+  public LintRulesDto getConfig(String userId) {
     Optional<LintConfig> config = lintConfigRepository.findLintConfigByUserId(userId);
 
     if (config.isEmpty()) {
-      LintRulesDto defaultRules = setDefaultRules(userId);
-      return Optional.of(defaultRules);
+      return setDefaultRules(userId);
     } else {
       LintConfig rules = config.get();
-      return Optional.of(toLintRulesDto(rules));
+      return toLintRulesDto(rules);
     }
   }
 
@@ -43,6 +50,41 @@ public class LintingService {
         rules.getWritingConventionName(),
         rules.isPrintLnAcceptsExpressions(),
         rules.isReadInputAcceptsExpressions());
+  }
+
+  public ResponseEntity<ResponseDto<LintConfig>> updateAndLint(String userId, UpdateRulesRequestDto<LintRulesDto> req) {
+    try {
+      System.out.println("Updating rules");
+      LintConfig rules = updateRules(userId, req);
+
+      System.out.println("Getting snippets");
+      Optional<List<Long>> snippetsId = ownershipService.findSnippetIdsByUserId(userId);
+
+      if (snippetsId.isEmpty()) {
+        return FullResponse.create(
+                "Updated lint rules, no snippets to lint",
+                "lintRules",
+                null,
+                HttpStatus.OK);
+      }
+
+      Optional<Integer> totalToLintSnippets = asyncLint(snippetsId.get(), req.rules());
+        return totalToLintSnippets.map(value -> FullResponse.create(
+                "Updated lint rules, " + value + " snippets in queue",
+                "lintRules",
+                rules,
+                HttpStatus.OK)).orElseGet(() -> FullResponse.create(
+                "Updated lint rules, but something occurred during asynchronous linting",
+                "lintRules",
+                rules,
+                HttpStatus.INTERNAL_SERVER_ERROR));
+    } catch (Exception e) {
+      return FullResponse.create(
+              "Error updating rules and linting",
+              "lintRules",
+              null,
+              HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   public LintConfig updateRules(String userId, UpdateRulesRequestDto<LintRulesDto> req) {

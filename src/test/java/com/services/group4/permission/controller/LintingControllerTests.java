@@ -47,7 +47,7 @@ public class LintingControllerTests {
   void testGetConfig_UserFound() throws Exception {
     String userId = "user123";
     LintRulesDto rulesDto = new LintRulesDto(); // Crear un objeto de ejemplo para LintRulesDto
-    when(lintingService.getConfig(userId)).thenReturn(Optional.of(rulesDto));
+    when(lintingService.getConfig(userId)).thenReturn(rulesDto);
 
     mockMvc
         .perform(get("/linting/rules").header("userId", userId))
