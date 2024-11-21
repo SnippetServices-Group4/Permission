@@ -7,7 +7,6 @@ import com.services.group4.permission.repository.LintConfigRepository;
 import com.services.group4.permission.service.async.LintEventProducer;
 import java.util.List;
 import java.util.Optional;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -28,11 +27,12 @@ public class LintingService {
     Optional<LintConfig> config = lintConfigRepository.findLintConfigByUserId(userId);
 
     if (config.isEmpty()) {
-      log.info("No linting rules found for user with id {}", userId + ", using default rules to lint");
+      log.info(
+          "No linting rules found for user with id {}", userId + ", using default rules to lint");
       LintRulesDto defaultRules = setDefaultRules(userId);
       return Optional.of(defaultRules);
     } else {
-        log.info("Linting rules found for user with id{}", userId);
+      log.info("Linting rules found for user with id{}", userId);
       LintConfig rules = config.get();
       return Optional.of(toLintRulesDto(rules));
     }

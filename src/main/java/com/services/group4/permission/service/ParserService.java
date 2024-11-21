@@ -20,7 +20,9 @@ public class ParserService {
 
   public ResponseEntity<ResponseDto<Object>> runFormatting(
       SnippetResponseDto snippet, FormatRulesDto formatRules) {
-    log.info("Redirecting formatting for snippet with id: {}", snippet.snippetId() + "to parser service");
+    log.info(
+        "Redirecting formatting for snippet with id: {}",
+        snippet.snippetId() + "to parser service");
     FormattingRequestDto formattingRequest =
         new FormattingRequestDto(
             formatRules, snippet.language().getLangName(), snippet.language().getVersion());

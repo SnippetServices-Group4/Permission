@@ -12,7 +12,6 @@ import com.services.group4.permission.service.async.FormatEventProducer;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,7 +144,10 @@ public class FormattingService {
   public ResponseEntity<ResponseDto<Object>> runFormatting(Long snippetId, String userId) {
     boolean canFormat = ownershipService.isOwner(userId, snippetId);
     if (!canFormat) {
-      log.error("User with id {} doesn't have permission to format snippet with id {}", userId, snippetId);
+      log.error(
+          "User with id {} doesn't have permission to format snippet with id {}",
+          userId,
+          snippetId);
       return FullResponse.create(
           "You don't have permission to format this snippet",
           "formattingResponse",

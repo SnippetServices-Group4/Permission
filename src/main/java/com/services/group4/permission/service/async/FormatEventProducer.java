@@ -3,7 +3,6 @@ package com.services.group4.permission.service.async;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.permission.dto.FormatRulesDto;
 import java.util.Map;
-
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,7 @@ public class FormatEventProducer {
   public Mono<ObjectRecord<String, String>> emit(String jsonMessage) {
     ObjectRecord<String, String> result =
         StreamRecords.newRecord().ofObject(jsonMessage).withStreamKey(streamKey);
-      log.info("Emitting message to stream: {}", jsonMessage);
+    log.info("Emitting message to stream: {}", jsonMessage);
     return redis.opsForStream().add(result).thenReturn(result);
   }
 
