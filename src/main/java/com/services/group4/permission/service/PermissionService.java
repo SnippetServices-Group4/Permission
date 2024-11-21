@@ -15,26 +15,15 @@ public class PermissionService {
 
   private final ReaderService readerService;
   private final OwnershipService ownershipService;
-  private final ValidationService validationService;
 
   public PermissionService(
       ReaderService readerService,
-      OwnershipService ownershipService,
-      ValidationService validationService) {
+      OwnershipService ownershipService) {
     this.readerService = readerService;
     this.ownershipService = ownershipService;
-    this.validationService = validationService;
   }
 
   public ResponseEntity<ResponseDto<List<Long>>> getAllowedSnippets(String userId) {
-    if (!validationService.isUserIdValid(userId)) {
-      return FullResponse.create(
-          "User isn't valid, it doesn't exists",
-          "snippetList",
-          new ArrayList<>(),
-          HttpStatus.BAD_REQUEST);
-    }
-
     Optional<List<Long>> readerSnippets = readerService.findSnippetIdsByUserId(userId);
     Optional<List<Long>> ownerSnippets = ownershipService.findSnippetIdsByUserId(userId);
     List<Long> allowedSnippets = new ArrayList<>();
@@ -48,10 +37,6 @@ public class PermissionService {
 
   public ResponseEntity<ResponseDto<Long>> deletePermissionsOfSnippet(
       String userId, Long snippetId) {
-    if (!validationService.isUserIdValid(userId)) {
-      return FullResponse.create(
-          "User isn't valid, it doesn't exists", "snippetId", snippetId, HttpStatus.BAD_REQUEST);
-    }
 
     ResponseEntity<ResponseDto<Long>> responseOwnership =
         ownershipService.deleteOwnership(userId, snippetId);
@@ -75,11 +60,6 @@ public class PermissionService {
 
   public ResponseEntity<ResponseDto<Boolean>> hasPermissionOnSnippet(
       String userId, Long snippetId) {
-    if (!validationService.isUserIdValid(userId)) {
-      return FullResponse.create(
-          "User isn't valid, it doesn't exists", "permission", false, HttpStatus.BAD_REQUEST);
-    }
-
     ResponseEntity<ResponseDto<Boolean>> readerPermission =
         readerService.getReaderPermission(userId, snippetId);
     ResponseEntity<ResponseDto<Boolean>> ownerPermission =

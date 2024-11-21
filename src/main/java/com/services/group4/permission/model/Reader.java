@@ -1,7 +1,13 @@
 package com.services.group4.permission.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.Generated;
 
+@Generated
 @Entity
 public class Reader {
   @Id

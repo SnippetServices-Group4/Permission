@@ -57,6 +57,7 @@ dependencies {
 	implementation 'org.austral.ingsis:redis-streams-mvc:0.1.13'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive:+'
 	implementation 'org.jetbrains:annotations:24.0.1'
+	implementation 'io.projectreactor:reactor-core:3.5.0'
 }
 
 dependencyManagement {
@@ -70,12 +71,31 @@ tasks.named('test') {
 }
 
 
+def basePackage = 'com/services/group4/permission/'
+
 jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                    '/DotenvConfig.class'
-            ])
+                    "${basePackage}DotenvConfig.class",
+                    "${basePackage}CorrelationIdFilter.class",
+                    "${basePackage}CorrelationIdInterceptor.class",
+                    "${basePackage}RequestLogFilter.class",
+                    "${basePackage}service/async/FormatEventProducer.class",
+                    "${basePackage}service/async/TestFormatEventConsumer.class",
+                    "${basePackage}service/async/LintEventProducer.class",
+                    "${basePackage}service/async/TestLintEventConsumer.class",
+					"${basePackage}service/Auth0Users.class",
+					"${basePackage}controller/UserController.class",
+					"${basePackage}service/TokenService.class",
+					"${basePackage}config/RestTemplateConfig.class",
+                    "${basePackage}controller/test/TestController.class",
+                    "${basePackage}model/communication/CommunicationMessage.class",
+					"${basePackage}Application.class",
+
+					"${basePackage}service/async/TestLintEventConsumer\$*.class",
+					"${basePackage}service/async/TestFormatEventConsumer\$*.class",
+			])
         }))
     }
 }
@@ -84,8 +104,25 @@ jacocoTestCoverageVerification {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                    '/DotenvConfig.class'
-            ])
+                    "${basePackage}DotenvConfig.class",
+                    "${basePackage}CorrelationIdFilter.class",
+                    "${basePackage}CorrelationIdInterceptor.class",
+                    "${basePackage}RequestLogFilter.class",
+                    "${basePackage}service/async/FormatEventProducer.class",
+					"${basePackage}service/async/TestFormatEventConsumer.class",
+                    "${basePackage}service/async/LintEventProducer.class",
+					"${basePackage}service/async/TestLintEventConsumer.class",
+					"${basePackage}controller/UserController.class",
+					"${basePackage}service/Auth0Users.class",
+					"${basePackage}service/TokenService.class",
+					"${basePackage}config/RestTemplateConfig.class",
+                    "${basePackage}controller/test/TestController.class",
+                    "${basePackage}model/communication/CommunicationMessage.class",
+					"${basePackage}Application.class",
+
+					"${basePackage}service/async/TestLintEventConsumer\$*.class",
+					"${basePackage}service/async/TestFormatEventConsumer\$*.class",
+			])
         }))
     }
 }
