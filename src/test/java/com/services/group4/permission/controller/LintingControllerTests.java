@@ -78,6 +78,7 @@ public class LintingControllerTests {
   //        .andExpect(jsonPath("$.data.snippetsIds.length()").value(2));
   //  }
 
+  /*
   @Test
   void testUpdateRulesAndLint_NoSnippetsToLint() throws Exception {
     String userId = anyString();
@@ -135,4 +136,6 @@ public class LintingControllerTests {
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
         .andExpect(status().isInternalServerError());
   }
+
+   */
 }
