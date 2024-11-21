@@ -57,18 +57,22 @@ public class LintingService {
     System.out.println("Updating rules for user: " + userId);
     System.out.println("Rules: " + rules);
 
-    log.info("Updating linting rules for user with id{}", userId);
+    log.info("Trying to update linting rules for user with id{}", userId);
     Optional<LintConfig> config = lintConfigRepository.findLintConfigByUserId(userId);
 
     if (config.isPresent()) {
+      log.info("Linting rules found for user with id{}", userId);
       LintConfig updatedConfig = config.get();
 
+      log.info("Updating rules for user with id{}", userId);
       updatedConfig.setWritingConventionName(rules.getWritingConventionName());
       updatedConfig.setPrintLnAcceptsExpressions(rules.isPrintLnAcceptsExpressions());
       updatedConfig.setReadInputAcceptsExpressions(rules.isReadInputAcceptsExpressions());
 
       return lintConfigRepository.save(updatedConfig);
     } else {
+      log.info("No linting rules found for user with id{}", userId);
+      log.info("Creating new linting rules for user with id{}", userId);
       LintConfig newConfig =
           new LintConfig(
               userId,
